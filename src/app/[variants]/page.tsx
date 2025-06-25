@@ -6,4 +6,5 @@ export const metadata: Metadata = {
   alternates: { canonical: getCanonicalUrl('/') },
 };
 
+console.log('执行page')
 export { default } from './loading';

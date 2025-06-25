@@ -45,6 +45,7 @@ const handler = async (req: NextRequest) => {
 
       // 使用辅助方法创建 Node.js 请求对象，现在需要 await
       createNodeRequest(req).then((nodeRequest) => {
+        console.log('createNodeRequest001')
         log('Calling the obtained middleware...');
         middleware(nodeRequest, nodeResponse, (error?: Error) => {
           log('Middleware callback function HAS BEEN EXECUTED.');

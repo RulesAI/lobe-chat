@@ -130,8 +130,8 @@ const NotSupportClient = () => {
       <Flexbox justify={'center'} style={{ textAlign: 'center' }}>
         <Typography.Title>{t('notSupportGuide.title')}</Typography.Title>
         <Typography.Text type={'secondary'}>
-          <Trans i18nKey={'notSupportGuide.desc'} ns={'file'}>
-            当前部署实例为客户端数据库模式，无法使用文件管理功能。请切换到
+          {/* <Trans i18nKey={'notSupportGuide.desc'} ns={'file'}>
+            1111当前部署实例为客户端数据库模式，无法使用文件管理功能。请切换到
             <Link href={DATABASE_SELF_HOSTING_URL}>服务端数据库部署模式</Link>
             ，或直接使用官方的
             <Link
@@ -139,7 +139,7 @@ const NotSupportClient = () => {
             >
               {LOBE_CHAT_CLOUD}
             </Link>
-          </Trans>
+          </Trans> */}
         </Typography.Text>
       </Flexbox>
 

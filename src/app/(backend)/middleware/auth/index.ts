@@ -32,6 +32,7 @@ export const checkAuth =
     let jwtPayload: JWTPayload;
 
     try {
+      console.log('执行auth')
       // get Authorization from header
       const authorization = req.headers.get(LOBE_CHAT_AUTH_HEADER);
       const oauthAuthorized = !!req.headers.get(OAUTH_AUTHORIZED);

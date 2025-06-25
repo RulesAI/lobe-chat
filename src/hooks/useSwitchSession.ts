@@ -21,6 +21,7 @@ export const useSwitchSession = () => {
       const chatPath = '/chat';
       if (mobile || pathname !== chatPath) {
         setTimeout(() => {
+          console.log('去聊天页面004')
           router.push(chatPath, {
             query: { session: id, showMobileWorkspace: 'true' },
           });

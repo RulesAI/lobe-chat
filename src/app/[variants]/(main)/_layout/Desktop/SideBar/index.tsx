@@ -5,23 +5,41 @@ import { useTheme } from 'antd-style';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import { Suspense, memo } from 'react';
 
+
 import { isDesktop } from '@/const/version';
 import { useActiveTabKey } from '@/hooks/useActiveTabKey';
 import { useGlobalStore } from '@/store/global';
 import { systemStatusSelectors } from '@/store/global/selectors';
 import { featureFlagsSelectors, useServerConfigStore } from '@/store/serverConfig';
 import { electronStylish } from '@/styles/electron';
+import { Layout, Menu, Button } from 'antd';
+import S from './index.module.css'
 
-import Avatar from './Avatar';
+// import Avatar from './Avatar';
 import BottomActions from './BottomActions';
-import PinList from './PinList';
+// import PinList from './PinList';
 import TopActions from './TopActions';
+import MenuCom from './Menu';
 
 const Top = () => {
   const [isPinned] = useQueryState('pinned', parseAsBoolean);
   const sidebarKey = useActiveTabKey();
 
   return <TopActions isPinned={isPinned} tab={sidebarKey} />;
+};
+
+const Mid = () => {
+  const [isPinned] = useQueryState('pinned', parseAsBoolean);
+  const sidebarKey = useActiveTabKey();
+
+  return <MenuCom isPinned={isPinned} tab={sidebarKey} />;
+};
+
+const Bottom = () => {
+  const [isPinned] = useQueryState('pinned', parseAsBoolean);
+  const sidebarKey = useActiveTabKey();
+
+  return <BottomActions isPinned={isPinned} tab={sidebarKey} />;
 };
 
 const Nav = memo(() => {
@@ -31,34 +49,11 @@ const Nav = memo(() => {
 
   return (
     !inZenMode && (
-      <SideNav
-        avatar={
-          <div className={electronStylish.nodrag}>
-            <Avatar />
-          </div>
-        }
-        bottomActions={
-          <div className={electronStylish.nodrag}>
-            <BottomActions />
-          </div>
-        }
-        className={electronStylish.draggable}
-        style={{
-          height: '100%',
-          zIndex: 100,
-          ...(isDesktop
-            ? { background: 'transparent', borderInlineEnd: 0, paddingBlockStart: 8 }
-            : { background: theme.colorBgLayout }),
-        }}
-        topActions={
-          <Suspense>
-            <div className={electronStylish.nodrag}>
-              <Top />
-              {showPinList && <PinList />}
-            </div>
-          </Suspense>
-        }
-      />
+      <div className={S.sideBar}>
+        <Top />
+        <Mid />
+        <Bottom />
+      </div>
     )
   );
 });

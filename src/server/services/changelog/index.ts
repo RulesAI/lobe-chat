@@ -44,16 +44,19 @@ export class ChangelogService {
 
   async getLatestChangelogId() {
     const index = await this.getChangelogIndex();
+    console.log('index', index)
     return index[0]?.id;
   }
 
   async getChangelogIndex(): Promise<ChangelogIndexItem[]> {
     try {
       const url = this.genUrl(urlJoin(this.config.docsPath, 'index.json'));
-
+      console.log('url', url)
       const res = await fetch(url, {
         next: { revalidate: 3600, tags: [FetchCacheTag.Changelog] },
       });
+
+      console.log('res', res)
 
       if (res.ok) {
         const data = await res.json();

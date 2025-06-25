@@ -40,6 +40,8 @@ const Page = async (props: DynamicLayoutProps) => {
   const changelogService = new ChangelogService();
   const data = await changelogService.getChangelogIndex();
 
+  console.log('加载页面', data)
+
   if (!data) return notFound();
 
   const ld = ldModule.generate({

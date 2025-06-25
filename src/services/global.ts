@@ -18,7 +18,9 @@ class GlobalService {
   };
 
   getGlobalConfig = async (): Promise<GlobalRuntimeConfig> => {
-    return edgeClient.config.getGlobalConfig.query();
+    const data = edgeClient.config.getGlobalConfig.query()
+    console.log('data', data)
+    return data;
   };
 
   getDefaultAgentConfig = async (): Promise<DeepPartial<LobeAgentConfig>> => {

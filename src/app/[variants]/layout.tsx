@@ -28,6 +28,8 @@ const RootLayout = async ({ children, params, modal }: RootLayoutProps) => {
   const { locale, isMobile, theme, primaryColor, neutralColor } =
     RouteVariants.deserializeVariants(variants);
 
+    console.log('primaryColor', primaryColor)
+
   const direction = isRtlLang(locale) ? 'rtl' : 'ltr';
 
   return (
@@ -39,7 +41,7 @@ const RootLayout = async ({ children, params, modal }: RootLayoutProps) => {
             isMobile={isMobile}
             locale={locale}
             neutralColor={neutralColor}
-            primaryColor={primaryColor}
+            primaryColor='#0072f5'
           >
             <AuthProvider>
               {children}

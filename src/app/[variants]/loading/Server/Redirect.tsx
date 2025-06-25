@@ -35,6 +35,7 @@ const Redirect = memo<RedirectProps>(({ setLoadingStage }) => {
 
     // this mean user is definitely not login
     if (!isLogin) {
+      console.log('去聊天页面003')
       navToChat();
       return;
     }

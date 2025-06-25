@@ -3,7 +3,7 @@
 import { useTheme } from 'antd-style';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
-import { PropsWithChildren, Suspense, memo } from 'react';
+import { PropsWithChildren, Suspense, memo, useState, useEffect } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import { Flexbox } from 'react-layout-kit';
 
@@ -14,10 +14,21 @@ import HotkeyHelperPanel from '@/features/HotkeyHelperPanel';
 import { usePlatform } from '@/hooks/usePlatform';
 import { featureFlagsSelectors, useServerConfigStore } from '@/store/serverConfig';
 import { HotkeyScopeEnum } from '@/types/hotkey';
+import { SettingOutlined, BellOutlined } from '@ant-design/icons';
 
 import RegisterHotkeys from './RegisterHotkeys';
 import SideBar from './SideBar';
+import S from './index.module.css'
 
+const pathnameMap = {
+  '/home': '首页',
+  '/projectmanage': '项目管理',
+  '/filemanage': '方案文档管理',
+  '/rulesmanage': '审核规则管理',
+  '/reportmanage': '审核报告管理',
+  '/overmanage': '方案归档',
+  '/settingmanage': '系统设置',
+}
 const CloudBanner = dynamic(() => import('@/features/AlertBanner/CloudBanner'));
 
 const Layout = memo<PropsWithChildren>(({ children }) => {
@@ -25,10 +36,17 @@ const Layout = memo<PropsWithChildren>(({ children }) => {
   const theme = useTheme();
 
   const pathname = usePathname();
+  const [pageName, setPageName] = useState('')
   const { showCloudPromotion } = useServerConfigStore(featureFlagsSelectors);
 
   // setting page not show sidebar
   const hideSideBar = isDesktop && pathname.startsWith('/settings');
+  console.log('isDesktop', isDesktop)
+  useEffect(() => {
+         console.log('当前路径:', pathname);
+     const currentName =  pathnameMap[pathname] || ''
+     setPageName(currentName)
+  }, [pathname])
   return (
     <HotkeysProvider initiallyActiveScopes={[HotkeyScopeEnum.Global]}>
       {isDesktop && <TitleBar />}
@@ -63,7 +81,16 @@ const Layout = memo<PropsWithChildren>(({ children }) => {
             {children}
           </Flexbox>
         ) : (
-          children
+          <div>
+          <div className={S.rightHeader}>
+            <div className={S.headerTitle}>{pageName}</div>
+            <div className={S.btns}>
+              <BellOutlined />
+              <SettingOutlined />
+            </div>
+          </div>
+          <div>{children}</div>
+          </div>
         )}
       </Flexbox>
       <HotkeyHelperPanel />
