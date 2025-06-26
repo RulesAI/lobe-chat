@@ -82,13 +82,13 @@ const Layout = memo<PropsWithChildren>(({ children }) => {
           </Flexbox>
         ) : (
           <div>
-          <div className={S.rightHeader}>
+          {/* <div className={S.rightHeader}>
             <div className={S.headerTitle}>{pageName}</div>
             <div className={S.btns}>
               <BellOutlined />
               <SettingOutlined />
             </div>
-          </div>
+          </div> */}
           <div>{children}</div>
           </div>
         )}

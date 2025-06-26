@@ -22,7 +22,7 @@ const standaloneConfig: NextConfig = {
 
 const nextConfig: NextConfig = {
   ...(isStandaloneMode ? standaloneConfig : {}),
-  basePath,
+    basePath,
   compress: isProd,
   experimental: {
     optimizePackageImports: [
@@ -194,6 +194,17 @@ const nextConfig: NextConfig = {
       source: '/repos',
     },
   ],
+  async rewrites() {
+    return [
+      {
+        // 本地请求路径
+        destination: 'http://ai.yrules.com/v1/:path*',
+        source: '/api/:path*', // 远程地址
+        // destination: 'https://mztapp.fujian.gov.cn:12000/mst_4873/:path*',
+        // source: '/api/:path*'
+      },
+    ];
+  },
   // when external packages in dev mode with turbopack, this config will lead to bundle error
   serverExternalPackages: isProd ? ['@electric-sql/pglite'] : undefined,
 

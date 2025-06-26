@@ -60,6 +60,7 @@ export class UserModel {
   };
 
   getUserState = async (decryptor: DecryptUserKeyVaults) => {
+    console.log('userSettings.general', userSettings.general)
     const result = await this.db
       .select({
         avatar: users.avatar,

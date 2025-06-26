@@ -7,6 +7,7 @@ export class ServerService implements IUserService {
   };
 
   getUserState: IUserService['getUserState'] = async () => {
+    console.log('我执行了吧111111')
     return lambdaClient.user.getUserState.query();
   };
 

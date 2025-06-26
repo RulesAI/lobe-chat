@@ -40,7 +40,7 @@ const RootLayout = async ({ children, params, modal }: RootLayoutProps) => {
             appearance={theme}
             isMobile={isMobile}
             locale={locale}
-            neutralColor={neutralColor}
+            neutralColor='#0072f5'
             primaryColor='#0072f5'
           >
             <AuthProvider>

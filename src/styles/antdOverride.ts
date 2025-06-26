@@ -15,4 +15,5 @@ export default ({ token }: { prefixCls: string; token: Theme }) => css`
       color: ${token.colorText};
     }
   }
+
 `;

@@ -1,8 +1,16 @@
 .content {
-  width: 100%;
-  height: calc(100vh - 70px);
-  padding:30px;
+  width: calc(100vw - 300px);
+  /* height: calc(100vh - 70px); */
+  /* padding:30px; */
   background-color: #fff;
+  display: flex;
+}
+.leftContent {
+  flex: 1;
+  height: 100%;
+}
+.tableContent {
+  padding: 30px;
 }
 .tip {
   color: #535252;
@@ -69,4 +77,57 @@
 .btns {
   width: 100%;
   margin-top: 16px;
+}
+
+.drawer {
+  height: 100vh;
+  background-color: #fff;
+  border-left: 1px solid #d5d5d5;
+}
+.drawerHeader {
+  border-bottom: 1px solid #d5d5d5;
+  height: 70px;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.drawerClose {
+  color: #979393;
+  cursor: pointer;
+}
+.drawerContent {
+  padding: 16px;
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+.primaryColor {
+  background-color: #1890ff !important;
+}
+.warningColor {
+  background-color: #fffbe6 !important;
+}
+.infoColor {
+  background-color: #e6f4ff !important;
+}
+.dangerColor {
+  background-color: #fff1f0 !important;
+}
+
+.tableBox {
+  border: 1px solid #d5d5d5;
+  border-radius: 10px;
+  /* background-color: #eeecec; */
+}
+
+.filter {
+  display: flex;
+  width: 100%;
+  padding: 16px;
+  /* background-color: #fff; */
+}
+.filterSelect {
+  margin-left: 16px !important;
 }

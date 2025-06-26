@@ -9,6 +9,10 @@ declare module 'antd-style' {
   export interface CustomStylish extends LobeCustomStylish {}
 }
 
+// declare module 'styled-components' {
+//   export interface DefaultTheme extends AntdToken, LobeCustomToken {}
+// }
+
 declare module 'styled-components' {
   export interface DefaultTheme extends AntdToken, LobeCustomToken {}
 }
