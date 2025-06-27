@@ -18,20 +18,22 @@ import S from './Container.module.css';
 
 const { Dragger } = Upload;
 
+const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://aitest.yrules.com/v1';
+const headers = {
+  Authorization: 'Bearer app-t5X8Caxj9Zw20CW4fuPEPG4f',
+};
+const user = 'lixiumin';
+
 const props: UploadProps = {
-  action:
-    process.env.NODE_ENV === 'development'
-      ? '/api/files/upload'
-      : 'http://aitest.yrules.com/v1/files/upload',
-  headers: {
-    Authorization: 'Bearer app-t5X8Caxj9Zw20CW4fuPEPG4f',
-  },
+  action: prefix + '/files/upload',
+  headers,
   data: {
-    user: 'lixiumin',
+    user,
   },
   multiple: false,
   name: 'file',
   onChange(info) {
+    console.log('info', info);
     const { status } = info.file;
     if (status !== 'uploading') {
       console.log(info.file, info.fileList);
@@ -106,6 +108,26 @@ const Container = memo<PropsWithChildren>(({ children }) => {
 
   const handleOk = () => {
     console.log('开始审核');
+  };
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const runWork = async () => {
+    const fileId = '05d00a0e-4324-49f9-8d7d-8616b8016eb3';
+    console.log('执行啊');
+    const postData = {
+      inputs: {
+        type: 'document',
+        transfer_method: 'local_file',
+        upload_file_id: fileId,
+      },
+      response_mode: 'streaming',
+      user,
+    };
+    const res = await fetch(`${prefix}/workflows/run`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(postData),
+    });
+    console.log('执行结果', res);
   };
   return (
     <Flexbox
@@ -314,7 +336,12 @@ const Container = memo<PropsWithChildren>(({ children }) => {
         footer={
           <div className={S.modalFooter}>
             <Button onClick={handleCancel}>取消</Button>
-            <Button type="primary" className={S.primaryColor} style={{ marginLeft: 16 }}>
+            <Button
+              type="primary"
+              className={S.primaryColor}
+              style={{ marginLeft: 16 }}
+              onClick={() => runWork()}
+            >
               开始审核
             </Button>
           </div>

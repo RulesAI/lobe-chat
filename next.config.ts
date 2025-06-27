@@ -199,7 +199,7 @@ const nextConfig: NextConfig = {
       {
         // 本地请求路径
         destination: 'http://aitest.yrules.com/v1/:path*',
-        source: '/api/:path*', // 远程地址
+        source: '/v1/:path*', // 远程地址
         // destination: 'https://mztapp.fujian.gov.cn:12000/mst_4873/:path*',
         // source: '/api/:path*'
       },
