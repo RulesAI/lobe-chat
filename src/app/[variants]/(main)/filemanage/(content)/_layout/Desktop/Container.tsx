@@ -122,12 +122,21 @@ const Container = memo<PropsWithChildren>(({ children }) => {
       response_mode: 'streaming',
       user,
     };
-    const res = await fetch(`${prefix}/workflows/run`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(postData),
-    });
-    console.log('执行结果', res);
+    try {
+      const res = await fetch(`${prefix}/workflows/run`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(postData),
+      });
+      console.log('执行结果', res);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const result = await res.json();
+      console.log('Success:', result);
+    } catch (err) {
+      console.log('Error', err);
+    }
   };
   return (
     <Flexbox
