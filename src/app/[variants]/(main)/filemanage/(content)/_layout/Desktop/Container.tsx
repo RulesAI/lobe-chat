@@ -22,9 +22,9 @@ const props: UploadProps = {
   action:
     process.env.NODE_ENV === 'development'
       ? '/api/files/upload'
-      : 'http://ai.yrules.com/v1/files/upload',
+      : 'http://aitest.yrules.com/v1/files/upload',
   headers: {
-    Authorization: 'Bearer app-i8KtVm3QpZDPyLERlNc9ujB5',
+    Authorization: 'Bearer app-t5X8Caxj9Zw20CW4fuPEPG4f',
   },
   data: {
     user: 'lixiumin',
