@@ -22,7 +22,7 @@ const standaloneConfig: NextConfig = {
 
 const nextConfig: NextConfig = {
   ...(isStandaloneMode ? standaloneConfig : {}),
-    basePath,
+  basePath,
   compress: isProd,
   experimental: {
     optimizePackageImports: [
@@ -198,7 +198,7 @@ const nextConfig: NextConfig = {
     return [
       {
         // 本地请求路径
-        destination: 'http://aitest.yrules.com/v1/:path*',
+        destination: 'http://47.97.196.187/v1/:path*',
         source: '/v1/:path*', // 远程地址
         // destination: 'https://mztapp.fujian.gov.cn:12000/mst_4873/:path*',
         // source: '/api/:path*'

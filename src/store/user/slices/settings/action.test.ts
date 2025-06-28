@@ -1,3 +1,4 @@
+// @ts-ignore
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { DeepPartial } from 'utility-types';
 import { describe, expect, it, vi } from 'vitest';

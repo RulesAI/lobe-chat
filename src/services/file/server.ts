@@ -42,11 +42,6 @@ export class ServerService implements IFileService {
   getFileItem = async (id: string) => {
     return lambdaClient.file.getFileItemById.query({ id });
   };
-
-    runWorkflow = async (id: string) => {
-    return lambdaClient.file.runWorkflow.query({ id });
-  };
-
   checkFileHash: IFileService['checkFileHash'] = async (hash) => {
     return lambdaClient.file.checkFileHash.mutate({ hash });
   };

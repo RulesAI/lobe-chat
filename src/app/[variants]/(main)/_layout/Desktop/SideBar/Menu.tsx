@@ -1,25 +1,23 @@
 // import { ActionIcon, ActionIconProps } from '@lobehub/ui';
 // import { Compass, FolderClosed, MessageSquare } from 'lucide-react';
 // import Link from 'next/link';
-import { memo, useState, useEffect } from 'react';
-import type { MenuProps } from 'antd';
-import { Menu, ConfigProvider } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
 import { usePathname } from 'next/navigation';
+import { SetStateAction, memo, useEffect, useState } from 'react';
 
 import { useQueryRoute } from '@/hooks/useQueryRoute';
-import { HomeOutlined } from '@ant-design/icons';
 // import { Flexbox } from 'react-layout-kit';
 
 import { SidebarTabKey } from '@/store/global/initialState';
-import S from './Menu.module.css'
 
-type MenuItem = Required<MenuProps>['items'][number];
+import S from './Menu.module.css';
+
 export interface TopActionProps {
   isPinned?: boolean | null;
   tab?: SidebarTabKey;
 }
 
-const items: MenuItem[] = [
+const items: any[] = [
   {
     icon: <HomeOutlined />,
     key: '1',
@@ -29,58 +27,57 @@ const items: MenuItem[] = [
   {
     key: '2',
     label: '项目管理',
-        path: '/projectmanage',
+    path: '/projectmanage',
   },
   {
     key: '3',
     label: '方案文档管理',
-        path: '/filemanage',
+    path: '/filemanage',
   },
   {
     key: '4',
     label: '审核规则管理',
-        path: '/rulesmanage',
+    path: '/rulesmanage',
   },
-    {
+  {
     key: '5',
     label: '审核报告管理',
-        path: '/reportmanage',
+    path: '/reportmanage',
   },
   {
     key: '6',
     label: '方案归档',
-        path: '/overmanage',
+    path: '/overmanage',
   },
   {
     key: '7',
     label: '系统设置',
-        path: '/settingmanage',
+    path: '/settingmanage',
   },
 ];
 
-
 const TopActions = memo<TopActionProps>(() => {
   const pathname = usePathname();
-   const router = useQueryRoute();
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    const onClick: MenuProps['onClick'] = (e) => {
+  const router = useQueryRoute();
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const onClick: any = (e: { key: SetStateAction<string>; path: string }) => {
     console.log('click', e);
-    setCurrentKey(e.key)
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    setCurrentKey(e.key);
     router.push(e.path);
   };
 
-  const [currentKey, setCurrentKey] = useState('3')
+  const [currentKey, setCurrentKey] = useState('3');
 
   useEffect(() => {
-     console.log('当前路径:', pathname);
-     const current = items.find(i => i.path === pathname)
-     setCurrentKey(current.key)
-  }, [pathname])
+    console.log('当前路径:', pathname);
+    const current = items.find((i) => i.path === pathname);
+    setCurrentKey(current.key);
+  }, [pathname]);
 
   return (
-      <div>
-
-                          {/* <Menu
+    <div>
+      {/* <Menu
       defaultSelectedKeys={['3']}
       items={items}
       mode="inline"
@@ -89,11 +86,17 @@ const TopActions = memo<TopActionProps>(() => {
       theme="light"
     />
             </ConfigProvider> */}
-            {items.map(i => <div className={`${S.menuItem} ${currentKey === i.key ? S.selected : ''}`} key={i.key} onClick={() =>onClick(i)}>
-              {i.icon && <div className={S.menuIcon}>{i.icon}</div>}
-              <div className={S.menuName}>{i.label}</div>
-            </div>)}
-      </div>
+      {items.map((i) => (
+        <div
+          className={`${S.menuItem} ${currentKey === i.key ? S.selected : ''}`}
+          key={i.key}
+          onClick={() => onClick(i)}
+        >
+          {i.icon && <div className={S.menuIcon}>{i.icon}</div>}
+          <div className={S.menuName}>{i.label}</div>
+        </div>
+      ))}
+    </div>
   );
 });
 

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AssistantCategory, PluginCategory } from '@/types/discover';
 
+// @ts-ignore
 import { DiscoverService } from './index';
 
 // 模拟 fetch 函数

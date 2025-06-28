@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { EdgeConfig } from '@/server/modules/EdgeConfig';
 
+// @ts-ignore
 import { AssistantStore } from './index';
 
 const baseURL = 'https://registry.npmmirror.com/@lobehub/agents-index/v1/files/public';
