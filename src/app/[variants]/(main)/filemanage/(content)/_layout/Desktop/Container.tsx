@@ -195,6 +195,9 @@ const Container = memo<PropsWithChildren>(() => {
       user,
     };
     try {
+      message.success('文档开始审核');
+      setOpen(false);
+      // getList();
       const res = await fetch(`${prefix}/workflows/run`, {
         body: JSON.stringify(postData),
         headers: {
@@ -207,9 +210,6 @@ const Container = memo<PropsWithChildren>(() => {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      message.success('文档开始审核');
-      setOpen(false);
-      getList();
       // const result = await res.json();
       // console.log('Success:', result);
     } catch (err) {
