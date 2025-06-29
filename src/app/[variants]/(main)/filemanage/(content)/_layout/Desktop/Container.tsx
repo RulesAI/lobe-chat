@@ -24,7 +24,8 @@ const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://aitest.y
 const appKeys = {
   add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
   list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
-  run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
+  // run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
+  run: 'app-NmgNnLUkdgX4HuU2nVMEM04v',
 };
 // const prefix = 'http://aitest.yrules.com/v1';
 // const headers = {

@@ -7,10 +7,11 @@ import { createStyles } from 'antd-style';
 import { AuthError } from 'next-auth';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { memo } from 'react';
+import { Suspense, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import BrandWatermark from '@/components/BrandWatermark';
+import Loading from '@/components/Loading/BrandTextLoading';
 import AuthIcons from '@/components/NextAuth/AuthIcons';
 import { DOCUMENTS_REFER_URL, PRIVACY_URL, TERMS_URL } from '@/const/url';
 import { useUserStore } from '@/store/user';
@@ -105,58 +106,65 @@ export default memo(() => {
   ];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentCard}>
-        {/* Card Body */}
-        <Flex gap="large" vertical>
-          {/* Header */}
-          <div className={styles.text}>
-            <Title className={styles.title} level={4}>
-              <div>
-                <LobeChat size={48} />
-              </div>
-              {t('signIn.start.title', { applicationName: 'LobeChat' })}
-            </Title>
-            <Paragraph className={styles.description}>{t('signIn.start.subtitle')}</Paragraph>
-          </div>
-          {/* Content */}
-          <Flex gap="small" vertical>
-            {oAuthSSOProviders ? (
-              oAuthSSOProviders.map((provider) => (
-                <Button
-                  className={styles.button}
-                  icon={AuthIcons(provider, 16)}
-                  key={provider}
-                  onClick={() => handleSignIn(provider)}
-                >
-                  {provider}
-                </Button>
-              ))
-            ) : (
-              <BtnListLoading />
-            )}
+    <Suspense fallback={<Loading />}>
+      <div className={styles.container}>
+        <div className={styles.contentCard}>
+          {/* Card Body */}
+          <Flex gap="large" vertical>
+            {/* Header */}
+            <div className={styles.text}>
+              <Title className={styles.title} level={4}>
+                <div>
+                  <LobeChat size={48} />
+                </div>
+                {t('signIn.start.title', { applicationName: 'LobeChat' })}
+              </Title>
+              <Paragraph className={styles.description}>{t('signIn.start.subtitle')}</Paragraph>
+            </div>
+            {/* Content */}
+            <Flex gap="small" vertical>
+              {oAuthSSOProviders ? (
+                oAuthSSOProviders.map((provider) => (
+                  <Button
+                    className={styles.button}
+                    icon={AuthIcons(provider, 16)}
+                    key={provider}
+                    onClick={() => handleSignIn(provider)}
+                  >
+                    {provider}
+                  </Button>
+                ))
+              ) : (
+                <BtnListLoading />
+              )}
+            </Flex>
           </Flex>
-        </Flex>
+        </div>
+        <div className={styles.footer}>
+          {/* Footer */}
+          <Row>
+            <Col span={12}>
+              <Flex justify="left" style={{ height: '100%' }}>
+                <BrandWatermark />
+              </Flex>
+            </Col>
+            <Col offset={4} span={8}>
+              <Flex justify="right">
+                {footerBtns.map((btn) => (
+                  <Button
+                    key={btn.id}
+                    onClick={() => router.push(btn.href)}
+                    size="small"
+                    type="text"
+                  >
+                    {btn.label}
+                  </Button>
+                ))}
+              </Flex>
+            </Col>
+          </Row>
+        </div>
       </div>
-      <div className={styles.footer}>
-        {/* Footer */}
-        <Row>
-          <Col span={12}>
-            <Flex justify="left" style={{ height: '100%' }}>
-              <BrandWatermark />
-            </Flex>
-          </Col>
-          <Col offset={4} span={8}>
-            <Flex justify="right">
-              {footerBtns.map((btn) => (
-                <Button key={btn.id} onClick={() => router.push(btn.href)} size="small" type="text">
-                  {btn.label}
-                </Button>
-              ))}
-            </Flex>
-          </Col>
-        </Row>
-      </div>
-    </div>
+    </Suspense>
   );
 });

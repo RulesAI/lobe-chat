@@ -3,9 +3,11 @@
 import { Spin, Typography } from 'antd';
 import { createStyles } from 'antd-style';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Center, Flexbox } from 'react-layout-kit';
+
+import Loading from '@/components/Loading/BrandTextLoading';
 
 const { Title, Paragraph } = Typography;
 
@@ -83,15 +85,17 @@ const AuthHandoffPage = () => {
   }, [searchParams]);
 
   return (
-    <Center className={styles.container} gap={12}>
-      {!isError && <Spin size="large" />}
-      <Flexbox align="center" className={styles.content} gap={16}>
-        <Title className={styles.title} level={3}>
-          {status.title}
-        </Title>
-        <Paragraph className={styles.message}>{status.desc}</Paragraph>
-      </Flexbox>
-    </Center>
+    <Suspense fallback={<Loading />}>
+      <Center className={styles.container} gap={12}>
+        {!isError && <Spin size="large" />}
+        <Flexbox align="center" className={styles.content} gap={16}>
+          <Title className={styles.title} level={3}>
+            {status.title}
+          </Title>
+          <Paragraph className={styles.message}>{status.desc}</Paragraph>
+        </Flexbox>
+      </Center>
+    </Suspense>
   );
 };
 

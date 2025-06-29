@@ -119,7 +119,6 @@ const AppTheme = memo<AppThemeProps>(
     useEffect(() => {
       setCookie(LOBE_THEME_NEUTRAL_COLOR, neutralColor);
     }, [neutralColor]);
-    console.log('全局主题色1111', primaryColor, defaultPrimaryColor, themeMode)
     return (
       <ThemeProvider
         appearance={themeMode !== 'auto' ? themeMode : undefined}

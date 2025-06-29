@@ -2,9 +2,10 @@
 
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { memo } from 'react';
+import { Suspense, memo } from 'react';
 
 import ErrorCapture from '@/components/Error';
+import Loading from '@/components/Loading/BrandTextLoading';
 
 enum ErrorEnum {
   AccessDenied = 'AccessDenied',
@@ -36,5 +37,9 @@ export default memo(() => {
     reset: () => signIn(undefined, { callbackUrl: '/' }),
   };
   console.log('[NextAuth] Error:', props.error);
-  return <ErrorCapture {...props} />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <ErrorCapture {...props} />
+    </Suspense>
+  );
 });
