@@ -25,7 +25,7 @@ const appKeys = {
   add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
   list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
   // run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
-  run: 'app-NmgNnLUkdgX4HuU2nVMEM04v',
+  run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
 };
 // const prefix = 'http://aitest.yrules.com/v1';
 // const headers = {
@@ -182,6 +182,7 @@ const Container = memo<PropsWithChildren>(() => {
     const postData = {
       inputs: {
         file: [],
+        file_id: currentUploadObj.id,
         id: currentUploadObj.id,
         name: currentUploadObj.name,
         project_name: '测试项目',
@@ -228,9 +229,12 @@ const Container = memo<PropsWithChildren>(() => {
     // return;
     const postData = {
       inputs: {
+        created_at: '2025-06-29',
         id: currentUploadObj.id,
         name: currentUploadObj.name,
       },
+      // id: currentUploadObj.id,
+      // name: currentUploadObj.name,
       response_mode: 'blocking',
       user,
     };
