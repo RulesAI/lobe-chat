@@ -16,7 +16,7 @@ const Container = memo<PropsWithChildren>(({ children }) => {
         position: 'relative',
       }}
     >
-     123
+      {children}
     </Flexbox>
   );
 });

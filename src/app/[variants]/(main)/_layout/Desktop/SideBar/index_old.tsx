@@ -12,7 +12,7 @@ import { systemStatusSelectors } from '@/store/global/selectors';
 import { featureFlagsSelectors, useServerConfigStore } from '@/store/serverConfig';
 import { electronStylish } from '@/styles/electron';
 
-import Avatar from './Avatar';
+// import Avatar from './Avatar';
 import BottomActions from './BottomActions';
 import PinList from './PinList';
 import TopActions from './TopActions';

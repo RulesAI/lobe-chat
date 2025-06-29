@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import { PropsWithChildren} from 'react'
-import S from './layout.module.css'
+import { PropsWithChildren } from 'react';
+
+// import S from './layout.module.css'
 // import { Button, Table } from 'antd'
 // import { PlusOutlined } from '@ant-design/icons';
 // import type { TableColumnsType, TableProps } from 'antd';
@@ -32,7 +33,7 @@ import { serverFeatureFlags } from '@/config/featureFlags';
 // const selectedRowKeys = []
 
 export default ({ children }: PropsWithChildren) => {
-  console.log('进来filemanage的页面')
+  console.log('进来filemanage的页面');
   const enableKnowledgeBase = serverFeatureFlags().enableKnowledgeBase;
   // const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   // const [loading, setLoading] = useState(false);

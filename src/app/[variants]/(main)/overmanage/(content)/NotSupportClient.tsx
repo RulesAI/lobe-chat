@@ -4,13 +4,14 @@ import { Icon } from '@lobehub/ui';
 import { Typography } from 'antd';
 import { createStyles, useTheme } from 'antd-style';
 import { Database, FileImage, FileText, FileUpIcon, LibraryBig, SearchCheck } from 'lucide-react';
-import Link from 'next/link';
-import { Trans, useTranslation } from 'react-i18next';
+// import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { Center, Flexbox } from 'react-layout-kit';
 
 import FeatureList from '@/components/FeatureList';
-import { LOBE_CHAT_CLOUD } from '@/const/branding';
-import { DATABASE_SELF_HOSTING_URL, OFFICIAL_URL, UTM_SOURCE } from '@/const/url';
+
+// import { LOBE_CHAT_CLOUD } from '@/const/branding';
+// import { DATABASE_SELF_HOSTING_URL, OFFICIAL_URL, UTM_SOURCE } from '@/const/url';
 
 const BLOCK_SIZE = 100;
 const ICON_SIZE = { size: 72, strokeWidth: 1.5 };
@@ -75,7 +76,7 @@ const NotSupportClient = () => {
       avatar: Database,
       desc: t('notSupportGuide.features.allKind.desc'),
       title: t('notSupportGuide.features.allKind.title'),
-            // title: '123',
+      // title: '123',
     },
     {
       avatar: SearchCheck,

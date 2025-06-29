@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Alert, Button, Input, Modal, Select, Table, Tag, Upload, message } from 'antd';
 import type { TableColumnsType, TableProps, UploadProps } from 'antd';
+import dayjs from 'dayjs';
 import { PropsWithChildren, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
@@ -43,9 +44,12 @@ const Container = memo<PropsWithChildren>(() => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState(0);
-  const [currentId, setCurrentId] = useState('');
+  const [currentUploadObj, setCurrentUploadObj] = useState<any>(null);
   const [list, setList] = useState<any[]>([]);
   const [fileList, setFileList] = useState([]);
+  const [current, setCurrent] = useState(null);
+
+  console.log('current', current);
 
   const props: UploadProps = {
     action: prefix + '/files/upload',
@@ -66,8 +70,8 @@ const Container = memo<PropsWithChildren>(() => {
       }
       if (status === 'done') {
         console.log('上传成功，返回数据:', info.file.response);
-        const id = info.file.response.id;
-        setCurrentId(id);
+        const obj = info.file.response;
+        setCurrentUploadObj(obj);
         message.success(`${info.file.name} 文件上传成功.`);
       } else if (status === 'error') {
         message.error(`${info.file.name} 文件上传失败.`);
@@ -79,19 +83,26 @@ const Container = memo<PropsWithChildren>(() => {
   };
 
   const columns: TableColumnsType<DataType> = [
-    { dataIndex: 'name', title: '方案名称' },
-    { dataIndex: 'age', title: '文件上传时间' },
+    { dataIndex: 'file_name', title: '方案名称' },
     {
-      dataIndex: 'address',
-      render: () => {
-        return <Tag color="orange">有警告</Tag>;
+      dataIndex: 'upload_time',
+      render: (value) => {
+        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+      },
+      title: '文件上传时间',
+    },
+    {
+      dataIndex: 'status',
+      render: (value) => {
+        return <Tag color="orange">{value}</Tag>;
       },
       title: '文档审核状态',
     },
     {
       dataIndex: 'address2',
-      render: () => {
-        return <EyeOutlined onClick={() => setWidth(400)} />;
+      render: (value, record) => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        return <EyeOutlined onClick={() => openLeft(record)} />;
       },
       title: '审核报告',
     },
@@ -111,22 +122,24 @@ const Container = memo<PropsWithChildren>(() => {
 
   const handleCancel = () => {
     setFileList([]);
-    setCurrentId('');
+    setCurrentUploadObj(null);
     setOpen(false);
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const runWork = async () => {
-    if (!currentId) return;
+    if (!currentUploadObj) return;
     // const fileId = '05d00a0e-4324-49f9-8d7d-8616b8016eb3';
     console.log('执行工作流');
     const postData = {
       inputs: {
         file: [],
+        id: currentUploadObj.id,
+        name: currentUploadObj.name,
         project_name: '测试项目',
         transfer_method: 'local_file',
         type: 'document',
-        upload_file_id: currentId,
+        upload_file_id: currentUploadObj.id,
       },
       project_name: '测试项目',
       response_mode: 'blocking',
@@ -154,6 +167,14 @@ const Container = memo<PropsWithChildren>(() => {
     }
   };
   const getList = async () => {
+    // const list = Array.from<DataType>({ length: 4 }).map<DataType>((_, i) => ({
+    //   address: i,
+    //   age: '2025-06-24',
+    //   key: i,
+    //   name: `大数据中心项目可行性方案 ${i}`,
+    // }));
+    // setList(list);
+    // return;
     const postData = {
       inputs: {
         query: 'select * from mysql1.file',
@@ -183,6 +204,11 @@ const Container = memo<PropsWithChildren>(() => {
     }
   };
 
+  const openLeft = (record: any) => {
+    setCurrent(record);
+    setWidth(400);
+  };
+
   useEffect(() => {
     getList();
   }, []);
@@ -205,8 +231,8 @@ const Container = memo<PropsWithChildren>(() => {
             </div>
             <div className={S.btns}>
               <div className={S.left}>
-                <Button className={S.primaryColor} type="primary">
-                  开始审核
+                <Button className={S.primaryColor} onClick={() => getList()} type="primary">
+                  刷新
                 </Button>
                 <Button type="text">批量导出</Button>
               </div>
@@ -387,7 +413,7 @@ const Container = memo<PropsWithChildren>(() => {
             <Button onClick={handleCancel}>取消</Button>
             <Button
               className={S.primaryColor}
-              disabled={!currentId}
+              disabled={!currentUploadObj}
               onClick={() => runWork()}
               style={{ marginLeft: 16 }}
               type="primary"

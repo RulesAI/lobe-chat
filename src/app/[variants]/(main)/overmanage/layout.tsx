@@ -8,5 +8,5 @@ export default ({ children }: PropsWithChildren) => {
 
   if (!enableKnowledgeBase) return notFound();
 
-  return <div>方案归档</div>;
+  return children;
 };

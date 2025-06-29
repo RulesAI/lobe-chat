@@ -14,5 +14,5 @@ export default (props: LayoutProps) => {
   // if there is client db mode , tell user to switch to server mode
   if (!isServerMode) return <NotSupportClient />;
 
-  return <div>132</div>;
+  return <Layout {...props} />;
 };
