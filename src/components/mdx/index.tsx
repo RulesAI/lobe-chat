@@ -1,3 +1,5 @@
+'use client';
+
 import { Typography as Typo, TypographyProps } from '@lobehub/ui';
 import { mdxComponents } from '@lobehub/ui/mdx';
 import { MDXRemote, type MDXRemoteProps } from 'next-mdx-remote/rsc';

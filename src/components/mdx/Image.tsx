@@ -5,6 +5,8 @@ import Img from 'next/image';
 import { getPlaiceholder } from 'plaiceholder';
 import { FC } from 'react';
 
+// 'use server';
+
 const DEFAULT_WIDTH = 800;
 
 const fetchImage = async (url: string) => {

@@ -33,7 +33,6 @@ import { serverFeatureFlags } from '@/config/featureFlags';
 // const selectedRowKeys = []
 
 export default ({ children }: PropsWithChildren) => {
-  console.log('进来filemanage的页面');
   const enableKnowledgeBase = serverFeatureFlags().enableKnowledgeBase;
   // const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   // const [loading, setLoading] = useState(false);

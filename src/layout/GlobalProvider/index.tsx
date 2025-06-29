@@ -33,7 +33,6 @@ const GlobalLayout = async ({
   appearance,
   isMobile,
 }: GlobalLayoutProps) => {
-  console.log('primaryColor002', primaryColor)
   const antdLocale = await getAntdLocale(userLocale);
 
   // get default feature flags to use with ssr

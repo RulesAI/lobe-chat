@@ -7,9 +7,11 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Alert, Button, Input, Modal, Select, Table, Tag, Upload, message } from 'antd';
+import { Alert, Button, Empty, Input, Modal, Select, Table, Tag, Upload, message } from 'antd';
 import type { TableColumnsType, TableProps, UploadProps } from 'antd';
 import dayjs from 'dayjs';
+import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 import { PropsWithChildren, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
@@ -19,10 +21,15 @@ import S from './Container.module.css';
 const { Dragger } = Upload;
 
 const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://aitest.yrules.com/v1';
-// const prefix = 'http://aitest.yrules.com/v1';
-const headers = {
-  Authorization: 'Bearer app-t5X8Caxj9Zw20CW4fuPEPG4f',
+const appKeys = {
+  add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
+  list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
+  run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
 };
+// const prefix = 'http://aitest.yrules.com/v1';
+// const headers = {
+//   Authorization: 'Bearer app-t5X8Caxj9Zw20CW4fuPEPG4f',
+// };
 const user = 'lixiumin';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
@@ -44,11 +51,13 @@ const Container = memo<PropsWithChildren>(() => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState(0);
+  const [reportWidth, setReportWidth] = useState(0);
   const [currentUploadObj, setCurrentUploadObj] = useState<any>(null);
   const [list, setList] = useState<any[]>([]);
   const [fileList, setFileList] = useState([]);
-  const [current, setCurrent] = useState(null);
-
+  const [current, setCurrent] = useState<any>(null);
+  const [detail, setDetail] = useState<any>({});
+  const [md, setMd] = useState<any>('');
   console.log('current', current);
 
   const props: UploadProps = {
@@ -57,7 +66,9 @@ const Container = memo<PropsWithChildren>(() => {
       user,
     },
     fileList,
-    headers,
+    headers: {
+      Authorization: `Bearer ${appKeys.run}`,
+    },
     maxCount: 1,
     multiple: false,
     name: 'file',
@@ -125,7 +136,43 @@ const Container = memo<PropsWithChildren>(() => {
     setCurrentUploadObj(null);
     setOpen(false);
   };
-
+  const getList = async () => {
+    // const list = Array.from<DataType>({ length: 4 }).map<DataType>((_, i) => ({
+    //   address: i,
+    //   age: '2025-06-24',
+    //   key: i,
+    //   name: `大数据中心项目可行性方案 ${i}`,
+    // }));
+    // setList(list);
+    // return;
+    const postData = {
+      inputs: {
+        query: 'select * from mysql1.file',
+      },
+      response_mode: 'blocking',
+      user,
+    };
+    try {
+      const res = await fetch(`${prefix}/workflows/run`, {
+        body: JSON.stringify(postData),
+        headers: {
+          'Authorization': `Bearer ${appKeys.list}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+      });
+      console.log('执行结果', res);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const result = await res.json();
+      console.log('获取列表', result);
+      const listData = result?.data?.outputs?.text?.[0].result;
+      setList(listData);
+    } catch (err) {
+      console.log('Error', err);
+    }
+  };
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const runWork = async () => {
     if (!currentUploadObj) return;
@@ -149,7 +196,7 @@ const Container = memo<PropsWithChildren>(() => {
       const res = await fetch(`${prefix}/workflows/run`, {
         body: JSON.stringify(postData),
         headers: {
-          'Authorization': headers.Authorization,
+          'Authorization': `Bearer ${appKeys.run}`,
           'Content-Type': 'application/json',
         },
         method: 'POST',
@@ -160,13 +207,16 @@ const Container = memo<PropsWithChildren>(() => {
       }
       message.success('文档开始审核');
       setOpen(false);
+      getList();
       // const result = await res.json();
       // console.log('Success:', result);
     } catch (err) {
       console.log('Error', err);
     }
   };
-  const getList = async () => {
+
+  const add = async () => {
+    if (!currentUploadObj) return;
     // const list = Array.from<DataType>({ length: 4 }).map<DataType>((_, i) => ({
     //   address: i,
     //   age: '2025-06-24',
@@ -177,7 +227,8 @@ const Container = memo<PropsWithChildren>(() => {
     // return;
     const postData = {
       inputs: {
-        query: 'select * from mysql1.file',
+        id: currentUploadObj.id,
+        name: currentUploadObj.name,
       },
       response_mode: 'blocking',
       user,
@@ -186,26 +237,74 @@ const Container = memo<PropsWithChildren>(() => {
       const res = await fetch(`${prefix}/workflows/run`, {
         body: JSON.stringify(postData),
         headers: {
-          'Authorization': 'Bearer app-bpadaLHXns2gkndULnYQRQc1',
+          'Authorization': `Bearer ${appKeys.add}`,
           'Content-Type': 'application/json',
         },
         method: 'POST',
       });
-      console.log('执行结果', res);
+      console.log('添加数据执行结果', res);
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      const result = await res.json();
-      console.log('获取列表', result);
-      const listData = result?.data?.outputs?.text?.[0].result;
-      setList(listData);
+      // 去审核
+      runWork();
     } catch (err) {
       console.log('Error', err);
     }
   };
 
-  const openLeft = (record: any) => {
+  const openLeft = async (record: any) => {
     setCurrent(record);
+    console.log('record', record);
+    if (record.review_summary) {
+      const detailData = JSON.parse(record.review_summary);
+      console.log('detailData', detailData);
+      setDetail(detailData);
+    } else {
+      setDetail({});
+    }
+    if (record.review_report) {
+      //       const str = `![mahua](mahua-logo.jpg)
+      // ##MaHua是什么?
+      // 一个在线编辑markdown文档的编辑器
+
+      // ##MaHua有哪些功能？
+      // * 方便的导入导出功能
+      //     *  直接把一个markdown的文本文件拖放到当前这个页面就可以了
+      //     *  导出为一个html格式的文件，样式一点也不会丢失
+      // * 所有选项自动记忆
+      // ##有问题反馈
+      // 在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流
+      // * 邮件(dev.hubo#gmail.com, 把#换成@)
+      // * 微信:jserme
+      // * weibo: [@草依山](http://weibo.com/ihubo)
+      // * twitter: [@ihubo](http://twitter.com/ihubo)
+      // ##捐助开发者
+      // ##感激
+      // 感谢以下的项目,排名不分先后
+      // * [ace](http://ace.ajax.org/)
+      // * [jquery](http://jquery.com)
+      // ##关于作者
+      // `;
+      //       const mdxSource = await serialize(str);
+      //       console.log('mdxSource', mdxSource);
+      //       const str = `## Table of Contents
+
+      // - [Fork the Repository](#fork-the-repository)
+      // - [Clone Your Fork](#clone-your-fork)
+      // - [Create a New Branch](#create-a-new-branch)
+      // - [Code Like a Wizard](#code-like-a-wizard)
+      // - [Committing Your Work](#committing-your-work)
+      // - [Sync with Upstream](#sync-with-upstream)
+      // - [Open a Pull Request](#open-a-pull-request)
+      // - [Review and Collaboration](#review-and-collaboration)
+      // - [Celebrate 🎉](#celebrate-)`;
+      const str = record.review_report;
+      const mdxSource = await serialize(str);
+      setMd(mdxSource);
+    } else {
+      setMd('');
+    }
     setWidth(400);
   };
 
@@ -265,7 +364,12 @@ const Container = memo<PropsWithChildren>(() => {
                 <Button type="text">重置</Button>
                 <Button type="text">删除</Button>
               </div>
-              <Table<DataType> columns={columns} dataSource={list} rowSelection={rowSelection} />
+              <Table<DataType>
+                columns={columns}
+                dataSource={list}
+                rowKey={(record: any) => record.id}
+                rowSelection={rowSelection}
+              />
             </div>
           </div>
         </div>
@@ -280,15 +384,26 @@ const Container = memo<PropsWithChildren>(() => {
             <Button
               className={S.drawerClose}
               icon={<CloseOutlined />}
-              onClick={() => setWidth(0)}
+              onClick={() => {
+                setWidth(0);
+                setReportWidth(0);
+              }}
               shape="circle"
             />
             {/* <CloseCircleOutlined className={S.drawerClose} onClick={() => setWidth(0)} /> */}
           </div>
           <div className={S.drawerContent}>
-            <div className={S.baseInfo}>
-              <div className={S.infoTitle}>基本信息</div>
-              <div className={S.infoItem}>
+            {detail['基本信息'] ? (
+              <div className={S.baseInfo}>
+                <div className={S.infoTitle}>基本信息</div>
+
+                {Object.keys(detail['基本信息']).map((key, index) => (
+                  <div className={S.infoItem} key={index}>
+                    <div className={S.label}>{key}</div>
+                    <div className={S.value}>{detail['基本信息'][key]}</div>
+                  </div>
+                ))}
+                {/* <div className={S.infoItem}>
                 <div className={S.label}>数据集名称：</div>
                 <div className={S.value}>xxx.docx</div>
               </div>
@@ -307,51 +422,83 @@ const Container = memo<PropsWithChildren>(() => {
               <div className={S.infoItem}>
                 <div className={S.label}>使用空间</div>
                 <div className={S.value}>1%</div>
+              </div> */}
               </div>
-            </div>
-            <div className={S.title}>审核概览</div>
-            <div className={S.overview}>
-              <div className={S.percent}>92%</div>
-              <div>整体通过率</div>
-            </div>
-            <div className={S.alert}>
-              <Alert
-                action={
-                  <Button size="small" type="text">
-                    0
-                  </Button>
-                }
-                className={S.dangerColor}
-                message="严重问题"
-                type="error"
-              />
-            </div>
-            <div className={S.alert}>
-              <Alert
-                action={
-                  <Button size="small" type="text">
-                    2
-                  </Button>
-                }
-                className={S.warningColor}
-                message="警告问题"
-                type="warning"
-              />
-            </div>
-            <div className={S.alert}>
-              <Alert
-                action={
-                  <Button size="small" type="text">
-                    3
-                  </Button>
-                }
-                className={S.infoColor}
-                message="建议优化"
-                type="info"
-              />
-            </div>
-            <div className={S.title}>问题详情</div>
-            <div className={S.alert}>
+            ) : (
+              <Empty style={{ marginTop: 100 }} />
+            )}
+            {detail['审核概览'] && (
+              <>
+                <div className={S.title}>审核概览</div>
+                <div className={S.overview}>
+                  <div className={S.percent}>{detail['审核概览']['整体通过率'] || '--'}</div>
+                  <div>整体通过率</div>
+                </div>
+                <div className={S.alert}>
+                  <Alert
+                    action={
+                      <Button size="small" type="text">
+                        {detail['问题统计']['严重问题'] || 0}
+                      </Button>
+                    }
+                    className={S.dangerColor}
+                    message="严重问题"
+                    type="error"
+                  />
+                </div>
+                <div className={S.alert}>
+                  <Alert
+                    action={
+                      <Button size="small" type="text">
+                        {detail['问题统计']['警告问题'] || 0}
+                      </Button>
+                    }
+                    className={S.warningColor}
+                    message="警告问题"
+                    type="warning"
+                  />
+                </div>
+                <div className={S.alert}>
+                  <Alert
+                    action={
+                      <Button size="small" type="text">
+                        {detail['问题统计']['建议优化'] || 0}
+                      </Button>
+                    }
+                    className={S.infoColor}
+                    message="建议优化"
+                    type="info"
+                  />
+                </div>
+              </>
+            )}
+            {detail['问题详情'] && (
+              <>
+                <div className={S.title}>问题详情</div>
+                {detail['问题详情'].map((i: any, index: any) => (
+                  <div className={S.alert} key={index}>
+                    <Alert
+                      className={S.dangerColor}
+                      message={
+                        <div className={S.alertContent}>
+                          {/* <div className={S.alertItem1}>不予立项核验</div> */}
+                          <div className={S.alertItem1}>{i['描述']}</div>
+                          <div className={S.alertItem1}>位置：{i['位置']}</div>
+                        </div>
+                      }
+                      type={
+                        i['类型'] === '严重问题'
+                          ? 'error'
+                          : i['类型'] === '警告问题'
+                            ? 'warning'
+                            : 'info'
+                      }
+                    />
+                  </div>
+                ))}
+              </>
+            )}
+            {/* <div className={S.alert}>
               <Alert
                 className={S.dangerColor}
                 message={
@@ -389,20 +536,53 @@ const Container = memo<PropsWithChildren>(() => {
                 }
                 type="info"
               />
-            </div>
-            <div className={S.bigBtn}>
-              <Button block className={S.primaryColor} type="primary">
-                查看审核报告
-              </Button>
-            </div>
-            <div className={S.bigBtn}>
-              <Button block>新增版本</Button>
-            </div>
-            <div className={S.bigBtn}>
-              <Button block danger type="primary">
-                删除数据集
-              </Button>
-            </div>
+            </div> */}
+            {detail['基本信息'] && (
+              <>
+                <div className={S.bigBtn}>
+                  <Button
+                    block
+                    className={S.primaryColor}
+                    onClick={() => setReportWidth(400)}
+                    type="primary"
+                  >
+                    查看审核报告
+                  </Button>
+                </div>
+                <div className={S.bigBtn}>
+                  <Button block>新增版本</Button>
+                </div>
+                <div className={S.bigBtn}>
+                  <Button block danger type="primary">
+                    删除数据集
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div
+          className={S.drawer}
+          style={{
+            width: reportWidth,
+          }}
+        >
+          <div className={S.drawerHeader}>
+            <div>审核报告</div>
+            <Button
+              className={S.drawerClose}
+              icon={<CloseOutlined />}
+              onClick={() => setReportWidth(0)}
+              shape="circle"
+            />
+            {/* <CloseCircleOutlined className={S.drawerClose} onClick={() => setWidth(0)} /> */}
+          </div>
+          <div className={S.drawerContent}>
+            {current && current.review_report && md ? (
+              <MDXRemote {...md} />
+            ) : (
+              <Empty style={{ marginTop: 100 }} />
+            )}
           </div>
         </div>
       </div>
@@ -414,7 +594,7 @@ const Container = memo<PropsWithChildren>(() => {
             <Button
               className={S.primaryColor}
               disabled={!currentUploadObj}
-              onClick={() => runWork()}
+              onClick={() => add()}
               style={{ marginLeft: 16 }}
               type="primary"
             >
