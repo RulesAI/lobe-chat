@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import StructuredData from '@/components/StructuredData';
 import { Locales } from '@/locales/resources';
 import { ldModule } from '@/server/ld';
@@ -52,10 +54,10 @@ const Page = async (props: DiscoverPageProps) => {
   });
 
   return (
-    <>
+    <Suspense>
       <StructuredData ld={ld} />
       <List items={items} mobile={isMobile} />
-    </>
+    </Suspense>
   );
 };
 

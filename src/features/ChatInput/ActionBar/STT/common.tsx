@@ -51,7 +51,6 @@ const CommonSTT = memo<{
     return (
       <Dropdown
         menu={{
-          activeKey: 'time',
           items: [
             {
               key: 'title',
@@ -71,6 +70,7 @@ const CommonSTT = memo<{
               ),
             },
           ],
+          selectedKeys: ['time'],
         }}
         onOpenChange={handleDropdownVisibleChange}
         open={dropdownOpen || !!error || isRecording || isLoading}

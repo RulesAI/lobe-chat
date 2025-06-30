@@ -2,7 +2,7 @@
 
 // import { SideNav } from '@lobehub/ui';
 // import { useTheme } from 'antd-style';
-import { parseAsBoolean, useQueryState } from 'nuqs';
+// import { parseAsBoolean, useQueryState } from 'nuqs';
 import { memo } from 'react';
 
 // import { isDesktop } from '@/const/version';
@@ -22,24 +22,24 @@ import TopActions from './TopActions';
 import S from './index.module.css';
 
 const Top = () => {
-  const [isPinned] = useQueryState('pinned', parseAsBoolean);
+  // const [isPinned] = useQueryState('pinned', parseAsBoolean);
   const sidebarKey = useActiveTabKey();
 
-  return <TopActions isPinned={isPinned} tab={sidebarKey} />;
+  return <TopActions tab={sidebarKey} />;
 };
 
 const Mid = () => {
-  const [isPinned] = useQueryState('pinned', parseAsBoolean);
+  // const [isPinned] = useQueryState('pinned', parseAsBoolean);
   const sidebarKey = useActiveTabKey();
 
-  return <MenuCom isPinned={isPinned} tab={sidebarKey} />;
+  return <MenuCom tab={sidebarKey} />;
 };
 
 const Bottom = () => {
-  const [isPinned] = useQueryState('pinned', parseAsBoolean);
+  // const [isPinned] = useQueryState('pinned', parseAsBoolean);
   const sidebarKey = useActiveTabKey();
 
-  return <BottomActions isPinned={isPinned} tab={sidebarKey} />;
+  return <BottomActions tab={sidebarKey} />;
 };
 
 const Nav = memo(() => {

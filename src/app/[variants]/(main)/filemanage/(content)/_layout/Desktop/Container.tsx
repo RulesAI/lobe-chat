@@ -15,12 +15,13 @@ import { serialize } from 'next-mdx-remote/serialize';
 import { PropsWithChildren, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
-import Header from '../../../../components/Header';
+import Header from '@/components/Header';
+
 import S from './Container.module.css';
 
 const { Dragger } = Upload;
 
-const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://aitest.yrules.com/v1';
+const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://47.97.196.187/v1';
 const appKeys = {
   add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
   list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表

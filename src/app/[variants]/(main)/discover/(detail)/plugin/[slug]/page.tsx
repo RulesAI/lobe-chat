@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import urlJoin from 'url-join';
 
 import StructuredData from '@/components/StructuredData';
@@ -90,7 +91,7 @@ const Page = async (props: DiscoverPageProps) => {
   });
 
   return (
-    <>
+    <Suspense>
       <StructuredData ld={ld} />
       <DetailLayout
         actions={<Actions data={data} identifier={identifier} />}
@@ -104,7 +105,7 @@ const Page = async (props: DiscoverPageProps) => {
         <ParameterList data={data} />
         <Schema>{JSON.stringify(data.manifest.api, null, 2)}</Schema>
       </DetailLayout>
-    </>
+    </Suspense>
   );
 };
 

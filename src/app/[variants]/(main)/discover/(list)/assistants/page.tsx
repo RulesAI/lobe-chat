@@ -62,3 +62,5 @@ const Page = async (props: DiscoverPageProps) => {
 Page.DisplayName = 'DiscoverAssistants';
 
 export default Page;
+
+export const dynamic = 'force-dynamic';

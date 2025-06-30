@@ -15,3 +15,5 @@ const StorageEstimate = () => {
 };
 
 export default StorageEstimate;
+
+export const dynamic = 'force-dynamic';

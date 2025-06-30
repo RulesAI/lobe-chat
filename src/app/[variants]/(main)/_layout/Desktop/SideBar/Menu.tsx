@@ -13,7 +13,6 @@ import { SidebarTabKey } from '@/store/global/initialState';
 import S from './Menu.module.css';
 
 export interface TopActionProps {
-  isPinned?: boolean | null;
   tab?: SidebarTabKey;
 }
 
