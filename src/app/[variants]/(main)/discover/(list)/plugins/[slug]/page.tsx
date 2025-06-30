@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import urlJoin from 'url-join';
 
 import StructuredData from '@/components/StructuredData';
@@ -56,10 +57,10 @@ const Page = async (props: DiscoverPageProps<PluginCategory>) => {
   });
 
   return (
-    <>
+    <Suspense>
       <StructuredData ld={ld} />
       <List category={category} items={items} mobile={isMobile} />
-    </>
+    </Suspense>
   );
 };
 

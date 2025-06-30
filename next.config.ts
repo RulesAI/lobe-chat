@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
   ...(isStandaloneMode ? standaloneConfig : {}),
   basePath,
   compress: isProd,
+  // 禁用未生成静态页面的动态路由
+  dynamicParams: false,
   experimental: {
     optimizePackageImports: [
       'emoji-mart',

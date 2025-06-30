@@ -90,6 +90,8 @@ RUN \
     # Install the dependencies
     && pnpm i
 
+RUN rm -rf /app/packages/file-loaders/node_modules/pdfjs-dist \
+&& mkdir -p /app/packages/file-loaders/node_modules
 COPY . .
 
 # run build standalone for docker version
