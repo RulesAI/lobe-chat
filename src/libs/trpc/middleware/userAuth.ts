@@ -7,7 +7,8 @@ import { isDesktop } from '@/const/version';
 import { trpc } from '../lambda/init';
 
 export const userAuth = trpc.middleware(async (opts) => {
-  console.log('middleware001', userAuth)
+  console.log('middleware001', userAuth);
+  console.log('isDesktop', isDesktop);
   const { ctx } = opts;
 
   // 桌面端模式下，跳过默认鉴权逻辑

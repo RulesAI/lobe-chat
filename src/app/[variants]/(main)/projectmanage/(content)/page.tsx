@@ -11,5 +11,3 @@ export default () => {
   const [category] = useFileCategory();
   return <FileManager category={category} title={t(`tab.${category as FilesTabs}`)} />;
 };
-
-export const dynamic = 'force-dynamic';

@@ -1,23 +1,22 @@
 'use client';
 
-import { useTheme } from 'antd-style';
 import { PropsWithChildren, memo } from 'react';
-import { Flexbox } from 'react-layout-kit';
 
-const Container = memo<PropsWithChildren>(({ children }) => {
-  const theme = useTheme();
+import Empty from '@/components/Empty';
+import Header from '@/components/Header';
 
+import S from './Container.module.css';
+
+const Container = memo<PropsWithChildren>(() => {
   return (
-    <Flexbox
-      flex={1}
-      style={{
-        background: theme.colorBgContainerSecondary,
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {children}
-    </Flexbox>
+    <div className={S.content}>
+      <div className={S.leftContent}>
+        <Header />
+        <div className={S.mainContent} style={{ marginTop: 100 }}>
+          <Empty />
+        </div>
+      </div>
+    </div>
   );
 });
 

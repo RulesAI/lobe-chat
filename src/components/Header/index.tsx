@@ -2,7 +2,7 @@ import { BellOutlined, SettingOutlined } from '@ant-design/icons';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import S from './header.module.css';
+import S from './index.module.css';
 
 const pathnameMap = {
   '/filemanage': '方案文档管理',

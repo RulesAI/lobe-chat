@@ -1,7 +1,15 @@
 // import { ActionIcon, ActionIconProps } from '@lobehub/ui';
 // import { Compass, FolderClosed, MessageSquare } from 'lucide-react';
 // import Link from 'next/link';
-import { HomeOutlined } from '@ant-design/icons';
+import {
+  DeploymentUnitOutlined,
+  FileDoneOutlined,
+  FolderOutlined,
+  HomeOutlined,
+  ProfileOutlined,
+  ProjectOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { usePathname } from 'next/navigation';
 import { SetStateAction, memo, useEffect, useState } from 'react';
 
@@ -24,31 +32,37 @@ const items: any[] = [
     path: '/home',
   },
   {
+    icon: <ProjectOutlined />,
     key: '2',
     label: '项目管理',
     path: '/projectmanage',
   },
   {
+    icon: <ProfileOutlined />,
     key: '3',
     label: '方案文档管理',
     path: '/filemanage',
   },
   {
+    icon: <DeploymentUnitOutlined />,
     key: '4',
     label: '审核规则管理',
     path: '/rulesmanage',
   },
   {
+    icon: <FileDoneOutlined />,
     key: '5',
     label: '审核报告管理',
     path: '/reportmanage',
   },
   {
+    icon: <FolderOutlined />,
     key: '6',
     label: '方案归档',
     path: '/overmanage',
   },
   {
+    icon: <SettingOutlined />,
     key: '7',
     label: '系统设置',
     path: '/settingmanage',
