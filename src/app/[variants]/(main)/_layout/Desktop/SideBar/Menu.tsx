@@ -71,7 +71,9 @@ const TopActions = memo<TopActionProps>(() => {
   useEffect(() => {
     console.log('当前路径:', pathname);
     const current = items.find((i) => i.path === pathname);
-    setCurrentKey(current.key);
+    if (current) {
+      setCurrentKey(current.key);
+    }
   }, [pathname]);
 
   return (

@@ -179,7 +179,7 @@ const nextConfig: NextConfig = {
       source: '/settings',
     },
     {
-      destination: '/chat',
+      destination: '/filemanage',
       permanent: true,
       source: '/welcome',
     },

@@ -19,16 +19,22 @@ const Redirect = memo<RedirectProps>(({ setActiveStage }) => {
 
   const isPgliteNotEnabled = useGlobalStore(systemStatusSelectors.isPgliteNotEnabled);
 
-  const navToChat = () => {
+  // const navToChat = () => {
+  //   setActiveStage(AppLoadingStage.GoToChat);
+  //   router.replace('/chat');
+  // };
+
+  const navToFilemanage = () => {
     setActiveStage(AppLoadingStage.GoToChat);
-    router.replace('/chat');
+    router.replace('/filemanage');
   };
 
   useEffect(() => {
     // if pglite is not enabled, redirect to chat
     if (isPgliteNotEnabled) {
       console.log('去聊天页面001');
-      navToChat();
+      // navToChat();
+      navToFilemanage();
       return;
     }
 
@@ -39,7 +45,7 @@ const Redirect = memo<RedirectProps>(({ setActiveStage }) => {
     }
     console.log('去聊天页面002');
     // finally check the conversation status
-    navToChat();
+    navToFilemanage();
   }, [isUserStateInit, isPgliteNotEnabled]);
 
   return null;
