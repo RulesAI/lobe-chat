@@ -262,17 +262,12 @@ const Container = memo<PropsWithChildren>(() => {
               </div>
               <div className={S.btns}>
                 <div className={S.left}>
-                  <Button className={S.primaryColor} onClick={() => getList()} type="primary">
+                  <Button onClick={() => getList()} type="primary">
                     刷新
                   </Button>
                   <Button type="text">批量导出</Button>
                 </div>
-                <Button
-                  className={S.primaryColor}
-                  icon={<PlusOutlined />}
-                  onClick={() => setOpen(true)}
-                  type="primary"
-                >
+                <Button icon={<PlusOutlined />} onClick={() => setOpen(true)} type="primary">
                   上传方案文档
                 </Button>
               </div>
@@ -348,7 +343,6 @@ const Container = memo<PropsWithChildren>(() => {
                           {detail['问题统计']['严重问题'] || 0}
                         </Button>
                       }
-                      className={S.dangerColor}
                       message="严重问题"
                       type="error"
                     />
@@ -360,7 +354,6 @@ const Container = memo<PropsWithChildren>(() => {
                           {detail['问题统计']['警告问题'] || 0}
                         </Button>
                       }
-                      className={S.warningColor}
                       message="警告问题"
                       type="warning"
                     />
@@ -372,7 +365,6 @@ const Container = memo<PropsWithChildren>(() => {
                           {detail['问题统计']['建议优化'] || 0}
                         </Button>
                       }
-                      className={S.infoColor}
                       message="建议优化"
                       type="info"
                     />
@@ -385,7 +377,6 @@ const Container = memo<PropsWithChildren>(() => {
                   {detail['问题详情'].map((i: any, index: any) => (
                     <div className={S.alert} key={index}>
                       <Alert
-                        className={S.dangerColor}
                         message={
                           <div className={S.alertContent}>
                             {/* <div className={S.alertItem1}>不予立项核验</div> */}
@@ -410,7 +401,6 @@ const Container = memo<PropsWithChildren>(() => {
                   <div className={S.bigBtn}>
                     <Button
                       block
-                      className={S.primaryColor}
                       onClick={() => {
                         setLeftVisible(false);
                         setDetailVisible(false);
