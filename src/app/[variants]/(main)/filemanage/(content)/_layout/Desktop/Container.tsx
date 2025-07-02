@@ -17,6 +17,7 @@ import Header from '@/components/Header';
 import { parseMarkdown } from '@/utils/parseMarkdown';
 
 import S from './Container.module.css';
+import mdxStyle from './mdx.module.css';
 
 const { Dragger } = Upload;
 
@@ -216,8 +217,8 @@ const Container = memo<PropsWithChildren>(() => {
         //   parseFrontmatter: true,
         // });
         const mdxDom = await parseMarkdown(str);
-        // console.log('mdxStr', mdxStr);
-        // const mdxSource = await serialize(mdxStr, {
+        // // console.log('mdxStr', mdxStr);
+        // const mdxSource = await serialize(mdxDom, {
         //   mdxOptions: {
         //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
         //   },
@@ -470,10 +471,10 @@ const Container = memo<PropsWithChildren>(() => {
             </div>
             <div className={S.drawerContent}>
               {current && current.review_report && md ? (
-                // <MDXRemote {...md} />
-                <div dangerouslySetInnerHTML={{ __html: md }} />
+                <div className={mdxStyle['markdown-body']}>
+                  <div dangerouslySetInnerHTML={{ __html: md }} />
+                </div>
               ) : (
-                // <div dangerouslySetInnerHTML={{ __html: md }} />
                 <Empty style={{ marginTop: 100 }} />
               )}
             </div>
