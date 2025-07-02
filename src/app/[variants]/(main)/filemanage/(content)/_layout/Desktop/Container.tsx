@@ -26,7 +26,8 @@ const appKeys = {
   add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
   list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
   // run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
-  run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
+  // run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
+  run: 'app-b59h1ONl0eKIWxAC944w7EUM',
 };
 const user = 'lixiumin';
 
