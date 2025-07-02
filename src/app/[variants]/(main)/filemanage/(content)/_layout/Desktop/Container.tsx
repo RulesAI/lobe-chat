@@ -10,12 +10,11 @@ import {
 import { Alert, Button, Empty, Input, Modal, Select, Table, Tag, Upload, message } from 'antd';
 import type { TableColumnsType, TableProps, UploadProps } from 'antd';
 import dayjs from 'dayjs';
-import { MDXRemote } from 'next-mdx-remote';
-import { serialize } from 'next-mdx-remote/serialize';
 import { PropsWithChildren, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
 import Header from '@/components/Header';
+import { parseMarkdown } from '@/utils/parseMarkdown';
 
 import S from './Container.module.css';
 
@@ -26,17 +25,18 @@ const appKeys = {
   add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
   list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
   // run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
-  run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
+  // run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
+  run: 'app-b59h1ONl0eKIWxAC944w7EUM',
 };
 const user = 'lixiumin';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
 interface DataType {
-  address: any;
-  age: any;
-  key: any;
-  name: any;
+  action: any;
+  file_name: any;
+  status: any;
+  upload_time: any;
 }
 
 const Container = memo<PropsWithChildren>(() => {
@@ -53,6 +53,10 @@ const Container = memo<PropsWithChildren>(() => {
   const [current, setCurrent] = useState<any>(null);
   const [detail, setDetail] = useState<any>({});
   const [md, setMd] = useState<any>('');
+  const [pagination, setPagination] = useState<any>({
+    showTotal: (total: any) => `共${total}条`,
+    total: 0,
+  });
 
   const props: UploadProps = {
     action: prefix + '/files/upload',
@@ -115,6 +119,10 @@ const Container = memo<PropsWithChildren>(() => {
       const result = await res.json();
       const listData = result?.data?.outputs?.text?.[0].result;
       setList(listData);
+      setPagination({
+        ...pagination,
+        total: listData.length,
+      });
     } catch (err) {
       console.log('Error', err);
     }
@@ -139,6 +147,7 @@ const Container = memo<PropsWithChildren>(() => {
     try {
       message.success('文档开始审核');
       setOpen(false);
+      getList();
       const res = await fetch(`${prefix}/workflows/run`, {
         body: JSON.stringify(postData),
         headers: {
@@ -197,8 +206,28 @@ const Container = memo<PropsWithChildren>(() => {
     }
     if (record.review_report) {
       const str = record.review_report;
-      const mdxSource = await serialize(str);
-      setMd(mdxSource);
+      console.log('str', str);
+      try {
+        // const mdStr = await convertMarkdownToMdast(str);
+        // const mdxSource = await serialize(str, {
+        //   mdxOptions: {
+        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
+        //   },
+        //   parseFrontmatter: true,
+        // });
+        const mdxDom = await parseMarkdown(str);
+        // console.log('mdxStr', mdxStr);
+        // const mdxSource = await serialize(mdxStr, {
+        //   mdxOptions: {
+        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
+        //   },
+        //   parseFrontmatter: true,
+        // });
+        setMd(mdxDom);
+      } catch (err) {
+        console.log('格式化失败', err);
+        setMd('');
+      }
     } else {
       setMd('');
     }
@@ -223,7 +252,7 @@ const Container = memo<PropsWithChildren>(() => {
       title: '文档审核状态',
     },
     {
-      dataIndex: 'address2',
+      dataIndex: 'action',
       render: (_value, record) => {
         return <EyeOutlined onClick={() => openLeft(record)} />;
       },
@@ -294,6 +323,7 @@ const Container = memo<PropsWithChildren>(() => {
                 <Table<DataType>
                   columns={columns}
                   dataSource={list}
+                  pagination={pagination}
                   rowKey={(record: any) => record.file_id}
                   rowSelection={rowSelection}
                 />
@@ -440,8 +470,10 @@ const Container = memo<PropsWithChildren>(() => {
             </div>
             <div className={S.drawerContent}>
               {current && current.review_report && md ? (
-                <MDXRemote {...md} />
+                // <MDXRemote {...md} />
+                <div dangerouslySetInnerHTML={{ __html: md }} />
               ) : (
+                // <div dangerouslySetInnerHTML={{ __html: md }} />
                 <Empty style={{ marginTop: 100 }} />
               )}
             </div>

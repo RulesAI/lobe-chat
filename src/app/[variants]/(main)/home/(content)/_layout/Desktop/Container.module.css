@@ -12,6 +12,7 @@
 }
 .title {
   font-size: 2.2rem;
+  font-weight: 600;
 }
 .mainContent {
   height: calc(100vh - 70px);
@@ -22,13 +23,14 @@
   overflow-y: auto;
   padding: 30px;
   text-align: center;
+  padding-top: 100px;
 }
 .form {
   width: 80%;
   margin: 50px auto;
 }
 .tip {
-  color: #535252;
+  color: #b1adad;
 }
 .btns {
   display: flex;

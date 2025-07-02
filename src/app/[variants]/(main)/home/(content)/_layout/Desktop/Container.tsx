@@ -16,7 +16,7 @@ const Container = memo<PropsWithChildren>(() => {
     <div className={S.content}>
       <div className={S.leftContent}>
         <Header />
-        <div className={S.mainContent} style={{ marginTop: 50 }}>
+        <div className={S.mainContent}>
           {/* <Empty /> */}
           <div className={S.title} style={{ color: colorPrimary }}>
             智能检索审核报告，一键获取历史记录
@@ -43,7 +43,7 @@ const Container = memo<PropsWithChildren>(() => {
               />
             </Form.Item>
           </Form>
-          <div>按 Ctrl + Enter 快速发送</div>
+          <div className={S.tip}>按 Ctrl + Enter 快速发送</div>
         </div>
       </div>
     </div>
