@@ -2,85 +2,85 @@
 
 import {
   ConfigProvider,
-  // FontLoader,
+  FontLoader,
   NeutralColors,
   PrimaryColors,
-  // ThemeProvider,
+  ThemeProvider,
 } from '@lobehub/ui';
-import { ThemeAppearance } from 'antd-style';
+import { ThemeAppearance, createStyles } from 'antd-style';
 import 'antd/dist/reset.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReactNode, memo, useEffect } from 'react';
 
-// import AntdStaticMethods from '@/components/AntdStaticMethods';
+import AntdStaticMethods from '@/components/AntdStaticMethods';
 import {
-  // LOBE_THEME_APPEARANCE,
+  LOBE_THEME_APPEARANCE,
   LOBE_THEME_NEUTRAL_COLOR,
   LOBE_THEME_PRIMARY_COLOR,
 } from '@/const/theme';
-// import { useGlobalStore } from '@/store/global';
-// import { systemStatusSelectors } from '@/store/global/selectors';
+import { useGlobalStore } from '@/store/global';
+import { systemStatusSelectors } from '@/store/global/selectors';
 import { useUserStore } from '@/store/user';
 import { userGeneralSettingsSelectors } from '@/store/user/selectors';
-// import { GlobalStyle } from '@/styles';
+import { GlobalStyle } from '@/styles';
 import { setCookie } from '@/utils/client/cookie';
 
-// const useStyles = createStyles(({ css, token }) => ({
-//   app: css`
-//     position: relative;
+const useStyles = createStyles(({ css, token }) => ({
+  app: css`
+    position: relative;
 
-//     overscroll-behavior: none;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
+    overscroll-behavior: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-//     height: 100%;
-//     min-height: 100dvh;
-//     max-height: 100dvh;
+    height: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
 
-//     @media (min-device-width: 576px) {
-//       overflow: hidden;
-//     }
-//   `,
-//   // scrollbar-width and scrollbar-color are supported from Chrome 121
-//   // https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
-//   scrollbar: css`
-//     scrollbar-color: ${token.colorFill} transparent;
-//     scrollbar-width: thin;
+    @media (min-device-width: 576px) {
+      overflow: hidden;
+    }
+  `,
+  // scrollbar-width and scrollbar-color are supported from Chrome 121
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
+  scrollbar: css`
+    scrollbar-color: ${token.colorFill} transparent;
+    scrollbar-width: thin;
 
-//     #lobe-mobile-scroll-container {
-//       scrollbar-width: none;
+    #lobe-mobile-scroll-container {
+      scrollbar-width: none;
 
-//       ::-webkit-scrollbar {
-//         width: 0;
-//         height: 0;
-//       }
-//     }
-//   `,
+      ::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+    }
+  `,
 
-//   // so this is a polyfill for older browsers
-//   scrollbarPolyfill: css`
-//     ::-webkit-scrollbar {
-//       width: 0.75em;
-//       height: 0.75em;
-//     }
+  // so this is a polyfill for older browsers
+  scrollbarPolyfill: css`
+    ::-webkit-scrollbar {
+      width: 0.75em;
+      height: 0.75em;
+    }
 
-//     ::-webkit-scrollbar-thumb {
-//       border-radius: 10px;
-//     }
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+    }
 
-//     :hover::-webkit-scrollbar-thumb {
-//       border: 3px solid transparent;
-//       background-color: ${token.colorText};
-//       background-clip: content-box;
-//     }
+    :hover::-webkit-scrollbar-thumb {
+      border: 3px solid transparent;
+      background-color: ${token.colorText};
+      background-clip: content-box;
+    }
 
-//     ::-webkit-scrollbar-track {
-//       background-color: transparent;
-//     }
-//   `,
-// }));
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  `,
+}));
 
 export interface AppThemeProps {
   children?: ReactNode;
@@ -95,18 +95,18 @@ export interface AppThemeProps {
 const AppTheme = memo<AppThemeProps>(
   ({
     children,
-    // defaultAppearance,
-    // defaultPrimaryColor,
-    // defaultNeutralColor,
+    defaultAppearance,
+    defaultPrimaryColor,
+    defaultNeutralColor,
     globalCDN,
-    // customFontURL,
-    // customFontFamily,
+    customFontURL,
+    customFontFamily,
   }) => {
-    // console.debug('server:appearance', defaultAppearance);
-    // console.debug('server:primaryColor', defaultPrimaryColor);
-    // console.debug('server:neutralColor', defaultNeutralColor);
-    // const themeMode = useGlobalStore(systemStatusSelectors.themeMode);
-    // const { styles, cx, theme } = useStyles();
+    console.debug('server:appearance', defaultAppearance);
+    console.debug('server:primaryColor', defaultPrimaryColor);
+    console.debug('server:neutralColor', defaultNeutralColor);
+    const themeMode = useGlobalStore(systemStatusSelectors.themeMode);
+    const { styles, cx, theme } = useStyles();
     const [primaryColor, neutralColor] = useUserStore((s) => [
       userGeneralSettingsSelectors.primaryColor(s),
       userGeneralSettingsSelectors.neutralColor(s),
@@ -120,52 +120,52 @@ const AppTheme = memo<AppThemeProps>(
       setCookie(LOBE_THEME_NEUTRAL_COLOR, neutralColor);
     }, [neutralColor]);
     return (
-      <ConfigProvider
-        config={{
-          aAs: Link,
-          imgAs: Image,
-          imgUnoptimized: true,
-          proxy: globalCDN ? 'unpkg' : undefined,
-        }}
-      >
-        {children}
-      </ConfigProvider>
-      // <ThemeProvider
-      //   appearance={themeMode !== 'auto' ? themeMode : undefined}
-      //   className={cx(styles.app, styles.scrollbar, styles.scrollbarPolyfill)}
-      //   customTheme={{
-      //     neutralColor: neutralColor ?? defaultNeutralColor,
-      //     primaryColor: primaryColor ?? defaultPrimaryColor,
+      // <ConfigProvider
+      //   config={{
+      //     aAs: Link,
+      //     imgAs: Image,
+      //     imgUnoptimized: true,
+      //     proxy: globalCDN ? 'unpkg' : undefined,
       //   }}
-      //   defaultAppearance={defaultAppearance}
-      //   onAppearanceChange={(appearance) => {
-      //     if (themeMode !== 'auto') return;
-
-      //     setCookie(LOBE_THEME_APPEARANCE, appearance);
-      //   }}
-      //   theme={{
-      //     cssVar: true,
-      //     token: {
-      //       colorPrimary: defaultPrimaryColor,
-      //       fontFamily: customFontFamily ? `${customFontFamily},${theme.fontFamily}` : undefined,
-      //     },
-      //   }}
-      //   themeMode={themeMode}
       // >
-      //   {!!customFontURL && <FontLoader url={customFontURL} />}
-      //   <GlobalStyle />
-      //   <AntdStaticMethods />
-      //   <ConfigProvider
-      //     config={{
-      //       aAs: Link,
-      //       imgAs: Image,
-      //       imgUnoptimized: true,
-      //       proxy: globalCDN ? 'unpkg' : undefined,
-      //     }}
-      //   >
-      //     {children}
-      //   </ConfigProvider>
-      // </ThemeProvider>
+      //   {children}
+      // </ConfigProvider>
+      <ThemeProvider
+        appearance={themeMode !== 'auto' ? themeMode : undefined}
+        className={cx(styles.app, styles.scrollbar, styles.scrollbarPolyfill)}
+        customTheme={{
+          neutralColor: neutralColor ?? defaultNeutralColor,
+          primaryColor: primaryColor ?? defaultPrimaryColor,
+        }}
+        defaultAppearance={defaultAppearance}
+        onAppearanceChange={(appearance) => {
+          if (themeMode !== 'auto') return;
+
+          setCookie(LOBE_THEME_APPEARANCE, appearance);
+        }}
+        theme={{
+          cssVar: true,
+          token: {
+            colorPrimary: defaultPrimaryColor,
+            fontFamily: customFontFamily ? `${customFontFamily},${theme.fontFamily}` : undefined,
+          },
+        }}
+        themeMode={themeMode}
+      >
+        {!!customFontURL && <FontLoader url={customFontURL} />}
+        <GlobalStyle />
+        <AntdStaticMethods />
+        <ConfigProvider
+          config={{
+            aAs: Link,
+            imgAs: Image,
+            imgUnoptimized: true,
+            proxy: globalCDN ? 'unpkg' : undefined,
+          }}
+        >
+          {children}
+        </ConfigProvider>
+      </ThemeProvider>
     );
   },
 );

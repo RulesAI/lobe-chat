@@ -1,35 +1,32 @@
 'use client';
 
 import {
+  BankOutlined,
+  BarChartOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
   CloseOutlined,
+  DownloadOutlined,
+  ExclamationCircleOutlined,
   EyeOutlined,
-  InboxOutlined,
-  PlusOutlined,
+  FieldTimeOutlined,
+  FileDoneOutlined,
+  FileTextOutlined,
+  PayCircleOutlined,
+  ProfileOutlined,
   SearchOutlined,
+  UserOutlined,
+  WarningOutlined,
 } from '@ant-design/icons';
-import { Alert, Button, Empty, Input, Modal, Select, Table, Tag, Upload, message } from 'antd';
-import type { TableColumnsType, TableProps, UploadProps } from 'antd';
-import dayjs from 'dayjs';
+import { Button, Input, Select, Table, Tag } from 'antd';
+import type { TableColumnsType, TableProps } from 'antd';
+// import dayjs from 'dayjs';
 import { PropsWithChildren, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
 import Header from '@/components/Header';
-import { parseMarkdown } from '@/utils/parseMarkdown';
 
 import S from './Container.module.css';
-import mdxStyle from './mdx.module.css';
-
-const { Dragger } = Upload;
-
-const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://47.97.196.187/v1';
-const appKeys = {
-  add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
-  list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
-  // run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
-  // run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
-  run: 'app-b59h1ONl0eKIWxAC944w7EUM',
-};
-const user = 'lixiumin';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
@@ -42,222 +39,1738 @@ interface DataType {
 
 const Container = memo<PropsWithChildren>(() => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
-  const [open, setOpen] = useState(false);
-  // const [width, setWidth] = useState(0);
-  const [detailVisible, setDetailVisible] = useState(false);
-  const [reportVisible, setReportVisible] = useState(false);
-  // const [reportWidth, setReportWidth] = useState<string | number>(0);
-  const [leftVisible, setLeftVisible] = useState(true);
-  const [currentUploadObj, setCurrentUploadObj] = useState<any>(null);
-  const [list, setList] = useState<any[]>([]);
-  const [fileList, setFileList] = useState([]);
-  const [current, setCurrent] = useState<any>(null);
-  const [detail, setDetail] = useState<any>({});
-  const [md, setMd] = useState<any>('');
+  const [leftVisible, setLeftVisible] = useState(false);
+  const [detailVisible, setDetailVisible] = useState(true);
+  const [list, setList] = useState<any>([]);
+  // const [current, setCurrent] = useState<any>(list[0]);
   const [pagination, setPagination] = useState<any>({
     showTotal: (total: any) => `共${total}条`,
     total: 0,
   });
 
-  const props: UploadProps = {
-    action: prefix + '/files/upload',
-    data: {
-      user,
+  // const getList = async () => {
+  //   const postData = {
+  //     inputs: {
+  //       query: 'select * from mysql1.file',
+  //     },
+  //     response_mode: 'blocking',
+  //     user,
+  //   };
+  //   try {
+  //     const res = await fetch(`${prefix}/workflows/run`, {
+  //       body: JSON.stringify(postData),
+  //       headers: {
+  //         'Authorization': `Bearer ${appKeys.list}`,
+  //         'Content-Type': 'application/json',
+  //       },
+  //       method: 'POST',
+  //     });
+  //     if (!res.ok) {
+  //       throw new Error(`HTTP error! status: ${res.status}`);
+  //     }
+  //     const result = await res.json();
+  //     const listData = result?.data?.outputs?.text?.[0].result;
+  //     setList(listData);
+  //     setPagination({
+  //       ...pagination,
+  //       total: listData.length,
+  //     });
+  //   } catch (err) {
+  //     console.log('Error', err);
+  //   }
+  // };
+
+  const listData: any[] = [
+    {
+      company: '智慧城市建设中心',
+      downloadCount: 12,
+      errorList: [
+        {
+          area: '第36页',
+          checkRes: '文档中提及新建机房，违反不予立项条款',
+          checkStatus: 3,
+          id: 111,
+          name: '不予立项核验',
+        },
+        {
+          area: '第56页，申请表第2页',
+          checkRes: '基础平台建设费用在可研报告与申请表中不一致',
+          checkStatus: 3,
+          id: 112,
+          name: '跨文件造价一致性核验',
+        },
+        {
+          area: '第23页',
+          checkRes: '缺少附表3：系统运行维护费估算表',
+          checkStatus: 2,
+          id: 113,
+          name: '附表齐全核验',
+        },
+        {
+          area: '第22页',
+          checkRes: '信创技术描述不够详细，缺少具体技术方案',
+          checkStatus: 2,
+          id: 114,
+          name: '信创描述',
+        },
+        {
+          area: '第2页、第56页',
+          checkRes: '建议统一文档中的投资金额描述',
+          checkStatus: 4,
+          id: 115,
+          name: '上下文造价一致性',
+        },
+      ],
+      fraction: 73,
+      groupName: '大数据中心项目',
+      id: 1,
+      money: '441万元',
+      name: '大数据中心项目可行性研究报告.pdf',
+      passNum: 28,
+      range: '2025年3月 - 2026年3月',
+      rejectNum: 3,
+      ruleList: [
+        {
+          alertObj: {
+            passNum: 2,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(239,246,255)',
+          children: [
+            {
+              area: '全文档',
+              checkRes: '✓ 文档包含所有必需章节',
+              checkStatus: 1,
+              desc: '已检查7个主要章节：总论、需求分析、设计方案、运营保障、预算经费、风险分析、效益分析，全部符合模板要求',
+              key: 10,
+              name: '缺章少节核验',
+              tip: '提取模板规定的章节与可研报告章节进行比对',
+            },
+            {
+              area: '第23页',
+              checkRes: '⚠ 缺少附表3：系统运行维护费估算表',
+              checkStatus: 2,
+              desc: '模板要求5个附表，实际提供4个。缺少：系统运行维护费估算表',
+              key: 11,
+              name: '附表齐全核验',
+              tip: '检查模板要求的附表是否齐全',
+            },
+            {
+              area: '附表1-4',
+              checkRes: '✓ 附表结构符合规范要求',
+              checkStatus: 1,
+              desc: '表格一级标题、二级标题格式正确，包含：系统开发实施工作量测算表、软硬件配置清单、系统运行维护费估算表、项目投资估算表',
+              key: 12,
+              name: '附表规范性核验',
+              tip: '检查附表结构标准性',
+            },
+          ],
+          color: 'rgb(37,99,235)',
+          count: 3,
+          icon: <FileTextOutlined style={{ color: 'rgb(37,99,235)' }} />,
+          key: 0,
+          name: '结构完整性验证',
+          status: 1,
+          tip: '文档结构、章节、附表完整性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 0,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(240,253,244)',
+          children: [
+            {
+              area: '第56页，申请表第2页',
+              checkRes: '✗ 发现造价不一致',
+              checkStatus: 3,
+              desc: '系统填报：441万元，项目申请表：441万元，可研报告总计：441万元，但分项明细存在差异：基础平台建设75万元与申请表中的80万元不符',
+              key: 20,
+              name: '跨文件造价一致性核验',
+              tip: '对比系统填报、项目申请表、可研报告三处造价',
+            },
+            {
+              area: '第2章、第3章',
+              checkRes: '✓ 服务内容完全覆盖需求分析',
+              checkStatus: 1,
+              desc: '需求分析中的11项功能需求在建设方案中均有对应实现',
+              key: 21,
+              name: '需求内容是否在服务内容中全部体现',
+              tip: '验证需求分析与建设内容的对应关系',
+            },
+          ],
+          color: 'rgb(22,163,74)',
+          count: 2,
+          icon: <BarChartOutlined style={{ color: 'rgb(22,163,74)' }} />,
+          key: 1,
+          name: '数据一致性验证',
+          status: 1,
+          tip: '跨文件数据一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 5,
+            rejectNum: 2,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(255,247,237)',
+          children: [
+            {
+              area: '第36页',
+              checkRes: '✗ 文档中提及新建机房，违反不予立项条款',
+              checkStatus: 3,
+              desc: '在第36页中提到"新建数据中心机房"，违反了"原则上不允许建设机房"的政策要求',
+              key: 30,
+              name: '不予立项核验',
+              tip: '检查是否违反不予立项条款',
+            },
+            {
+              area: '第46页',
+              checkRes: '✓ 系统定级为等级保护三级',
+              checkStatus: 1,
+              desc: '在第46页明确提出系统按照等级保护三级标准建设',
+              key: 31,
+              name: '系统定级是否明确',
+              tip: '提取系统等级保护定级信息',
+            },
+            {
+              area: '第44-48页',
+              checkRes: '✓ 详细描述了安全防护措施',
+              checkStatus: 1,
+              desc: '第44-48页详细描述了物理安全、网络安全、系统安全、应用安全、数据安全五个层面的防护措施',
+              key: 32,
+              name: '对应的安全防护是否描述',
+              tip: '检查等级保护措施描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创描述不够详细',
+              checkStatus: 2,
+              desc: '仅在第22页简单提及信创要求，缺少具体的信创技术方案和产品选型',
+              key: 33,
+              name: '信创是否描述',
+              tip: '检查信创技术描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '✓ 明确了政务云部署方案',
+              checkStatus: 1,
+              desc: '第40页详细说明了基于政务云的部署架构',
+              key: 34,
+              name: '上云是否描述',
+              tip: '检查上云方案描述',
+            },
+          ],
+          color: 'rgb(234,88,12)',
+          count: 8,
+          icon: <ExclamationCircleOutlined style={{ color: 'rgb(234,88,12)' }} />,
+          key: 2,
+          name: '合规性验证',
+          status: 1,
+          tip: '合规要求和政策符合性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(250,245,255)',
+          children: [
+            {
+              area: '第56页',
+              checkRes: '✓ 总价与分项汇总一致',
+              checkStatus: 1,
+              desc: '总投资441万元与各分项汇总金额一致：基础平台75万+交换平台120万+信息库50万+专项建设160万+监理实施36万=441万',
+              key: 40,
+              name: '总分造价是否一致',
+              tip: '比对总预算与分项预算',
+            },
+            {
+              area: '第2页、第56页',
+              checkRes: '⚠ 发现造价描述不一致',
+              checkStatus: 2,
+              desc: '第2页概述中提到"投资约450万元"，与第56页详细预算441万元存在差异',
+              key: 41,
+              name: '上下文造价是否一致',
+              tip: '检查文档内造价数据一致性',
+            },
+          ],
+          color: 'rgb(147,51,234)',
+          count: 2,
+          icon: <PayCircleOutlined style={{ color: 'rgb(147,51,234)' }} />,
+          key: 3,
+          name: '财务合规性验证',
+          status: 1,
+          tip: '预算数据准确性和一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 3,
+            rejectNum: 2,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(238,242,255)',
+          children: [
+            {
+              area: '第7-8页',
+              checkRes: '✓ 数据来源清晰明确',
+              checkStatus: 1,
+              desc: '明确列出了12个业务部门作为数据来源：公安、工商、税务、质监、民政、劳动、计生等',
+              key: 50,
+              name: '采集来源是否清楚',
+              tip: '检查数据采集来源描述',
+            },
+            {
+              area: '第25-28页',
+              checkRes: '✓ 数据归集方案明确',
+              checkStatus: 1,
+              desc: '详细描述了星型交换结构的数据归集模式',
+              key: 50,
+              name: '数据归集是否清楚',
+              tip: '检查数据归集方案',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创技术说明不充分',
+              checkStatus: 2,
+              desc: '未详细说明信创产品的具体选型和技术路线',
+              key: 50,
+              name: '信创技术是否说明',
+              tip: '检查信创技术说明',
+            },
+          ],
+          color: 'rgb(79,70,229)',
+          count: 5,
+          icon: <ProfileOutlined style={{ color: 'rgb(79,70,229)' }} />,
+          key: 4,
+          name: '业务清晰度验证',
+          status: 1,
+          tip: '关键业务要素明确性检查',
+        },
+        // {
+        //   bgColor: 'rgb(240,253,250)',
+        //   children: [
+        //     {
+        //       category: 3,
+        //       key: 60,
+        //       method: [2],
+        //       name: '采集来源是否清楚',
+        //       status: [],
+        //       steps:
+        //         '1、获取本次建设项目的项目名称A\r\n2、提取A中的关键信息\r\n3、从申请表中获取关联的项目名称B',
+        //       time: '2025-07-02',
+        //       tip: '验证项目关联关系',
+        //     },
+        //   ],
+        //   color: 'rgb(13,148,136)',
+        //   count: 4,
+        //   icon: <LinkOutlined style={{ color: 'rgb(13,148,136)' }} />,
+        //   key: 5,
+        //   name: '关联性验证',
+        //   status: 2,
+        //   tip: '项目、系统、机房、专网关联检查',
+        // },
+      ],
+      size: 2.3,
+      status: 2,
+      system: '智能审核系统v2.0',
+      updateTime: '2025-07-03 14:56',
+      user: '张三',
+      warnNum: 7,
     },
-    fileList,
-    headers: {
-      Authorization: `Bearer ${appKeys.run}`,
+    {
+      company: '智慧城市建设中心',
+      downloadCount: 8,
+      errorList: [
+        {
+          area: '第36页',
+          checkRes: '文档中提及新建机房，违反不予立项条款',
+          checkStatus: 3,
+          id: 111,
+          name: '不予立项核验',
+        },
+        {
+          area: '第56页，申请表第2页',
+          checkRes: '基础平台建设费用在可研报告与申请表中不一致',
+          checkStatus: 3,
+          id: 112,
+          name: '跨文件造价一致性核验',
+        },
+        {
+          area: '第23页',
+          checkRes: '缺少附表3：系统运行维护费估算表',
+          checkStatus: 2,
+          id: 113,
+          name: '附表齐全核验',
+        },
+        {
+          area: '第22页',
+          checkRes: '信创技术描述不够详细，缺少具体技术方案',
+          checkStatus: 2,
+          id: 114,
+          name: '信创描述',
+        },
+        {
+          area: '第2页、第56页',
+          checkRes: '建议统一文档中的投资金额描述',
+          checkStatus: 4,
+          id: 115,
+          name: '上下文造价一致性',
+        },
+      ],
+      fraction: 92,
+      groupName: '智慧城市项目',
+      id: 2,
+      money: '850万元',
+      name: '智慧城市管理平台实施方案.docx',
+      passNum: 35,
+      range: '2025年3月 - 2026年3月',
+      rejectNum: 1,
+      ruleList: [
+        {
+          alertObj: {
+            passNum: 2,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(239,246,255)',
+          children: [
+            {
+              area: '全文档',
+              checkRes: '✓ 文档包含所有必需章节',
+              checkStatus: 1,
+              desc: '已检查7个主要章节：总论、需求分析、设计方案、运营保障、预算经费、风险分析、效益分析，全部符合模板要求',
+              key: 10,
+              name: '缺章少节核验',
+              tip: '提取模板规定的章节与可研报告章节进行比对',
+            },
+            {
+              area: '第23页',
+              checkRes: '⚠ 缺少附表3：系统运行维护费估算表',
+              checkStatus: 2,
+              desc: '模板要求5个附表，实际提供4个。缺少：系统运行维护费估算表',
+              key: 11,
+              name: '附表齐全核验',
+              tip: '检查模板要求的附表是否齐全',
+            },
+            {
+              area: '附表1-4',
+              checkRes: '✓ 附表结构符合规范要求',
+              checkStatus: 1,
+              desc: '表格一级标题、二级标题格式正确，包含：系统开发实施工作量测算表、软硬件配置清单、系统运行维护费估算表、项目投资估算表',
+              key: 12,
+              name: '附表规范性核验',
+              tip: '检查附表结构标准性',
+            },
+          ],
+          color: 'rgb(37,99,235)',
+          count: 3,
+          icon: <FileTextOutlined style={{ color: 'rgb(37,99,235)' }} />,
+          key: 0,
+          name: '结构完整性验证',
+          status: 1,
+          tip: '文档结构、章节、附表完整性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 0,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(240,253,244)',
+          children: [
+            {
+              area: '第56页，申请表第2页',
+              checkRes: '✗ 发现造价不一致',
+              checkStatus: 3,
+              desc: '系统填报：441万元，项目申请表：441万元，可研报告总计：441万元，但分项明细存在差异：基础平台建设75万元与申请表中的80万元不符',
+              key: 20,
+              name: '跨文件造价一致性核验',
+              tip: '对比系统填报、项目申请表、可研报告三处造价',
+            },
+            {
+              area: '第2章、第3章',
+              checkRes: '✓ 服务内容完全覆盖需求分析',
+              checkStatus: 1,
+              desc: '需求分析中的11项功能需求在建设方案中均有对应实现',
+              key: 21,
+              name: '需求内容是否在服务内容中全部体现',
+              tip: '验证需求分析与建设内容的对应关系',
+            },
+          ],
+          color: 'rgb(22,163,74)',
+          count: 2,
+          icon: <BarChartOutlined style={{ color: 'rgb(22,163,74)' }} />,
+          key: 1,
+          name: '数据一致性验证',
+          status: 1,
+          tip: '跨文件数据一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 5,
+            rejectNum: 2,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(255,247,237)',
+          children: [
+            {
+              area: '第36页',
+              checkRes: '✗ 文档中提及新建机房，违反不予立项条款',
+              checkStatus: 3,
+              desc: '在第36页中提到"新建数据中心机房"，违反了"原则上不允许建设机房"的政策要求',
+              key: 30,
+              name: '不予立项核验',
+              tip: '检查是否违反不予立项条款',
+            },
+            {
+              area: '第46页',
+              checkRes: '✓ 系统定级为等级保护三级',
+              checkStatus: 1,
+              desc: '在第46页明确提出系统按照等级保护三级标准建设',
+              key: 31,
+              name: '系统定级是否明确',
+              tip: '提取系统等级保护定级信息',
+            },
+            {
+              area: '第44-48页',
+              checkRes: '✓ 详细描述了安全防护措施',
+              checkStatus: 1,
+              desc: '第44-48页详细描述了物理安全、网络安全、系统安全、应用安全、数据安全五个层面的防护措施',
+              key: 32,
+              name: '对应的安全防护是否描述',
+              tip: '检查等级保护措施描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创描述不够详细',
+              checkStatus: 2,
+              desc: '仅在第22页简单提及信创要求，缺少具体的信创技术方案和产品选型',
+              key: 33,
+              name: '信创是否描述',
+              tip: '检查信创技术描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '✓ 明确了政务云部署方案',
+              checkStatus: 1,
+              desc: '第40页详细说明了基于政务云的部署架构',
+              key: 34,
+              name: '上云是否描述',
+              tip: '检查上云方案描述',
+            },
+          ],
+          color: 'rgb(234,88,12)',
+          count: 8,
+          icon: <ExclamationCircleOutlined style={{ color: 'rgb(234,88,12)' }} />,
+          key: 2,
+          name: '合规性验证',
+          status: 1,
+          tip: '合规要求和政策符合性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(250,245,255)',
+          children: [
+            {
+              area: '第56页',
+              checkRes: '✓ 总价与分项汇总一致',
+              checkStatus: 1,
+              desc: '总投资441万元与各分项汇总金额一致：基础平台75万+交换平台120万+信息库50万+专项建设160万+监理实施36万=441万',
+              key: 40,
+              name: '总分造价是否一致',
+              tip: '比对总预算与分项预算',
+            },
+            {
+              area: '第2页、第56页',
+              checkRes: '⚠ 发现造价描述不一致',
+              checkStatus: 2,
+              desc: '第2页概述中提到"投资约450万元"，与第56页详细预算441万元存在差异',
+              key: 41,
+              name: '上下文造价是否一致',
+              tip: '检查文档内造价数据一致性',
+            },
+          ],
+          color: 'rgb(147,51,234)',
+          count: 2,
+          icon: <PayCircleOutlined style={{ color: 'rgb(147,51,234)' }} />,
+          key: 3,
+          name: '财务合规性验证',
+          status: 1,
+          tip: '预算数据准确性和一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 3,
+            rejectNum: 2,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(238,242,255)',
+          children: [
+            {
+              area: '第7-8页',
+              checkRes: '✓ 数据来源清晰明确',
+              checkStatus: 1,
+              desc: '明确列出了12个业务部门作为数据来源：公安、工商、税务、质监、民政、劳动、计生等',
+              key: 50,
+              name: '采集来源是否清楚',
+              tip: '检查数据采集来源描述',
+            },
+            {
+              area: '第25-28页',
+              checkRes: '✓ 数据归集方案明确',
+              checkStatus: 1,
+              desc: '详细描述了星型交换结构的数据归集模式',
+              key: 50,
+              name: '数据归集是否清楚',
+              tip: '检查数据归集方案',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创技术说明不充分',
+              checkStatus: 2,
+              desc: '未详细说明信创产品的具体选型和技术路线',
+              key: 50,
+              name: '信创技术是否说明',
+              tip: '检查信创技术说明',
+            },
+          ],
+          color: 'rgb(79,70,229)',
+          count: 5,
+          icon: <ProfileOutlined style={{ color: 'rgb(79,70,229)' }} />,
+          key: 4,
+          name: '业务清晰度验证',
+          status: 1,
+          tip: '关键业务要素明确性检查',
+        },
+      ],
+      size: 1.8,
+      status: 1,
+      system: '智能审核系统v2.0',
+      updateTime: '2025-07-02 18:02',
+      user: '李四',
+      warnNum: 2,
     },
-    maxCount: 1,
-    multiple: false,
-    name: 'file',
-    onChange(info) {
-      console.log('info', info);
-      setFileList(info.fileList as any);
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        console.log('上传成功，返回数据:', info.file.response);
-        const obj = info.file.response;
-        setCurrentUploadObj(obj);
-        message.success(`${info.file.name} 文件上传成功.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} 文件上传失败.`);
-      }
+    {
+      company: '政务服务中心',
+      downloadCount: 12,
+      errorList: [
+        {
+          area: '第36页',
+          checkRes: '文档中提及新建机房，违反不予立项条款',
+          checkStatus: 3,
+          id: 111,
+          name: '不予立项核验',
+        },
+        {
+          area: '第56页，申请表第2页',
+          checkRes: '基础平台建设费用在可研报告与申请表中不一致',
+          checkStatus: 3,
+          id: 112,
+          name: '跨文件造价一致性核验',
+        },
+        {
+          area: '第23页',
+          checkRes: '缺少附表3：系统运行维护费估算表',
+          checkStatus: 2,
+          id: 113,
+          name: '附表齐全核验',
+        },
+        {
+          area: '第22页',
+          checkRes: '信创技术描述不够详细，缺少具体技术方案',
+          checkStatus: 2,
+          id: 114,
+          name: '信创描述',
+        },
+        {
+          area: '第2页、第56页',
+          checkRes: '建议统一文档中的投资金额描述',
+          checkStatus: 4,
+          id: 115,
+          name: '上下文造价一致性',
+        },
+      ],
+      fraction: 45,
+      groupName: '电子政务升级项目',
+      id: 3,
+      money: '320万元',
+      name: '电子政务系统升级改造方案.pdf',
+      passNum: 17,
+      range: '2025年3月 - 2026年3月',
+      rejectNum: 13,
+      ruleList: [
+        {
+          alertObj: {
+            passNum: 2,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(239,246,255)',
+          children: [
+            {
+              area: '全文档',
+              checkRes: '✓ 文档包含所有必需章节',
+              checkStatus: 1,
+              desc: '已检查7个主要章节：总论、需求分析、设计方案、运营保障、预算经费、风险分析、效益分析，全部符合模板要求',
+              key: 10,
+              name: '缺章少节核验',
+              tip: '提取模板规定的章节与可研报告章节进行比对',
+            },
+            {
+              area: '第23页',
+              checkRes: '⚠ 缺少附表3：系统运行维护费估算表',
+              checkStatus: 2,
+              desc: '模板要求5个附表，实际提供4个。缺少：系统运行维护费估算表',
+              key: 11,
+              name: '附表齐全核验',
+              tip: '检查模板要求的附表是否齐全',
+            },
+            {
+              area: '附表1-4',
+              checkRes: '✓ 附表结构符合规范要求',
+              checkStatus: 1,
+              desc: '表格一级标题、二级标题格式正确，包含：系统开发实施工作量测算表、软硬件配置清单、系统运行维护费估算表、项目投资估算表',
+              key: 12,
+              name: '附表规范性核验',
+              tip: '检查附表结构标准性',
+            },
+          ],
+          color: 'rgb(37,99,235)',
+          count: 3,
+          icon: <FileTextOutlined style={{ color: 'rgb(37,99,235)' }} />,
+          key: 0,
+          name: '结构完整性验证',
+          status: 1,
+          tip: '文档结构、章节、附表完整性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 0,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(240,253,244)',
+          children: [
+            {
+              area: '第56页，申请表第2页',
+              checkRes: '✗ 发现造价不一致',
+              checkStatus: 3,
+              desc: '系统填报：441万元，项目申请表：441万元，可研报告总计：441万元，但分项明细存在差异：基础平台建设75万元与申请表中的80万元不符',
+              key: 20,
+              name: '跨文件造价一致性核验',
+              tip: '对比系统填报、项目申请表、可研报告三处造价',
+            },
+            {
+              area: '第2章、第3章',
+              checkRes: '✓ 服务内容完全覆盖需求分析',
+              checkStatus: 1,
+              desc: '需求分析中的11项功能需求在建设方案中均有对应实现',
+              key: 21,
+              name: '需求内容是否在服务内容中全部体现',
+              tip: '验证需求分析与建设内容的对应关系',
+            },
+          ],
+          color: 'rgb(22,163,74)',
+          count: 2,
+          icon: <BarChartOutlined style={{ color: 'rgb(22,163,74)' }} />,
+          key: 1,
+          name: '数据一致性验证',
+          status: 1,
+          tip: '跨文件数据一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 5,
+            rejectNum: 2,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(255,247,237)',
+          children: [
+            {
+              area: '第36页',
+              checkRes: '✗ 文档中提及新建机房，违反不予立项条款',
+              checkStatus: 3,
+              desc: '在第36页中提到"新建数据中心机房"，违反了"原则上不允许建设机房"的政策要求',
+              key: 30,
+              name: '不予立项核验',
+              tip: '检查是否违反不予立项条款',
+            },
+            {
+              area: '第46页',
+              checkRes: '✓ 系统定级为等级保护三级',
+              checkStatus: 1,
+              desc: '在第46页明确提出系统按照等级保护三级标准建设',
+              key: 31,
+              name: '系统定级是否明确',
+              tip: '提取系统等级保护定级信息',
+            },
+            {
+              area: '第44-48页',
+              checkRes: '✓ 详细描述了安全防护措施',
+              checkStatus: 1,
+              desc: '第44-48页详细描述了物理安全、网络安全、系统安全、应用安全、数据安全五个层面的防护措施',
+              key: 32,
+              name: '对应的安全防护是否描述',
+              tip: '检查等级保护措施描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创描述不够详细',
+              checkStatus: 2,
+              desc: '仅在第22页简单提及信创要求，缺少具体的信创技术方案和产品选型',
+              key: 33,
+              name: '信创是否描述',
+              tip: '检查信创技术描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '✓ 明确了政务云部署方案',
+              checkStatus: 1,
+              desc: '第40页详细说明了基于政务云的部署架构',
+              key: 34,
+              name: '上云是否描述',
+              tip: '检查上云方案描述',
+            },
+          ],
+          color: 'rgb(234,88,12)',
+          count: 8,
+          icon: <ExclamationCircleOutlined style={{ color: 'rgb(234,88,12)' }} />,
+          key: 2,
+          name: '合规性验证',
+          status: 1,
+          tip: '合规要求和政策符合性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(250,245,255)',
+          children: [
+            {
+              area: '第56页',
+              checkRes: '✓ 总价与分项汇总一致',
+              checkStatus: 1,
+              desc: '总投资441万元与各分项汇总金额一致：基础平台75万+交换平台120万+信息库50万+专项建设160万+监理实施36万=441万',
+              key: 40,
+              name: '总分造价是否一致',
+              tip: '比对总预算与分项预算',
+            },
+            {
+              area: '第2页、第56页',
+              checkRes: '⚠ 发现造价描述不一致',
+              checkStatus: 2,
+              desc: '第2页概述中提到"投资约450万元"，与第56页详细预算441万元存在差异',
+              key: 41,
+              name: '上下文造价是否一致',
+              tip: '检查文档内造价数据一致性',
+            },
+          ],
+          color: 'rgb(147,51,234)',
+          count: 2,
+          icon: <PayCircleOutlined style={{ color: 'rgb(147,51,234)' }} />,
+          key: 3,
+          name: '财务合规性验证',
+          status: 1,
+          tip: '预算数据准确性和一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 3,
+            rejectNum: 2,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(238,242,255)',
+          children: [
+            {
+              area: '第7-8页',
+              checkRes: '✓ 数据来源清晰明确',
+              checkStatus: 1,
+              desc: '明确列出了12个业务部门作为数据来源：公安、工商、税务、质监、民政、劳动、计生等',
+              key: 50,
+              name: '采集来源是否清楚',
+              tip: '检查数据采集来源描述',
+            },
+            {
+              area: '第25-28页',
+              checkRes: '✓ 数据归集方案明确',
+              checkStatus: 1,
+              desc: '详细描述了星型交换结构的数据归集模式',
+              key: 50,
+              name: '数据归集是否清楚',
+              tip: '检查数据归集方案',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创技术说明不充分',
+              checkStatus: 2,
+              desc: '未详细说明信创产品的具体选型和技术路线',
+              key: 50,
+              name: '信创技术是否说明',
+              tip: '检查信创技术说明',
+            },
+          ],
+          color: 'rgb(79,70,229)',
+          count: 5,
+          icon: <ProfileOutlined style={{ color: 'rgb(79,70,229)' }} />,
+          key: 4,
+          name: '业务清晰度验证',
+          status: 1,
+          tip: '关键业务要素明确性检查',
+        },
+        // {
+        //   bgColor: 'rgb(240,253,250)',
+        //   children: [
+        //     {
+        //       category: 3,
+        //       key: 60,
+        //       method: [2],
+        //       name: '采集来源是否清楚',
+        //       status: [],
+        //       steps:
+        //         '1、获取本次建设项目的项目名称A\r\n2、提取A中的关键信息\r\n3、从申请表中获取关联的项目名称B',
+        //       time: '2025-07-02',
+        //       tip: '验证项目关联关系',
+        //     },
+        //   ],
+        //   color: 'rgb(13,148,136)',
+        //   count: 4,
+        //   icon: <LinkOutlined style={{ color: 'rgb(13,148,136)' }} />,
+        //   key: 5,
+        //   name: '关联性验证',
+        //   status: 2,
+        //   tip: '项目、系统、机房、专网关联检查',
+        // },
+      ],
+      size: 3.1,
+      status: 3,
+      system: '智能审核系统v2.0',
+      updateTime: '2025-07-01 11:12',
+      user: '王五',
+      warnNum: 8,
     },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
+    {
+      company: '信息化管理中心',
+      downloadCount: 6,
+      errorList: [
+        {
+          area: '第36页',
+          checkRes: '文档中提及新建机房，违反不予立项条款',
+          checkStatus: 3,
+          id: 111,
+          name: '不予立项核验',
+        },
+        {
+          area: '第56页，申请表第2页',
+          checkRes: '基础平台建设费用在可研报告与申请表中不一致',
+          checkStatus: 3,
+          id: 112,
+          name: '跨文件造价一致性核验',
+        },
+        {
+          area: '第23页',
+          checkRes: '缺少附表3：系统运行维护费估算表',
+          checkStatus: 2,
+          id: 113,
+          name: '附表齐全核验',
+        },
+        {
+          area: '第22页',
+          checkRes: '信创技术描述不够详细，缺少具体技术方案',
+          checkStatus: 2,
+          id: 114,
+          name: '信创描述',
+        },
+        {
+          area: '第2页、第56页',
+          checkRes: '建议统一文档中的投资金额描述',
+          checkStatus: 4,
+          id: 115,
+          name: '上下文造价一致性',
+        },
+      ],
+      fraction: 88,
+      groupName: '数字化办公项目',
+      id: 4,
+      money: '180万元',
+      name: '数字化办公平台建设方案.pdf',
+      passNum: 33,
+      range: '2025年3月 - 2026年3月',
+      rejectNum: 1,
+      ruleList: [
+        {
+          alertObj: {
+            passNum: 2,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(239,246,255)',
+          children: [
+            {
+              area: '全文档',
+              checkRes: '✓ 文档包含所有必需章节',
+              checkStatus: 1,
+              desc: '已检查7个主要章节：总论、需求分析、设计方案、运营保障、预算经费、风险分析、效益分析，全部符合模板要求',
+              key: 10,
+              name: '缺章少节核验',
+              tip: '提取模板规定的章节与可研报告章节进行比对',
+            },
+            {
+              area: '第23页',
+              checkRes: '⚠ 缺少附表3：系统运行维护费估算表',
+              checkStatus: 2,
+              desc: '模板要求5个附表，实际提供4个。缺少：系统运行维护费估算表',
+              key: 11,
+              name: '附表齐全核验',
+              tip: '检查模板要求的附表是否齐全',
+            },
+            {
+              area: '附表1-4',
+              checkRes: '✓ 附表结构符合规范要求',
+              checkStatus: 1,
+              desc: '表格一级标题、二级标题格式正确，包含：系统开发实施工作量测算表、软硬件配置清单、系统运行维护费估算表、项目投资估算表',
+              key: 12,
+              name: '附表规范性核验',
+              tip: '检查附表结构标准性',
+            },
+          ],
+          color: 'rgb(37,99,235)',
+          count: 3,
+          icon: <FileTextOutlined style={{ color: 'rgb(37,99,235)' }} />,
+          key: 0,
+          name: '结构完整性验证',
+          status: 1,
+          tip: '文档结构、章节、附表完整性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 0,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(240,253,244)',
+          children: [
+            {
+              area: '第56页，申请表第2页',
+              checkRes: '✗ 发现造价不一致',
+              checkStatus: 3,
+              desc: '系统填报：441万元，项目申请表：441万元，可研报告总计：441万元，但分项明细存在差异：基础平台建设75万元与申请表中的80万元不符',
+              key: 20,
+              name: '跨文件造价一致性核验',
+              tip: '对比系统填报、项目申请表、可研报告三处造价',
+            },
+            {
+              area: '第2章、第3章',
+              checkRes: '✓ 服务内容完全覆盖需求分析',
+              checkStatus: 1,
+              desc: '需求分析中的11项功能需求在建设方案中均有对应实现',
+              key: 21,
+              name: '需求内容是否在服务内容中全部体现',
+              tip: '验证需求分析与建设内容的对应关系',
+            },
+          ],
+          color: 'rgb(22,163,74)',
+          count: 2,
+          icon: <BarChartOutlined style={{ color: 'rgb(22,163,74)' }} />,
+          key: 1,
+          name: '数据一致性验证',
+          status: 1,
+          tip: '跨文件数据一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 5,
+            rejectNum: 2,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(255,247,237)',
+          children: [
+            {
+              area: '第36页',
+              checkRes: '✗ 文档中提及新建机房，违反不予立项条款',
+              checkStatus: 3,
+              desc: '在第36页中提到"新建数据中心机房"，违反了"原则上不允许建设机房"的政策要求',
+              key: 30,
+              name: '不予立项核验',
+              tip: '检查是否违反不予立项条款',
+            },
+            {
+              area: '第46页',
+              checkRes: '✓ 系统定级为等级保护三级',
+              checkStatus: 1,
+              desc: '在第46页明确提出系统按照等级保护三级标准建设',
+              key: 31,
+              name: '系统定级是否明确',
+              tip: '提取系统等级保护定级信息',
+            },
+            {
+              area: '第44-48页',
+              checkRes: '✓ 详细描述了安全防护措施',
+              checkStatus: 1,
+              desc: '第44-48页详细描述了物理安全、网络安全、系统安全、应用安全、数据安全五个层面的防护措施',
+              key: 32,
+              name: '对应的安全防护是否描述',
+              tip: '检查等级保护措施描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创描述不够详细',
+              checkStatus: 2,
+              desc: '仅在第22页简单提及信创要求，缺少具体的信创技术方案和产品选型',
+              key: 33,
+              name: '信创是否描述',
+              tip: '检查信创技术描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '✓ 明确了政务云部署方案',
+              checkStatus: 1,
+              desc: '第40页详细说明了基于政务云的部署架构',
+              key: 34,
+              name: '上云是否描述',
+              tip: '检查上云方案描述',
+            },
+          ],
+          color: 'rgb(234,88,12)',
+          count: 8,
+          icon: <ExclamationCircleOutlined style={{ color: 'rgb(234,88,12)' }} />,
+          key: 2,
+          name: '合规性验证',
+          status: 1,
+          tip: '合规要求和政策符合性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(250,245,255)',
+          children: [
+            {
+              area: '第56页',
+              checkRes: '✓ 总价与分项汇总一致',
+              checkStatus: 1,
+              desc: '总投资441万元与各分项汇总金额一致：基础平台75万+交换平台120万+信息库50万+专项建设160万+监理实施36万=441万',
+              key: 40,
+              name: '总分造价是否一致',
+              tip: '比对总预算与分项预算',
+            },
+            {
+              area: '第2页、第56页',
+              checkRes: '⚠ 发现造价描述不一致',
+              checkStatus: 2,
+              desc: '第2页概述中提到"投资约450万元"，与第56页详细预算441万元存在差异',
+              key: 41,
+              name: '上下文造价是否一致',
+              tip: '检查文档内造价数据一致性',
+            },
+          ],
+          color: 'rgb(147,51,234)',
+          count: 2,
+          icon: <PayCircleOutlined style={{ color: 'rgb(147,51,234)' }} />,
+          key: 3,
+          name: '财务合规性验证',
+          status: 1,
+          tip: '预算数据准确性和一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 3,
+            rejectNum: 2,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(238,242,255)',
+          children: [
+            {
+              area: '第7-8页',
+              checkRes: '✓ 数据来源清晰明确',
+              checkStatus: 1,
+              desc: '明确列出了12个业务部门作为数据来源：公安、工商、税务、质监、民政、劳动、计生等',
+              key: 50,
+              name: '采集来源是否清楚',
+              tip: '检查数据采集来源描述',
+            },
+            {
+              area: '第25-28页',
+              checkRes: '✓ 数据归集方案明确',
+              checkStatus: 1,
+              desc: '详细描述了星型交换结构的数据归集模式',
+              key: 50,
+              name: '数据归集是否清楚',
+              tip: '检查数据归集方案',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创技术说明不充分',
+              checkStatus: 2,
+              desc: '未详细说明信创产品的具体选型和技术路线',
+              key: 50,
+              name: '信创技术是否说明',
+              tip: '检查信创技术说明',
+            },
+          ],
+          color: 'rgb(79,70,229)',
+          count: 5,
+          icon: <ProfileOutlined style={{ color: 'rgb(79,70,229)' }} />,
+          key: 4,
+          name: '业务清晰度验证',
+          status: 1,
+          tip: '关键业务要素明确性检查',
+        },
+        // {
+        //   bgColor: 'rgb(240,253,250)',
+        //   children: [
+        //     {
+        //       category: 3,
+        //       key: 60,
+        //       method: [2],
+        //       name: '采集来源是否清楚',
+        //       status: [],
+        //       steps:
+        //         '1、获取本次建设项目的项目名称A\r\n2、提取A中的关键信息\r\n3、从申请表中获取关联的项目名称B',
+        //       time: '2025-07-02',
+        //       tip: '验证项目关联关系',
+        //     },
+        //   ],
+        //   color: 'rgb(13,148,136)',
+        //   count: 4,
+        //   icon: <LinkOutlined style={{ color: 'rgb(13,148,136)' }} />,
+        //   key: 5,
+        //   name: '关联性验证',
+        //   status: 2,
+        //   tip: '项目、系统、机房、专网关联检查',
+        // },
+      ],
+      size: 1.5,
+      status: 1,
+      system: '智能审核系统v2.0',
+      updateTime: '2025-06-28 08:00',
+      user: '赵六',
+      warnNum: 4,
     },
+    {
+      company: '区块链技术中心',
+      downloadCount: 15,
+      errorList: [
+        {
+          area: '第36页',
+          checkRes: '文档中提及新建机房，违反不予立项条款',
+          checkStatus: 3,
+          id: 111,
+          name: '不予立项核验',
+        },
+        {
+          area: '第56页，申请表第2页',
+          checkRes: '基础平台建设费用在可研报告与申请表中不一致',
+          checkStatus: 3,
+          id: 112,
+          name: '跨文件造价一致性核验',
+        },
+        {
+          area: '第23页',
+          checkRes: '缺少附表3：系统运行维护费估算表',
+          checkStatus: 2,
+          id: 113,
+          name: '附表齐全核验',
+        },
+        {
+          area: '第22页',
+          checkRes: '信创技术描述不够详细，缺少具体技术方案',
+          checkStatus: 2,
+          id: 114,
+          name: '信创描述',
+        },
+        {
+          area: '第2页、第56页',
+          checkRes: '建议统一文档中的投资金额描述',
+          checkStatus: 4,
+          id: 115,
+          name: '上下文造价一致性',
+        },
+      ],
+      fraction: 78,
+      groupName: '区块链政务服务项目',
+      id: 5,
+      money: '650万元',
+      name: '区块链政务服务平台可研报告.pdf',
+      passNum: 29,
+      range: '2025年3月 - 2026年3月',
+      rejectNum: 3,
+      ruleList: [
+        {
+          alertObj: {
+            passNum: 2,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(239,246,255)',
+          children: [
+            {
+              area: '全文档',
+              checkRes: '✓ 文档包含所有必需章节',
+              checkStatus: 1,
+              desc: '已检查7个主要章节：总论、需求分析、设计方案、运营保障、预算经费、风险分析、效益分析，全部符合模板要求',
+              key: 10,
+              name: '缺章少节核验',
+              tip: '提取模板规定的章节与可研报告章节进行比对',
+            },
+            {
+              area: '第23页',
+              checkRes: '⚠ 缺少附表3：系统运行维护费估算表',
+              checkStatus: 2,
+              desc: '模板要求5个附表，实际提供4个。缺少：系统运行维护费估算表',
+              key: 11,
+              name: '附表齐全核验',
+              tip: '检查模板要求的附表是否齐全',
+            },
+            {
+              area: '附表1-4',
+              checkRes: '✓ 附表结构符合规范要求',
+              checkStatus: 1,
+              desc: '表格一级标题、二级标题格式正确，包含：系统开发实施工作量测算表、软硬件配置清单、系统运行维护费估算表、项目投资估算表',
+              key: 12,
+              name: '附表规范性核验',
+              tip: '检查附表结构标准性',
+            },
+          ],
+          color: 'rgb(37,99,235)',
+          count: 3,
+          icon: <FileTextOutlined style={{ color: 'rgb(37,99,235)' }} />,
+          key: 0,
+          name: '结构完整性验证',
+          status: 1,
+          tip: '文档结构、章节、附表完整性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 0,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(240,253,244)',
+          children: [
+            {
+              area: '第56页，申请表第2页',
+              checkRes: '✗ 发现造价不一致',
+              checkStatus: 3,
+              desc: '系统填报：441万元，项目申请表：441万元，可研报告总计：441万元，但分项明细存在差异：基础平台建设75万元与申请表中的80万元不符',
+              key: 20,
+              name: '跨文件造价一致性核验',
+              tip: '对比系统填报、项目申请表、可研报告三处造价',
+            },
+            {
+              area: '第2章、第3章',
+              checkRes: '✓ 服务内容完全覆盖需求分析',
+              checkStatus: 1,
+              desc: '需求分析中的11项功能需求在建设方案中均有对应实现',
+              key: 21,
+              name: '需求内容是否在服务内容中全部体现',
+              tip: '验证需求分析与建设内容的对应关系',
+            },
+          ],
+          color: 'rgb(22,163,74)',
+          count: 2,
+          icon: <BarChartOutlined style={{ color: 'rgb(22,163,74)' }} />,
+          key: 1,
+          name: '数据一致性验证',
+          status: 1,
+          tip: '跨文件数据一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 5,
+            rejectNum: 2,
+            warnNum: 1,
+          },
+          bgColor: 'rgb(255,247,237)',
+          children: [
+            {
+              area: '第36页',
+              checkRes: '✗ 文档中提及新建机房，违反不予立项条款',
+              checkStatus: 3,
+              desc: '在第36页中提到"新建数据中心机房"，违反了"原则上不允许建设机房"的政策要求',
+              key: 30,
+              name: '不予立项核验',
+              tip: '检查是否违反不予立项条款',
+            },
+            {
+              area: '第46页',
+              checkRes: '✓ 系统定级为等级保护三级',
+              checkStatus: 1,
+              desc: '在第46页明确提出系统按照等级保护三级标准建设',
+              key: 31,
+              name: '系统定级是否明确',
+              tip: '提取系统等级保护定级信息',
+            },
+            {
+              area: '第44-48页',
+              checkRes: '✓ 详细描述了安全防护措施',
+              checkStatus: 1,
+              desc: '第44-48页详细描述了物理安全、网络安全、系统安全、应用安全、数据安全五个层面的防护措施',
+              key: 32,
+              name: '对应的安全防护是否描述',
+              tip: '检查等级保护措施描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创描述不够详细',
+              checkStatus: 2,
+              desc: '仅在第22页简单提及信创要求，缺少具体的信创技术方案和产品选型',
+              key: 33,
+              name: '信创是否描述',
+              tip: '检查信创技术描述',
+            },
+            {
+              area: '第22页',
+              checkRes: '✓ 明确了政务云部署方案',
+              checkStatus: 1,
+              desc: '第40页详细说明了基于政务云的部署架构',
+              key: 34,
+              name: '上云是否描述',
+              tip: '检查上云方案描述',
+            },
+          ],
+          color: 'rgb(234,88,12)',
+          count: 8,
+          icon: <ExclamationCircleOutlined style={{ color: 'rgb(234,88,12)' }} />,
+          key: 2,
+          name: '合规性验证',
+          status: 1,
+          tip: '合规要求和政策符合性检查',
+        },
+        {
+          alertObj: {
+            passNum: 1,
+            rejectNum: 1,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(250,245,255)',
+          children: [
+            {
+              area: '第56页',
+              checkRes: '✓ 总价与分项汇总一致',
+              checkStatus: 1,
+              desc: '总投资441万元与各分项汇总金额一致：基础平台75万+交换平台120万+信息库50万+专项建设160万+监理实施36万=441万',
+              key: 40,
+              name: '总分造价是否一致',
+              tip: '比对总预算与分项预算',
+            },
+            {
+              area: '第2页、第56页',
+              checkRes: '⚠ 发现造价描述不一致',
+              checkStatus: 2,
+              desc: '第2页概述中提到"投资约450万元"，与第56页详细预算441万元存在差异',
+              key: 41,
+              name: '上下文造价是否一致',
+              tip: '检查文档内造价数据一致性',
+            },
+          ],
+          color: 'rgb(147,51,234)',
+          count: 2,
+          icon: <PayCircleOutlined style={{ color: 'rgb(147,51,234)' }} />,
+          key: 3,
+          name: '财务合规性验证',
+          status: 1,
+          tip: '预算数据准确性和一致性检查',
+        },
+        {
+          alertObj: {
+            passNum: 3,
+            rejectNum: 2,
+            warnNum: 0,
+          },
+          bgColor: 'rgb(238,242,255)',
+          children: [
+            {
+              area: '第7-8页',
+              checkRes: '✓ 数据来源清晰明确',
+              checkStatus: 1,
+              desc: '明确列出了12个业务部门作为数据来源：公安、工商、税务、质监、民政、劳动、计生等',
+              key: 50,
+              name: '采集来源是否清楚',
+              tip: '检查数据采集来源描述',
+            },
+            {
+              area: '第25-28页',
+              checkRes: '✓ 数据归集方案明确',
+              checkStatus: 1,
+              desc: '详细描述了星型交换结构的数据归集模式',
+              key: 50,
+              name: '数据归集是否清楚',
+              tip: '检查数据归集方案',
+            },
+            {
+              area: '第22页',
+              checkRes: '⚠ 信创技术说明不充分',
+              checkStatus: 2,
+              desc: '未详细说明信创产品的具体选型和技术路线',
+              key: 50,
+              name: '信创技术是否说明',
+              tip: '检查信创技术说明',
+            },
+          ],
+          color: 'rgb(79,70,229)',
+          count: 5,
+          icon: <ProfileOutlined style={{ color: 'rgb(79,70,229)' }} />,
+          key: 4,
+          name: '业务清晰度验证',
+          status: 1,
+          tip: '关键业务要素明确性检查',
+        },
+        // {
+        //   bgColor: 'rgb(240,253,250)',
+        //   children: [
+        //     {
+        //       category: 3,
+        //       key: 60,
+        //       method: [2],
+        //       name: '采集来源是否清楚',
+        //       status: [],
+        //       steps:
+        //         '1、获取本次建设项目的项目名称A\r\n2、提取A中的关键信息\r\n3、从申请表中获取关联的项目名称B',
+        //       time: '2025-07-02',
+        //       tip: '验证项目关联关系',
+        //     },
+        //   ],
+        //   color: 'rgb(13,148,136)',
+        //   count: 4,
+        //   icon: <LinkOutlined style={{ color: 'rgb(13,148,136)' }} />,
+        //   key: 5,
+        //   name: '关联性验证',
+        //   status: 2,
+        //   tip: '项目、系统、机房、专网关联检查',
+        // },
+      ],
+      size: 2.7,
+      status: 2,
+      system: '智能审核系统v2.0',
+      updateTime: '2025-06-06 14:52',
+      user: '孙七',
+      warnNum: 6,
+    },
+  ];
+
+  const getList = () => {
+    setList(listData);
+    setPagination({
+      ...pagination,
+      total: listData.length,
+    });
   };
 
-  const handleCancel = () => {
-    setFileList([]);
-    setCurrentUploadObj(null);
-    setOpen(false);
-  };
-  const getList = async () => {
-    const postData = {
-      inputs: {
-        query: 'select * from mysql1.file',
-      },
-      response_mode: 'blocking',
-      user,
-    };
-    try {
-      const res = await fetch(`${prefix}/workflows/run`, {
-        body: JSON.stringify(postData),
-        headers: {
-          'Authorization': `Bearer ${appKeys.list}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const result = await res.json();
-      const listData = result?.data?.outputs?.text?.[0].result;
-      setList(listData);
-      setPagination({
-        ...pagination,
-        total: listData.length,
-      });
-    } catch (err) {
-      console.log('Error', err);
-    }
-  };
-  const runWork = async () => {
-    if (!currentUploadObj) return;
-    const postData = {
-      inputs: {
-        file: [],
-        file_id: currentUploadObj.id,
-        id: currentUploadObj.id,
-        name: currentUploadObj.name,
-        project_name: '测试项目',
-        transfer_method: 'local_file',
-        type: 'document',
-        upload_file_id: currentUploadObj.id,
-      },
-      project_name: '测试项目',
-      response_mode: 'blocking',
-      user,
-    };
-    try {
-      message.success('文档开始审核');
-      setOpen(false);
-      getList();
-      const res = await fetch(`${prefix}/workflows/run`, {
-        body: JSON.stringify(postData),
-        headers: {
-          'Authorization': `Bearer ${appKeys.run}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-    } catch (err) {
-      console.log('Error', err);
-    }
-  };
-
-  const add = async () => {
-    if (!currentUploadObj) return;
-    const postData = {
-      inputs: {
-        created_at: '2025-06-29',
-        id: currentUploadObj.id,
-        name: currentUploadObj.name,
-      },
-      // id: currentUploadObj.id,
-      // name: currentUploadObj.name,
-      response_mode: 'blocking',
-      user,
-    };
-    try {
-      const res = await fetch(`${prefix}/workflows/run`, {
-        body: JSON.stringify(postData),
-        headers: {
-          'Authorization': `Bearer ${appKeys.add}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      // 去审核
-      runWork();
-    } catch (err) {
-      console.log('Error', err);
-    }
-  };
-
+  const [current, setCurrent] = useState<any>(list[0]);
   const openLeft = async (record: any) => {
     setCurrent(record);
-    if (record.review_summary) {
-      const detailData = JSON.parse(record.review_summary);
-      setDetail(detailData);
-    } else {
-      setDetail({});
-    }
-    if (record.review_report) {
-      const str = record.review_report;
-      console.log('str', str);
-      try {
-        // const mdStr = await convertMarkdownToMdast(str);
-        // const mdxSource = await serialize(str, {
-        //   mdxOptions: {
-        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
-        //   },
-        //   parseFrontmatter: true,
-        // });
-        const mdxDom = await parseMarkdown(str);
-        // // console.log('mdxStr', mdxStr);
-        // const mdxSource = await serialize(mdxDom, {
-        //   mdxOptions: {
-        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
-        //   },
-        //   parseFrontmatter: true,
-        // });
-        setMd(mdxDom);
-      } catch (err) {
-        console.log('格式化失败', err);
-        setMd('');
-      }
-    } else {
-      setMd('');
-    }
-    // setWidth(400);
+    setLeftVisible(false);
     setDetailVisible(true);
   };
 
+  const getStatusIcon = (status: any, fontSize = 26, marginRight = 10) => {
+    let comp: any;
+    switch (status) {
+      case 1: {
+        comp = <CheckCircleOutlined style={{ color: 'rgb(22,163,74)', fontSize, marginRight }} />;
+        break;
+      }
+
+      case 2: {
+        comp = <WarningOutlined style={{ color: 'rgb(234,88,12)', fontSize, marginRight }} />;
+        break;
+      }
+
+      case 3: {
+        comp = <CloseCircleOutlined style={{ color: 'rgb(220,38,38)', fontSize, marginRight }} />;
+
+        break;
+      }
+
+      default: {
+        comp = (
+          <ExclamationCircleOutlined style={{ color: 'rgb(59,130,246)', fontSize, marginRight }} />
+        );
+      }
+    }
+    return comp;
+  };
+  const getStatusTag = (status: any, fontSize = 16, padding = '4px 6px') => {
+    let comp: any;
+    switch (status) {
+      case 1: {
+        comp = (
+          <Tag color="green" style={{ fontSize, padding }}>
+            审核通过
+          </Tag>
+        );
+        break;
+      }
+
+      case 2: {
+        comp = (
+          <Tag color="orange" style={{ fontSize, padding }}>
+            有警告
+          </Tag>
+        );
+        break;
+      }
+
+      case 3: {
+        comp = (
+          <Tag color="red" style={{ fontSize, padding }}>
+            审核不通过
+          </Tag>
+        );
+
+        break;
+      }
+
+      default: {
+        comp = (
+          <Tag color="blue" style={{ fontSize, padding }}>
+            有建议
+          </Tag>
+        );
+      }
+    }
+    return comp;
+  };
+
+  const colorMap: any = {
+    1: 'rgb(22,163,74)',
+    2: 'rgb(234,88,12)',
+    3: 'rgb(220,38,38)',
+    4: 'rgb(59,130,246)',
+  };
+
   const columns: TableColumnsType<DataType> = [
-    { dataIndex: 'file_name', title: '方案名称' },
     {
-      dataIndex: 'upload_time',
-      render: (value) => {
-        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+      dataIndex: 'info_name',
+      render: (_value, record: any) => {
+        return (
+          <div className={S.infoItem}>
+            <Tag
+              className={S.infoIcon}
+              color="rgb(239,246,255)"
+              icon={<FileDoneOutlined style={{ color: 'rgb(37,99,235)' }} />}
+              style={{
+                fontSize: 30,
+                height: 60,
+                lineHeight: '60px',
+                marginRight: 20,
+                textAlign: 'center',
+                width: 60,
+              }}
+            />
+            <div className={S.infoRight}>
+              <div className={S.infoName}>{record.name}</div>
+              <div className={S.infoTip}>
+                <span style={{ color: '#535252' }}>
+                  大小：{record.size}MB • 下载：{record.downloadCount}次
+                </span>
+              </div>
+            </div>
+          </div>
+        );
       },
-      title: '文件上传时间',
+      title: '文档信息',
     },
     {
-      dataIndex: 'status',
-      render: (value) => {
-        return <Tag color="orange">{value}</Tag>;
+      dataIndex: 'info_project',
+      render: (_value, record: any) => {
+        return (
+          <div className={S.infoProject}>
+            <div className={S.infoProjectName}>{record.groupName}</div>
+            <div className={S.infoProjectItem}>
+              <UserOutlined style={{ marginRight: 8 }} />
+              {record.user}
+            </div>
+            <div className={S.infoProjectItem}>
+              <BankOutlined style={{ marginRight: 8 }} />
+              {record.company}
+            </div>
+            <div className={S.infoProjectItem}>
+              <PayCircleOutlined style={{ marginRight: 8 }} />
+              {record.money}
+            </div>
+          </div>
+        );
       },
-      title: '文档审核状态',
+      title: '项目信息',
+    },
+    {
+      dataIndex: 'info_result',
+      render: (_value, record: any) => {
+        return (
+          <div className={S.infoResult}>
+            <div className={S.infoResultItem}>
+              {getStatusIcon(record.status)}
+              {getStatusTag(record.status)}
+            </div>
+            <div className={S.infoResultFraction} style={{ color: colorMap[record.status] }}>
+              {record.fraction}分
+            </div>
+          </div>
+        );
+      },
+      title: '审核结果',
+    },
+    {
+      dataIndex: 'info_status',
+      render: (_value, record: any) => {
+        return (
+          <div className={S.infoStatus}>
+            <div className={S.infoStatusItem}>
+              <div style={{ marginRight: 120 }}>通过：</div>
+              <div style={{ color: colorMap[1] }}>{record.passNum}</div>
+            </div>
+            <div className={S.infoStatusItem}>
+              <div style={{ marginRight: 120 }}>警告：</div>
+              <div style={{ color: colorMap[2] }}>{record.warnNum}</div>
+            </div>
+            <div className={S.infoStatusItem}>
+              <div style={{ marginRight: 120 }}>不通过：</div>
+              <div style={{ color: colorMap[3] }}>{record.rejectNum}</div>
+            </div>
+            <div className={S.infoStatusTime}>
+              <FieldTimeOutlined style={{ marginRight: 8 }} />
+              {record.updateTime}
+            </div>
+          </div>
+        );
+      },
+      title: '审核详情',
     },
     {
       dataIndex: 'action',
       render: (_value, record) => {
-        return <EyeOutlined onClick={() => openLeft(record)} />;
+        return (
+          <div className={S.action}>
+            <Button
+              onClick={() => {
+                openLeft(record);
+              }}
+              style={{ fontSize: 18 }}
+              type="link"
+            >
+              查看详情
+            </Button>
+            <DownloadOutlined style={{ color: '#535252' }} />
+            <Button style={{ color: '#535252' }} type="text">
+              •••
+            </Button>
+          </div>
+        );
       },
-      title: '审核报告',
+      title: '操作',
     },
   ];
   const onSelectChange = (newSelectedRowKeys: any[]) => {
@@ -268,6 +1781,41 @@ const Container = memo<PropsWithChildren>(() => {
     onChange: onSelectChange,
     selectedRowKeys,
   };
+
+  const overviewList: any[] = [
+    {
+      bgColor: 'rgb(239,246,255)',
+      color: 'rgb(37,99,235)',
+      count: 5,
+      icon: <FileDoneOutlined style={{ color: 'rgb(37,99,235)' }} />,
+      key: 0,
+      name: '总报告数',
+    },
+    {
+      bgColor: 'rgb(240,253,244)',
+      color: 'rgb(22,163,74)',
+      count: 2,
+      icon: <CheckCircleOutlined style={{ color: 'rgb(22,163,74)' }} />,
+      key: 1,
+      name: '审核通过',
+    },
+    {
+      bgColor: 'rgb(255,247,237)',
+      color: 'rgb(234,88,12)',
+      count: 8,
+      icon: <WarningOutlined style={{ color: 'rgb(234,88,12)' }} />,
+      key: 2,
+      name: '有警告',
+    },
+    {
+      bgColor: 'rgb(254,226,226)',
+      color: 'rgb(220,38,38)',
+      count: 2,
+      icon: <CloseCircleOutlined style={{ color: 'rgb(220,38,38)' }} />,
+      key: 3,
+      name: '不通过',
+    },
+  ];
 
   useEffect(() => {
     getList();
@@ -286,25 +1834,40 @@ const Container = memo<PropsWithChildren>(() => {
           <div className={S.leftContent}>
             <Header />
             <div className={S.tableContent}>
-              <div className={S.tip}>
-                参考数据模板及数据格式要求，准备并上传您的方案文档，文档质量直接影响审核效果。
-                <span style={{ color: '#0072f5' }}>查看示例文档</span>
-              </div>
               <div className={S.btns}>
-                <div className={S.left}>
-                  <Button onClick={() => getList()} type="primary">
-                    刷新
-                  </Button>
-                  <Button type="text">批量导出</Button>
-                </div>
-                <Button icon={<PlusOutlined />} onClick={() => setOpen(true)} type="primary">
-                  上传方案文档
+                <div className={S.tip}>查看和管理所有已完成的文档审核报告</div>
+                <Button icon={<DownloadOutlined />} type="primary">
+                  批量导出
                 </Button>
+              </div>
+              <div className={S.overview}>
+                {overviewList.map((i) => (
+                  <div className={S.item} key={i.key}>
+                    <Tag
+                      className={S.itemIcon}
+                      color={i.bgColor}
+                      icon={i.icon}
+                      style={{
+                        fontSize: 30,
+                        height: 60,
+                        lineHeight: '60px',
+                        textAlign: 'center',
+                        width: 60,
+                      }}
+                    />
+                    <div className={S.mid}>
+                      <div className={S.itemName}>{i.name}</div>
+                      <div className={S.itemTip} style={{ color: i.color }}>
+                        {i.count}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
               <div className={S.tableBox}>
                 <div className={S.filter}>
                   <Input
-                    placeholder="请输入方案名称"
+                    placeholder="搜索报告名称、项目名称、提交人..."
                     prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                   />
                   <Select
@@ -318,8 +1881,18 @@ const Container = memo<PropsWithChildren>(() => {
                     ]}
                     style={{ width: 120 }}
                   />
+                  <Select
+                    className={S.filterSelect}
+                    defaultValue="jack2"
+                    options={[
+                      { label: '全部时间', value: 'jack2' },
+                      { label: '今天', value: 'lucy2' },
+                      { label: '本周', value: 'Yiminghe2' },
+                      { label: '本月', value: 'Yiminghe22' },
+                    ]}
+                    style={{ width: 120 }}
+                  />
                   <Button type="text">重置</Button>
-                  <Button type="text">删除</Button>
                 </div>
                 <Table<DataType>
                   columns={columns}
@@ -335,179 +1908,62 @@ const Container = memo<PropsWithChildren>(() => {
         {detailVisible && (
           <div className={S.drawer}>
             <div className={S.drawerHeader}>
-              <div>审核报告详情</div>
+              <div>方案审核报告</div>
               <Button
                 className={S.drawerClose}
                 icon={<CloseOutlined />}
                 onClick={() => {
                   setDetailVisible(false);
-                }}
-                shape="circle"
-              />
-            </div>
-            <div className={S.drawerContent}>
-              {detail['基本信息'] ? (
-                <div className={S.baseInfo}>
-                  <div className={S.infoTitle}>基本信息</div>
-
-                  {Object.keys(detail['基本信息']).map((key, index) => (
-                    <div className={S.infoItem} key={index}>
-                      <div className={S.label}>{key}</div>
-                      <div className={S.value}>{detail['基本信息'][key]}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <Empty style={{ marginTop: 100 }} />
-              )}
-              {detail['审核概览'] && (
-                <>
-                  <div className={S.title}>审核概览</div>
-                  <div className={S.overview}>
-                    <div className={S.percent}>{detail['审核概览']['整体通过率'] || '--'}</div>
-                    <div>整体通过率</div>
-                  </div>
-                  <div className={S.alert}>
-                    <Alert
-                      action={
-                        <Button size="small" type="text">
-                          {detail['问题统计']['严重问题'] || 0}
-                        </Button>
-                      }
-                      message="严重问题"
-                      type="error"
-                    />
-                  </div>
-                  <div className={S.alert}>
-                    <Alert
-                      action={
-                        <Button size="small" type="text">
-                          {detail['问题统计']['警告问题'] || 0}
-                        </Button>
-                      }
-                      message="警告问题"
-                      type="warning"
-                    />
-                  </div>
-                  <div className={S.alert}>
-                    <Alert
-                      action={
-                        <Button size="small" type="text">
-                          {detail['问题统计']['建议优化'] || 0}
-                        </Button>
-                      }
-                      message="建议优化"
-                      type="info"
-                    />
-                  </div>
-                </>
-              )}
-              {detail['问题详情'] && (
-                <>
-                  <div className={S.title}>问题详情</div>
-                  {detail['问题详情'].map((i: any, index: any) => (
-                    <div className={S.alert} key={index}>
-                      <Alert
-                        message={
-                          <div className={S.alertContent}>
-                            {/* <div className={S.alertItem1}>不予立项核验</div> */}
-                            <div className={S.alertItem1}>{i['描述']}</div>
-                            <div className={S.alertItem1}>位置：{i['位置']}</div>
-                          </div>
-                        }
-                        type={
-                          i['类型'] === '严重问题'
-                            ? 'error'
-                            : i['类型'] === '警告问题'
-                              ? 'warning'
-                              : 'info'
-                        }
-                      />
-                    </div>
-                  ))}
-                </>
-              )}
-              {detail['基本信息'] && (
-                <>
-                  <div className={S.bigBtn}>
-                    <Button
-                      block
-                      onClick={() => {
-                        setLeftVisible(false);
-                        setDetailVisible(false);
-                        setReportVisible(true);
-                      }}
-                      type="primary"
-                    >
-                      查看审核报告
-                    </Button>
-                  </div>
-                  <div className={S.bigBtn}>
-                    <Button block>新增版本</Button>
-                  </div>
-                  <div className={S.bigBtn}>
-                    <Button block danger type="primary">
-                      删除数据集
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-        {reportVisible && (
-          <div className={S.reportDrawer}>
-            <div className={S.drawerHeader}>
-              <div>审核报告</div>
-              <Button
-                className={S.drawerClose}
-                icon={<CloseOutlined />}
-                onClick={() => {
-                  setReportVisible(false);
                   setLeftVisible(true);
                 }}
                 shape="circle"
               />
             </div>
             <div className={S.drawerContent}>
-              {current && current.review_report && md ? (
-                <div className={mdxStyle['markdown-body']}>
-                  <div dangerouslySetInnerHTML={{ __html: md }} />
+              <div className={S.drawerBtns}>
+                <Button icon={<EyeOutlined />} type="text">
+                  查看原文档
+                </Button>
+                <Button icon={<DownloadOutlined />} type="primary">
+                  导出报告
+                </Button>
+              </div>
+              <div className={S.overviewCard}>
+                <div>
+                  {' '}
+                  <div className={S.infoItem}>
+                    <Tag
+                      className={S.infoIcon}
+                      color="rgb(239,246,255)"
+                      icon={<FileDoneOutlined style={{ color: 'rgb(37,99,235)' }} />}
+                      style={{
+                        fontSize: 30,
+                        height: 60,
+                        lineHeight: '60px',
+                        marginRight: 20,
+                        textAlign: 'center',
+                        width: 60,
+                      }}
+                    />
+                    <div className={S.infoRight}>
+                      <div className={S.infoName}>{current.name}</div>
+                      <div className={S.infoTip}>
+                        <span style={{ color: '#535252' }}>{current.groupName}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div>{current.fraction}%</div>
+                    <div>综合得分</div>
+                  </div>
                 </div>
-              ) : (
-                <Empty style={{ marginTop: 100 }} />
-              )}
+              </div>
+              <div className={S.ruleCard}>1</div>
+              <div className={S.errCard}>1</div>
             </div>
           </div>
         )}
       </div>
-      <Modal
-        closable={{ 'aria-label': 'Custom Close Button' }}
-        footer={
-          <div className={S.modalFooter}>
-            <Button onClick={handleCancel}>取消</Button>
-            <Button
-              className={S.primaryColor}
-              disabled={!currentUploadObj}
-              onClick={() => add()}
-              style={{ marginLeft: 16 }}
-              type="primary"
-            >
-              开始审核
-            </Button>
-          </div>
-        }
-        open={open}
-        title="文档上传"
-      >
-        <Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">单击或拖动文件到此区域进行上传</p>
-          <p className="ant-upload-hint">上传文件成功后，点击开始审核，即可开启文档审核</p>
-        </Dragger>
-      </Modal>
     </Flexbox>
   );
 });
