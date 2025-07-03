@@ -9,7 +9,7 @@
   flex: 1;
   height: 100%;
 }
-.mainContent {
+.tableContent {
   height: calc(100vh - 100px);
   overflow-y: auto;
   padding: 30px;
@@ -83,10 +83,19 @@
 
 .drawer {
   height: 100vh;
+  width: 400px;
+  background-color: #fff;
+  border-left: 1px solid #d5d5d5;
+}
+.reportDrawer {
+  flex: 1;
+    height: 100vh;
+  /* width: 400px; */
   background-color: #fff;
   border-left: 1px solid #d5d5d5;
 }
 .drawerHeader {
+  width: 100%;
   border-bottom: 1px solid #d5d5d5;
   height: 70px;
   padding: 16px;
@@ -101,6 +110,7 @@
   cursor: pointer;
 }
 .drawerContent {
+    width: 100%;
   padding: 16px;
   height: calc(100vh - 70px);
   overflow-y: auto;
