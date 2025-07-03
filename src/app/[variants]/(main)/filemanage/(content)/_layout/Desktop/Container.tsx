@@ -1,7 +1,10 @@
 'use client';
 
 import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
   CloseOutlined,
+  CloudSyncOutlined,
   EyeOutlined,
   InboxOutlined,
   PlusOutlined,
@@ -58,6 +61,7 @@ const Container = memo<PropsWithChildren>(() => {
     showTotal: (total: any) => `共${total}条`,
     total: 0,
   });
+  const [loading, setLoading] = useState(false);
 
   const props: UploadProps = {
     action: prefix + '/files/upload',
@@ -98,6 +102,7 @@ const Container = memo<PropsWithChildren>(() => {
     setOpen(false);
   };
   const getList = async () => {
+    setLoading(true);
     const postData = {
       inputs: {
         query: 'select * from mysql1.file',
@@ -126,6 +131,8 @@ const Container = memo<PropsWithChildren>(() => {
       });
     } catch (err) {
       console.log('Error', err);
+    } finally {
+      setLoading(false);
     }
   };
   const runWork = async () => {
@@ -236,6 +243,45 @@ const Container = memo<PropsWithChildren>(() => {
     setDetailVisible(true);
   };
 
+  const getStatusDom = (status: string) => {
+    let com;
+    switch (status) {
+      case '待审核': {
+        com = (
+          <Tag color="#F59E0B" icon={<ClockCircleOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+      case '审核中': {
+        com = (
+          <Tag color="#3B82F6" icon={<CloudSyncOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+      case '审核完成': {
+        com = (
+          <Tag color="#10B981" icon={<CheckCircleOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+      default: {
+        com = (
+          <Tag color="#F59E0B" icon={<ClockCircleOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+    }
+    return com;
+  };
+
   const columns: TableColumnsType<DataType> = [
     { dataIndex: 'file_name', title: '方案名称' },
     {
@@ -248,7 +294,7 @@ const Container = memo<PropsWithChildren>(() => {
     {
       dataIndex: 'status',
       render: (value) => {
-        return <Tag color="orange">{value}</Tag>;
+        return getStatusDom(value);
       },
       title: '文档审核状态',
     },
@@ -324,6 +370,7 @@ const Container = memo<PropsWithChildren>(() => {
                 <Table<DataType>
                   columns={columns}
                   dataSource={list}
+                  loading={loading}
                   pagination={pagination}
                   rowKey={(record: any) => record.file_id}
                   rowSelection={rowSelection}

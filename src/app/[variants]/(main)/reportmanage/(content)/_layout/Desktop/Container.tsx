@@ -4,8 +4,10 @@ import {
   BankOutlined,
   BarChartOutlined,
   CheckCircleOutlined,
+  ClockCircleOutlined,
   CloseCircleOutlined,
   CloseOutlined,
+  DownOutlined,
   DownloadOutlined,
   ExclamationCircleOutlined,
   EyeOutlined,
@@ -14,6 +16,8 @@ import {
   FileTextOutlined,
   PayCircleOutlined,
   ProfileOutlined,
+  RightOutlined,
+  ScheduleOutlined,
   SearchOutlined,
   UserOutlined,
   WarningOutlined,
@@ -39,46 +43,15 @@ interface DataType {
 
 const Container = memo<PropsWithChildren>(() => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
-  const [leftVisible, setLeftVisible] = useState(false);
+  const [leftVisible, setLeftVisible] = useState(true);
   const [detailVisible, setDetailVisible] = useState(true);
   const [list, setList] = useState<any>([]);
+  const [keys, setKeys] = useState([0, 1, 2, 3, 4]);
   // const [current, setCurrent] = useState<any>(list[0]);
   const [pagination, setPagination] = useState<any>({
     showTotal: (total: any) => `共${total}条`,
     total: 0,
   });
-
-  // const getList = async () => {
-  //   const postData = {
-  //     inputs: {
-  //       query: 'select * from mysql1.file',
-  //     },
-  //     response_mode: 'blocking',
-  //     user,
-  //   };
-  //   try {
-  //     const res = await fetch(`${prefix}/workflows/run`, {
-  //       body: JSON.stringify(postData),
-  //       headers: {
-  //         'Authorization': `Bearer ${appKeys.list}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       method: 'POST',
-  //     });
-  //     if (!res.ok) {
-  //       throw new Error(`HTTP error! status: ${res.status}`);
-  //     }
-  //     const result = await res.json();
-  //     const listData = result?.data?.outputs?.text?.[0].result;
-  //     setList(listData);
-  //     setPagination({
-  //       ...pagination,
-  //       total: listData.length,
-  //     });
-  //   } catch (err) {
-  //     console.log('Error', err);
-  //   }
-  // };
 
   const listData: any[] = [
     {
@@ -1045,7 +1018,9 @@ const Container = memo<PropsWithChildren>(() => {
           ],
           color: 'rgb(37,99,235)',
           count: 3,
-          icon: <FileTextOutlined style={{ color: 'rgb(37,99,235)' }} />,
+          icon: (
+            <FileTextOutlined style={{ color: 'rgb(37,99,235)', fontSize: 26, marginRight: 20 }} />
+          ),
           key: 0,
           name: '结构完整性验证',
           status: 1,
@@ -1080,7 +1055,9 @@ const Container = memo<PropsWithChildren>(() => {
           ],
           color: 'rgb(22,163,74)',
           count: 2,
-          icon: <BarChartOutlined style={{ color: 'rgb(22,163,74)' }} />,
+          icon: (
+            <BarChartOutlined style={{ color: 'rgb(22,163,74)', fontSize: 26, marginRight: 20 }} />
+          ),
           key: 1,
           name: '数据一致性验证',
           status: 1,
@@ -1142,7 +1119,11 @@ const Container = memo<PropsWithChildren>(() => {
           ],
           color: 'rgb(234,88,12)',
           count: 8,
-          icon: <ExclamationCircleOutlined style={{ color: 'rgb(234,88,12)' }} />,
+          icon: (
+            <ExclamationCircleOutlined
+              style={{ color: 'rgb(234,88,12)', fontSize: 26, marginRight: 20 }}
+            />
+          ),
           key: 2,
           name: '合规性验证',
           status: 1,
@@ -1177,7 +1158,11 @@ const Container = memo<PropsWithChildren>(() => {
           ],
           color: 'rgb(147,51,234)',
           count: 2,
-          icon: <PayCircleOutlined style={{ color: 'rgb(147,51,234)' }} />,
+          icon: (
+            <PayCircleOutlined
+              style={{ color: 'rgb(147,51,234)', fontSize: 26, marginRight: 20 }}
+            />
+          ),
           key: 3,
           name: '财务合规性验证',
           status: 1,
@@ -1221,35 +1206,14 @@ const Container = memo<PropsWithChildren>(() => {
           ],
           color: 'rgb(79,70,229)',
           count: 5,
-          icon: <ProfileOutlined style={{ color: 'rgb(79,70,229)' }} />,
+          icon: (
+            <ProfileOutlined style={{ color: 'rgb(79,70,229)', fontSize: 26, marginRight: 20 }} />
+          ),
           key: 4,
           name: '业务清晰度验证',
           status: 1,
           tip: '关键业务要素明确性检查',
         },
-        // {
-        //   bgColor: 'rgb(240,253,250)',
-        //   children: [
-        //     {
-        //       category: 3,
-        //       key: 60,
-        //       method: [2],
-        //       name: '采集来源是否清楚',
-        //       status: [],
-        //       steps:
-        //         '1、获取本次建设项目的项目名称A\r\n2、提取A中的关键信息\r\n3、从申请表中获取关联的项目名称B',
-        //       time: '2025-07-02',
-        //       tip: '验证项目关联关系',
-        //     },
-        //   ],
-        //   color: 'rgb(13,148,136)',
-        //   count: 4,
-        //   icon: <LinkOutlined style={{ color: 'rgb(13,148,136)' }} />,
-        //   key: 5,
-        //   name: '关联性验证',
-        //   status: 2,
-        //   tip: '项目、系统、机房、专网关联检查',
-        // },
       ],
       size: 1.5,
       status: 1,
@@ -1644,11 +1608,85 @@ const Container = memo<PropsWithChildren>(() => {
     return comp;
   };
 
+  const getStatusSmTag = (status: any, fontSize = 14, padding = '2px 4px') => {
+    let comp: any;
+    switch (status) {
+      case 1: {
+        comp = (
+          <Tag color="green" style={{ fontSize, padding }}>
+            通过
+          </Tag>
+        );
+        break;
+      }
+
+      case 2: {
+        comp = (
+          <Tag color="orange" style={{ fontSize, padding }}>
+            警告
+          </Tag>
+        );
+        break;
+      }
+
+      case 3: {
+        comp = (
+          <Tag color="red" style={{ fontSize, padding }}>
+            不通过
+          </Tag>
+        );
+
+        break;
+      }
+
+      default: {
+        comp = (
+          <Tag color="blue" style={{ fontSize, padding }}>
+            建议
+          </Tag>
+        );
+      }
+    }
+    return comp;
+  };
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const getStatusText = (status: any) => {
+    let str: any;
+    switch (status) {
+      case 1: {
+        str = '通过';
+        break;
+      }
+
+      case 2: {
+        str = '警告';
+        break;
+      }
+
+      case 3: {
+        str = '严重问题';
+        break;
+      }
+
+      default: {
+        str = '建议';
+      }
+    }
+    return str;
+  };
+
   const colorMap: any = {
     1: 'rgb(22,163,74)',
     2: 'rgb(234,88,12)',
     3: 'rgb(220,38,38)',
     4: 'rgb(59,130,246)',
+  };
+
+  const colorBgMap: any = {
+    1: 'rgb(239,246,255)',
+    2: 'rgb(255,247,237)',
+    3: 'rgb(254,242,242)',
+    4: 'rgb(239,246,255)',
   };
 
   const columns: TableColumnsType<DataType> = [
@@ -1817,6 +1855,17 @@ const Container = memo<PropsWithChildren>(() => {
     },
   ];
 
+  const handleClickItem = (key: any) => {
+    const hasExit = keys.find((i) => i === key);
+    let newList = [];
+    if (hasExit || hasExit === 0) {
+      newList = keys.filter((i) => i !== key);
+    } else {
+      newList = keys.concat([key]);
+    }
+    setKeys(newList);
+  };
+
   useEffect(() => {
     getList();
   }, []);
@@ -1898,14 +1947,14 @@ const Container = memo<PropsWithChildren>(() => {
                   columns={columns}
                   dataSource={list}
                   pagination={pagination}
-                  rowKey={(record: any) => record.file_id}
+                  rowKey={(record: any) => record.id}
                   rowSelection={rowSelection}
                 />
               </div>
             </div>
           </div>
         )}
-        {detailVisible && (
+        {detailVisible && current && (
           <div className={S.drawer}>
             <div className={S.drawerHeader}>
               <div>方案审核报告</div>
@@ -1921,7 +1970,7 @@ const Container = memo<PropsWithChildren>(() => {
             </div>
             <div className={S.drawerContent}>
               <div className={S.drawerBtns}>
-                <Button icon={<EyeOutlined />} type="text">
+                <Button icon={<EyeOutlined />} style={{ marginRight: 10 }}>
                   查看原文档
                 </Button>
                 <Button icon={<DownloadOutlined />} type="primary">
@@ -1929,8 +1978,7 @@ const Container = memo<PropsWithChildren>(() => {
                 </Button>
               </div>
               <div className={S.overviewCard}>
-                <div>
-                  {' '}
+                <div className={S.overviewCardHeader}>
                   <div className={S.infoItem}>
                     <Tag
                       className={S.infoIcon}
@@ -1952,14 +2000,189 @@ const Container = memo<PropsWithChildren>(() => {
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <div>{current.fraction}%</div>
-                    <div>综合得分</div>
+                  <div className={S.overviewCardHeaderRight}>
+                    <div
+                      className={S.overview_fraction}
+                      style={{ color: colorMap[current.status] }}
+                    >
+                      {current.fraction}%
+                    </div>
+                    <div className={S.overview_text}>综合得分</div>
+                  </div>
+                </div>
+                <div className={S.overview_list}>
+                  <div
+                    className={S.overview_item}
+                    style={{ backgroundColor: 'rgb(242, 245, 242)' }}
+                  >
+                    <div className={S.overview_item_count}>
+                      {current.passNum + current.warnNum + current.rejectNum}
+                    </div>
+                    <div>总规则数</div>
+                  </div>
+                  <div
+                    className={S.overview_item}
+                    style={{ backgroundColor: 'rgb(240,253,244)', color: colorMap[1] }}
+                  >
+                    <div className={S.overview_item_count}>{current.passNum}</div>
+                    <div>通过</div>
+                  </div>
+                  <div
+                    className={S.overview_item}
+                    style={{ backgroundColor: 'rgb(255,247,237)', color: colorMap[2] }}
+                  >
+                    <div className={S.overview_item_count}>{current.warnNum}</div>
+                    <div>警告</div>
+                  </div>
+                  <div
+                    className={S.overview_item}
+                    style={{ backgroundColor: 'rgb(254,226,226)', color: colorMap[3] }}
+                  >
+                    <div className={S.overview_item_count}>{current.rejectNum}</div>
+                    <div>不通过</div>
+                  </div>
+                </div>
+                <div className={S.overview_info}>
+                  <div className={S.overview_info_item}>
+                    <BankOutlined style={{ fontSize: 20 }} />
+                    <div className={S.overview_info_name}>实施单位：</div>
+                    <div>{current.company}</div>
+                  </div>
+                  <div className={S.overview_info_item}>
+                    <UserOutlined />
+                    <div className={S.overview_info_name}>联系人：</div>
+                    <div>{current.user}</div>
+                  </div>
+                  <div className={S.overview_info_item}>
+                    <PayCircleOutlined />
+                    <div className={S.overview_info_name}>总预算：</div>
+                    <div>{current.money}</div>
+                  </div>
+                  <div className={S.overview_info_item}>
+                    <ScheduleOutlined />
+                    <div className={S.overview_info_name}>计划周期：</div>
+                    <div>{current.range}</div>
+                  </div>
+                  <div className={S.overview_info_item}>
+                    <ClockCircleOutlined />
+                    <div className={S.overview_info_name}>审核时间：</div>
+                    <div>{current.updateTime}</div>
+                  </div>
+                  <div className={S.overview_info_item}>
+                    <FileDoneOutlined />
+                    <div className={S.overview_info_name}>审核系统：</div>
+                    <div>{current.system}</div>
                   </div>
                 </div>
               </div>
-              <div className={S.ruleCard}>1</div>
-              <div className={S.errCard}>1</div>
+              <div className={S.ruleCard}>
+                <div className={S.filter}>
+                  <Input
+                    placeholder="搜索审核规则..."
+                    prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  />
+                  <Select
+                    className={S.filterSelect}
+                    defaultValue="jack"
+                    options={[
+                      { label: '全部分类', value: 'jack' },
+                      { label: '结构完整性', value: 'lucy' },
+                      { label: '数据一致性', value: 'Yiminghe' },
+                      { label: '合规性验证', value: 'Yiminghe2' },
+                      { label: '财务合规性', value: 'lucy3' },
+                      { label: '业务清晰度', value: 'Yiminghe3' },
+                      { label: '关联性验证', value: 'Yiminghe23' },
+                    ]}
+                    style={{ width: 200 }}
+                  />
+                </div>
+                <div className={S.rule_list}>
+                  {current.ruleList.map((i: any) => (
+                    <div className={S.rule_item} key={i.key} onClick={() => handleClickItem(i.key)}>
+                      <div className={S.rule_item_header}>
+                        <div className={S.infoItem}>
+                          <div style={{ fontSize: 30, marginRight: 20 }}>{i.icon}</div>
+                          <div className={S.infoRight}>
+                            <div className={S.infoName}>{i.name}</div>
+                            <div className={S.infoTip}>
+                              <span style={{ color: '#535252' }}>{i.tip}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className={S.status_right}>
+                          <span style={{ color: colorMap[1] }}>{i.alertObj.passNum} 通过</span>
+                          <span style={{ color: colorMap[2] }}>{i.alertObj.warnNum} 警告</span>
+                          <span style={{ color: colorMap[3] }}>{i.alertObj.rejectNum} 不通过</span>
+                          {keys.includes(i.key) ? <DownOutlined /> : <RightOutlined />}
+                        </div>
+                      </div>
+                      {keys.includes(i.key) && (
+                        <div className={S.rule_item_content}>
+                          {i.children.map((k: any) => (
+                            <div className={S.content_item} key={k.key}>
+                              <div className={S.content_item_header}>
+                                <div className={S.infoItem}>
+                                  <div>{getStatusIcon(k.checkStatus, 26, 16)}</div>
+                                  <div className={S.infoRight}>
+                                    <div className={S.infoName} style={{ marginBottom: 4 }}>
+                                      {k.name}
+                                    </div>
+                                    <div className={S.infoTip}>
+                                      <span style={{ color: '#535252' }}>{k.tip}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div>
+                                  {getStatusSmTag(k.checkStatus)}
+                                  <span className={S.content_item_area}>{k.area}</span>
+                                </div>
+                              </div>
+                              <div className={S.content_item_bottom}>
+                                <div className={S.content_item_result}>
+                                  检查结果：<span>{k.checkRes}</span>
+                                </div>
+                                <div className={S.content_item_text}>
+                                  详细说明：<span>{k.desc}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className={S.errCard}>
+                <div className={S.errCard_header}>重点问题汇总</div>
+                <div className={S.errCard_list}>
+                  {current.errorList.map((o: any) => (
+                    <div
+                      className={S.errCard_item}
+                      key={o.key}
+                      style={{
+                        backgroundColor: colorBgMap[o.checkStatus],
+                        borderColor: colorMap[o.checkStatus],
+                      }}
+                    >
+                      <div className={S.errCard_item_1}>
+                        <div>{getStatusIcon(o.checkStatus)}</div>
+                        <div style={{ fontSize: 20, marginRight: 16 }}>{o.name}</div>
+                        <div style={{ color: colorMap[o.checkStatus] }}>
+                          {getStatusText(o.checkStatus)}
+                        </div>
+                      </div>
+                      <div className={S.errCard_item_2}>
+                        <span>{o.checkRes}</span>
+                      </div>
+                      <div>
+                        <span>位置：</span>
+                        <span>{o.area}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
