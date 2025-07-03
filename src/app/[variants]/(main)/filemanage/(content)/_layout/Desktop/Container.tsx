@@ -1,7 +1,10 @@
 'use client';
 
 import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
   CloseOutlined,
+  CloudSyncOutlined,
   EyeOutlined,
   InboxOutlined,
   PlusOutlined,
@@ -10,14 +13,14 @@ import {
 import { Alert, Button, Empty, Input, Modal, Select, Table, Tag, Upload, message } from 'antd';
 import type { TableColumnsType, TableProps, UploadProps } from 'antd';
 import dayjs from 'dayjs';
-import { MDXRemote } from 'next-mdx-remote';
-import { serialize } from 'next-mdx-remote/serialize';
 import { PropsWithChildren, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
 import Header from '@/components/Header';
+import { parseMarkdown } from '@/utils/parseMarkdown';
 
 import S from './Container.module.css';
+import mdxStyle from './mdx.module.css';
 
 const { Dragger } = Upload;
 
@@ -34,10 +37,10 @@ const user = 'lixiumin';
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
 interface DataType {
-  address: any;
-  age: any;
-  key: any;
-  name: any;
+  action: any;
+  file_name: any;
+  status: any;
+  upload_time: any;
 }
 
 const Container = memo<PropsWithChildren>(() => {
@@ -54,6 +57,11 @@ const Container = memo<PropsWithChildren>(() => {
   const [current, setCurrent] = useState<any>(null);
   const [detail, setDetail] = useState<any>({});
   const [md, setMd] = useState<any>('');
+  const [pagination, setPagination] = useState<any>({
+    showTotal: (total: any) => `共${total}条`,
+    total: 0,
+  });
+  const [loading, setLoading] = useState(false);
 
   const props: UploadProps = {
     action: prefix + '/files/upload',
@@ -94,6 +102,7 @@ const Container = memo<PropsWithChildren>(() => {
     setOpen(false);
   };
   const getList = async () => {
+    setLoading(true);
     const postData = {
       inputs: {
         query: 'select * from mysql1.file',
@@ -116,8 +125,14 @@ const Container = memo<PropsWithChildren>(() => {
       const result = await res.json();
       const listData = result?.data?.outputs?.text?.[0].result;
       setList(listData);
+      setPagination({
+        ...pagination,
+        total: listData.length,
+      });
     } catch (err) {
       console.log('Error', err);
+    } finally {
+      setLoading(false);
     }
   };
   const runWork = async () => {
@@ -140,6 +155,7 @@ const Container = memo<PropsWithChildren>(() => {
     try {
       message.success('文档开始审核');
       setOpen(false);
+      getList();
       const res = await fetch(`${prefix}/workflows/run`, {
         body: JSON.stringify(postData),
         headers: {
@@ -198,13 +214,72 @@ const Container = memo<PropsWithChildren>(() => {
     }
     if (record.review_report) {
       const str = record.review_report;
-      const mdxSource = await serialize(str);
-      setMd(mdxSource);
+      console.log('str', str);
+      try {
+        // const mdStr = await convertMarkdownToMdast(str);
+        // const mdxSource = await serialize(str, {
+        //   mdxOptions: {
+        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
+        //   },
+        //   parseFrontmatter: true,
+        // });
+        const mdxDom = await parseMarkdown(str);
+        // // console.log('mdxStr', mdxStr);
+        // const mdxSource = await serialize(mdxDom, {
+        //   mdxOptions: {
+        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
+        //   },
+        //   parseFrontmatter: true,
+        // });
+        setMd(mdxDom);
+      } catch (err) {
+        console.log('格式化失败', err);
+        setMd('');
+      }
     } else {
       setMd('');
     }
     // setWidth(400);
     setDetailVisible(true);
+  };
+
+  const getStatusDom = (status: string) => {
+    let com;
+    switch (status) {
+      case '待审核': {
+        com = (
+          <Tag color="#F59E0B" icon={<ClockCircleOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+      case '审核中': {
+        com = (
+          <Tag color="#3B82F6" icon={<CloudSyncOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+      case '审核完成': {
+        com = (
+          <Tag color="#10B981" icon={<CheckCircleOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+      default: {
+        com = (
+          <Tag color="#F59E0B" icon={<ClockCircleOutlined />}>
+            {status}
+          </Tag>
+        );
+        break;
+      }
+    }
+    return com;
   };
 
   const columns: TableColumnsType<DataType> = [
@@ -219,12 +294,12 @@ const Container = memo<PropsWithChildren>(() => {
     {
       dataIndex: 'status',
       render: (value) => {
-        return <Tag color="orange">{value}</Tag>;
+        return getStatusDom(value);
       },
       title: '文档审核状态',
     },
     {
-      dataIndex: 'address2',
+      dataIndex: 'action',
       render: (_value, record) => {
         return <EyeOutlined onClick={() => openLeft(record)} />;
       },
@@ -295,6 +370,8 @@ const Container = memo<PropsWithChildren>(() => {
                 <Table<DataType>
                   columns={columns}
                   dataSource={list}
+                  loading={loading}
+                  pagination={pagination}
                   rowKey={(record: any) => record.file_id}
                   rowSelection={rowSelection}
                 />
@@ -441,7 +518,9 @@ const Container = memo<PropsWithChildren>(() => {
             </div>
             <div className={S.drawerContent}>
               {current && current.review_report && md ? (
-                <MDXRemote {...md} />
+                <div className={mdxStyle['markdown-body']}>
+                  <div dangerouslySetInnerHTML={{ __html: md }} />
+                </div>
               ) : (
                 <Empty style={{ marginTop: 100 }} />
               )}

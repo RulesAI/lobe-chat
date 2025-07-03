@@ -1,4 +1,7 @@
+import remarkGfm from 'remark-gfm';
+import remarkParse from 'remark-parse';
 import { Md5 } from 'ts-md5';
+import { unified } from 'unified';
 
 import { PLUGIN_SCHEMA_API_MD5_PREFIX, PLUGIN_SCHEMA_SEPARATOR } from '@/const/plugin';
 
@@ -18,4 +21,9 @@ export const genToolCallingName = (identifier: string, name: string, type: strin
   }
 
   return apiName;
+};
+
+export const convertMarkdownToMdast = async (md: string) => {
+  // @ts-ignore
+  return unified().use(remarkParse).use(remarkGfm).parse(md.trim());
 };

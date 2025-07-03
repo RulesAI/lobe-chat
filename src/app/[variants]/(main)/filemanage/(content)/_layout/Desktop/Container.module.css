@@ -143,3 +143,8 @@
 .filterSelect {
   margin-left: 16px !important;
 }
+
+.status_dom {
+  display: flex;
+  align-items: center;
+}
