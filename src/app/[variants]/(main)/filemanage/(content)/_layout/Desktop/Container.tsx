@@ -139,18 +139,35 @@ const Container = memo<PropsWithChildren>(() => {
   };
   const runWork = async () => {
     if (!currentUploadObj) return;
+    // const postData = {
+    //   inputs: {
+    //     file: currentFile,
+    //     file_id: currentUploadObj.id,
+    //     id: currentUploadObj.id,
+    //     name: currentUploadObj.name,
+    //     project_name: '测试项目',
+    //     transfer_method: 'local_file',
+    //     type: 'document',
+    //     upload_file_id: currentUploadObj.id,
+    //   },
+    //   project_name: '测试项目',
+    //   response_mode: 'blocking',
+    //   user,
+    // };
     const postData = {
+      files: [],
       inputs: {
-        file: [],
+        file: [
+          {
+            transfer_method: 'local_file',
+            type: 'document',
+            upload_file_id: currentUploadObj.id,
+            url: '',
+          },
+        ],
         file_id: currentUploadObj.id,
-        id: currentUploadObj.id,
-        name: currentUploadObj.name,
-        project_name: '测试项目',
-        transfer_method: 'local_file',
-        type: 'document',
-        upload_file_id: currentUploadObj.id,
+        project_name: currentUploadObj.id,
       },
-      project_name: '测试项目',
       response_mode: 'blocking',
       user,
     };
@@ -178,7 +195,7 @@ const Container = memo<PropsWithChildren>(() => {
     if (!currentUploadObj) return;
     const postData = {
       inputs: {
-        created_at: '2025-06-29',
+        created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         id: currentUploadObj.id,
         name: currentUploadObj.name,
       },
@@ -491,14 +508,14 @@ const Container = memo<PropsWithChildren>(() => {
                       查看审核报告
                     </Button>
                   </div>
-                  <div className={S.bigBtn}>
+                  {/* <div className={S.bigBtn}>
                     <Button block>新增版本</Button>
                   </div>
                   <div className={S.bigBtn}>
                     <Button block danger type="primary">
                       删除数据集
                     </Button>
-                  </div>
+                  </div> */}
                 </>
               )}
             </div>
