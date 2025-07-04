@@ -1,5 +1,6 @@
 'use client';
 
+import { StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider, NeutralColors, PrimaryColors } from '@lobehub/ui';
 import { ThemeAppearance } from 'antd-style';
 import 'antd/dist/reset.css';
@@ -33,7 +34,11 @@ const AppTheme = memo<AppThemeProps>(({ children }) => {
   useEffect(() => {
     setCookie(LOBE_THEME_NEUTRAL_COLOR, neutralColor);
   }, [neutralColor]);
-  return <ConfigProvider config={{}}>{children}</ConfigProvider>;
+  return (
+    <StyleProvider hashPriority="high">
+      <ConfigProvider config={{}}>{children}</ConfigProvider>
+    </StyleProvider>
+  );
 });
 
 export default AppTheme;

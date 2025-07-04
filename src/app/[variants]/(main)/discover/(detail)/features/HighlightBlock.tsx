@@ -11,45 +11,48 @@ import { useServerConfigStore } from '@/store/serverConfig';
 
 import CardBanner from '../../components/CardBanner';
 
-const useStyles = createStyles(({ css, token }) => ({
-  background: css`
-    pointer-events: none;
-
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    transform: scale(3);
-
-    overflow: hidden;
-
-    &::before {
-      content: '';
+const useStyles = createStyles(({ css, token }) => {
+  console.log('token004', token.colorBgContainer);
+  return {
+    background: css`
+      pointer-events: none;
 
       position: absolute;
-      z-index: 1;
+      z-index: 0;
       inset: 0;
+      transform: scale(3);
 
-      width: 100%;
-      height: 100%;
+      overflow: hidden;
 
-      background: ${rgba(token.colorBgContainer, 0.5)};
-    }
-  `,
-  container: css`
-    position: relative;
-    overflow: hidden;
-    border-radius: ${token.borderRadiusLG}px;
-    box-shadow:
-      0 0 0 1px ${token.colorFill} inset,
-      ${token.boxShadowTertiary};
-  `,
-  header: css`
-    position: relative;
-    overflow: hidden;
-    height: 58px;
-    border-block-end: 1px solid ${token.colorBorderSecondary};
-  `,
-}));
+      &::before {
+        content: '';
+
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background: ${rgba(token.colorBgContainer, 0.5)};
+      }
+    `,
+    container: css`
+      position: relative;
+      overflow: hidden;
+      border-radius: ${token.borderRadiusLG}px;
+      box-shadow:
+        0 0 0 1px ${token.colorFill} inset,
+        ${token.boxShadowTertiary};
+    `,
+    header: css`
+      position: relative;
+      overflow: hidden;
+      height: 58px;
+      border-block-end: 1px solid ${token.colorBorderSecondary};
+    `,
+  };
+});
 
 interface HighlightBlockProps extends FlexboxProps {
   avatar?: string | ReactNode;

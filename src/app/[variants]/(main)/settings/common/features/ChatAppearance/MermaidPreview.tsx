@@ -19,7 +19,7 @@ const MermaidPreview = memo<{ theme?: MermaidProps['theme'] }>(
     return (
       <Block
         style={{
-          background: token.colorBgContainerSecondary,
+          background: token.colorBgContainerSecondary || '#fafafa',
           marginBlock: 16,
           minHeight: 320,
           paddingBottom: 16,

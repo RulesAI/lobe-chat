@@ -5,6 +5,7 @@ import { memo } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
 const useStyles = createStyles(({ css, token }) => {
+  console.log('token007', token.colorBorderSecondary);
   return {
     agent: css`
       padding: 4px;
@@ -31,7 +32,7 @@ const useStyles = createStyles(({ css, token }) => {
       background: ${token.colorBgLayout};
     `,
     conversation: css`
-      background: ${token.colorBgContainerSecondary};
+      background: ${token.colorBgContainerSecondary || '#fafafa'};
     `,
     header: css`
       border-block-end: 1px solid ${token.colorBorderSecondary};

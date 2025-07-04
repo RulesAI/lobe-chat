@@ -12,8 +12,8 @@ const preformat = (id: string) =>
 const useStyles = createStyles(({ css, token, responsive }) => ({
   container: css`
     color: ${token.colorTextQuaternary};
-    background: ${token.colorBgContainerSecondary};
-    box-shadow: 0 3px 4px -2px ${token.colorBgContainerSecondary};
+    background: ${token.colorBgContainerSecondary || '#fafafa'};
+    box-shadow: 0 3px 4px -2px ${token.colorBgContainerSecondary || '#fafafa'};
 
     ${responsive.mobile} {
       background: ${token.colorBgContainer};

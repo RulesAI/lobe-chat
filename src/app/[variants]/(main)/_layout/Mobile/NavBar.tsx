@@ -14,19 +14,22 @@ import { useActiveTabKey } from '@/hooks/useActiveTabKey';
 import { SidebarTabKey } from '@/store/global/initialState';
 import { featureFlagsSelectors, useServerConfigStore } from '@/store/serverConfig';
 
-const useStyles = createStyles(({ css, token }) => ({
-  active: css`
-    svg {
-      fill: ${rgba(token.colorPrimary, 0.33)};
-    }
-  `,
-  container: css`
-    position: fixed;
-    z-index: 100;
-    inset-block-end: 0;
-    inset-inline: 0 0;
-  `,
-}));
+const useStyles = createStyles(({ css, token }) => {
+  console.log('token001', token.colorPrimary);
+  return {
+    active: css`
+      svg {
+        fill: ${rgba(token.colorPrimary, 0.33)};
+      }
+    `,
+    container: css`
+      position: fixed;
+      z-index: 100;
+      inset-block-end: 0;
+      inset-inline: 0 0;
+    `,
+  };
+});
 
 const NavBar = memo(() => {
   const { t } = useTranslation('common');

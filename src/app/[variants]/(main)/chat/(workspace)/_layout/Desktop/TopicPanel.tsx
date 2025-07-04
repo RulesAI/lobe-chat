@@ -19,7 +19,7 @@ const useStyles = createStyles(({ css, token }) => ({
   `,
   drawer: css`
     z-index: 20;
-    background: ${token.colorBgContainerSecondary};
+    background: ${token.colorBgContainerSecondary || '#fafafa'};
   `,
   header: css`
     border-block-end: 1px solid ${token.colorBorderSecondary};

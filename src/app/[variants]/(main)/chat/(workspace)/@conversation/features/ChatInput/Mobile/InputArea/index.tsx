@@ -12,6 +12,7 @@ import { Flexbox } from 'react-layout-kit';
 import InnerContainer from './Container';
 
 const useStyles = createStyles(({ css, token }) => {
+  console.log('token003', token.colorBorder);
   return {
     container: css`
       flex: none;

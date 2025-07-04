@@ -1,7 +1,9 @@
 import { createStyles } from 'antd-style';
 import { rgba } from 'polished';
 
-export const useStyles = createStyles(({ token, css, stylish, cx, responsive }) => ({
+export const useStyles = createStyles(({ token, css, stylish, cx, responsive }) => {
+    console.log('token013', token.colorBgContainer);
+  return {
   container: cx(
     stylish.blur,
     css`
@@ -33,4 +35,4 @@ export const useStyles = createStyles(({ token, css, stylish, cx, responsive }) 
     transform: translateY(0);
     opacity: 1;
   `,
-}));
+}});

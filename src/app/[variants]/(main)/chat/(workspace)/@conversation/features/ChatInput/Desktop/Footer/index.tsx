@@ -19,6 +19,7 @@ import SendMore from './SendMore';
 import ShortcutHint from './ShortcutHint';
 
 const useStyles = createStyles(({ css, prefixCls, token }) => {
+  console.log('token002', token.colorBgLayout);
   return {
     arrow: css`
       &.${prefixCls}-btn.${prefixCls}-btn-icon-only {

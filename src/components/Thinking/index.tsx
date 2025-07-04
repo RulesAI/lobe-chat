@@ -9,67 +9,70 @@ import { Flexbox } from 'react-layout-kit';
 
 import { CitationItem } from '@/types/message';
 
-const useStyles = createStyles(({ css, token }) => ({
-  container: css`
-    overflow: hidden;
-    border-radius: ${token.borderRadius}px;
-    color: ${token.colorTextTertiary};
-    transition: all 0.2s ${token.motionEaseOut};
-  `,
-  expand: css`
-    color: ${token.colorTextSecondary};
-    background: ${token.colorFillTertiary};
-  `,
+const useStyles = createStyles(({ css, token }) => {
+  console.log('token012', token.colorText, token.colorTextBase);
+  return {
+    container: css`
+      overflow: hidden;
+      border-radius: ${token.borderRadius}px;
+      color: ${token.colorTextTertiary};
+      transition: all 0.2s ${token.motionEaseOut};
+    `,
+    expand: css`
+      color: ${token.colorTextSecondary};
+      background: ${token.colorFillTertiary};
+    `,
 
-  header: css`
-    padding-block: 4px;
-    padding-inline: 8px 4px;
-    transition: background 0.2s ${token.motionEaseOut};
-    transition: all 0.2s ${token.motionEaseOut};
+    header: css`
+      padding-block: 4px;
+      padding-inline: 8px 4px;
+      transition: background 0.2s ${token.motionEaseOut};
+      transition: all 0.2s ${token.motionEaseOut};
 
-    &:hover {
+      &:hover {
+        background: ${token.colorFillQuaternary};
+      }
+    `,
+
+    headerExpand: css`
+      color: ${token.colorTextSecondary};
       background: ${token.colorFillQuaternary};
-    }
-  `,
+    `,
+    shinyText: css`
+      color: ${rgba(token.colorText, 0.45)};
 
-  headerExpand: css`
-    color: ${token.colorTextSecondary};
-    background: ${token.colorFillQuaternary};
-  `,
-  shinyText: css`
-    color: ${rgba(token.colorText, 0.45)};
+      background: linear-gradient(
+        120deg,
+        ${rgba(token.colorTextBase, 0)} 40%,
+        ${token.colorTextSecondary} 50%,
+        ${rgba(token.colorTextBase, 0)} 60%
+      );
+      background-clip: text;
+      background-size: 200% 100%;
 
-    background: linear-gradient(
-      120deg,
-      ${rgba(token.colorTextBase, 0)} 40%,
-      ${token.colorTextSecondary} 50%,
-      ${rgba(token.colorTextBase, 0)} 60%
-    );
-    background-clip: text;
-    background-size: 200% 100%;
+      animation: shine 1.5s linear infinite;
 
-    animation: shine 1.5s linear infinite;
+      @keyframes shine {
+        0% {
+          background-position: 100%;
+        }
 
-    @keyframes shine {
-      0% {
-        background-position: 100%;
+        100% {
+          background-position: -100%;
+        }
       }
+    `,
+    title: css`
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
 
-      100% {
-        background-position: -100%;
-      }
-    }
-  `,
-  title: css`
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-
-    font-size: 12px;
-    text-overflow: ellipsis;
-  `,
-}));
+      font-size: 12px;
+      text-overflow: ellipsis;
+    `,
+  };
+});
 
 interface ThinkingProps {
   citations?: CitationItem[];

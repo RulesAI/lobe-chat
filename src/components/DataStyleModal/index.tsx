@@ -5,24 +5,27 @@ import { rgba } from 'polished';
 import { ReactNode, memo } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
-const useStyles = createStyles(({ css, token, prefixCls, isDarkMode }) => ({
-  modalTitle: css`
-    &.${prefixCls}-modal-header {
-      height: 80px;
-      background:
-        linear-gradient(
-          180deg,
-          ${rgba(token.colorBgElevated, 0)},
-          ${token.colorBgContainer} ${isDarkMode ? '80' : '140'}px
-        ),
-        fixed 0 0 /10px 10px radial-gradient(${token.colorFill} 1px, transparent 0);
-    }
+const useStyles = createStyles(({ css, token, prefixCls, isDarkMode }) => {
+  console.log('token010', token.colorBgElevated);
+  return {
+    modalTitle: css`
+      &.${prefixCls}-modal-header {
+        height: 80px;
+        background:
+          linear-gradient(
+            180deg,
+            ${rgba(token.colorBgElevated, 0)},
+            ${token.colorBgContainer} ${isDarkMode ? '80' : '140'}px
+          ),
+          fixed 0 0 /10px 10px radial-gradient(${token.colorFill} 1px, transparent 0);
+      }
 
-    & .${prefixCls}-modal-title {
-      font-size: 24px;
-    }
-  `,
-}));
+      & .${prefixCls}-modal-title {
+        font-size: 24px;
+      }
+    `,
+  };
+});
 
 interface DataStyleModalProps {
   children: ReactNode;

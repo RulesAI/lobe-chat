@@ -15,27 +15,30 @@ import { MAX_WIDTH } from '../../../features/const';
 import { useNav } from '../../../features/useNav';
 import { useScroll } from './useScroll';
 
-export const useStyles = createStyles(({ cx, stylish, css, token }) => ({
-  container: cx(
-    stylish.blur,
-    css`
-      position: absolute;
-      z-index: 9;
-      inset-block-start: 52px;
-      inset-inline: 0 0;
+export const useStyles = createStyles(({ cx, stylish, css, token }) => {
+  console.log('token005', token.colorBgContainerSecondary);
+  return {
+    container: cx(
+      stylish.blur,
+      css`
+        position: absolute;
+        z-index: 9;
+        inset-block-start: 52px;
+        inset-inline: 0 0;
 
-      padding-block: 4px;
-      border-block-end: 1px solid ${token.colorBorderSecondary};
+        padding-block: 4px;
+        border-block-end: 1px solid ${token.colorBorderSecondary};
 
-      background: ${rgba(token.colorBgContainerSecondary, 0.9)};
+        background: ${rgba(token.colorBgContainerSecondary || '#fafafa', 0.9)};
 
-      transition: all 0.3s ${token.motionEaseInOut};
+        transition: all 0.3s ${token.motionEaseInOut};
+      `,
+    ),
+    hide: css`
+      transform: translateY(-150%);
     `,
-  ),
-  hide: css`
-    transform: translateY(-150%);
-  `,
-}));
+  };
+});
 
 const Nav = memo(() => {
   const [hide, setHide] = useState(false);

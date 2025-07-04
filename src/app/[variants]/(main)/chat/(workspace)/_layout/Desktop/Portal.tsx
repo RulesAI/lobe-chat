@@ -30,7 +30,7 @@ const useStyles = createStyles(({ css, token }) => ({
   panel: css`
     overflow: hidden;
     height: 100%;
-    background: ${token.colorBgContainerSecondary};
+    background: ${token.colorBgContainerSecondary || '#fafafa'};
   `,
 }));
 

@@ -14,38 +14,41 @@ import Card from './Card';
 import DeviceName from './DeviceName';
 import SystemIcon from './SystemIcon';
 
-const useStyles = createStyles(({ css, cx, responsive, isDarkMode, token, stylish }) => ({
-  container: css`
-    position: relative;
-    width: 100%;
-    border-radius: ${token.borderRadiusLG}px;
-  `,
-  content: css`
-    z-index: 2;
-    padding: 8px;
-    border-radius: ${token.borderRadiusLG - 1}px;
-    background: ${rgba(token.colorBgContainer, isDarkMode ? 0.7 : 1)};
-  `,
-  glow: cx(
-    stylish.gradientAnimation,
-    css`
-      pointer-events: none;
-      opacity: 0.5;
-      background-image: linear-gradient(
-        -45deg,
-        ${isDarkMode ? token.geekblue4 : token.geekblue},
-        ${isDarkMode ? token.cyan4 : token.cyan}
-      );
-      animation-duration: 10s;
+const useStyles = createStyles(({ css, cx, responsive, isDarkMode, token, stylish }) => {
+  console.log('token008', token.colorBgContainer);
+  return {
+    container: css`
+      position: relative;
+      width: 100%;
+      border-radius: ${token.borderRadiusLG}px;
     `,
-  ),
-  wrapper: css`
-    ${responsive.mobile} {
-      padding-block: 8px;
-      padding-inline: 4px;
-    }
-  `,
-}));
+    content: css`
+      z-index: 2;
+      padding: 8px;
+      border-radius: ${token.borderRadiusLG - 1}px;
+      background: ${rgba(token.colorBgContainer, isDarkMode ? 0.7 : 1)};
+    `,
+    glow: cx(
+      stylish.gradientAnimation,
+      css`
+        pointer-events: none;
+        opacity: 0.5;
+        background-image: linear-gradient(
+          -45deg,
+          ${isDarkMode ? token.geekblue4 : token.geekblue},
+          ${isDarkMode ? token.cyan4 : token.cyan}
+        );
+        animation-duration: 10s;
+      `,
+    ),
+    wrapper: css`
+      ${responsive.mobile} {
+        padding-block: 8px;
+        padding-inline: 4px;
+      }
+    `,
+  };
+});
 
 interface DeviceCardProps {
   browser?: string;
