@@ -302,6 +302,7 @@ const RuleModal = memo(({ visible, setVisible }: ChildProps) => {
           </div>
         </div>
       }
+      onCancel={handleCancel}
       open={visible}
       title="选择审核规则"
       width={900}
