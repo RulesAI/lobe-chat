@@ -8,7 +8,7 @@ import { ServerConfigStoreProvider } from '@/store/serverConfig/Provider';
 import { getAntdLocale } from '@/utils/locale';
 
 import AntdV5MonkeyPatch from './AntdV5MonkeyPatch';
-import AppTheme from './AppTheme';
+import AppTheme from './AppTheme2';
 import ImportSettings from './ImportSettings';
 import Locale from './Locale';
 import QueryProvider from './Query';
