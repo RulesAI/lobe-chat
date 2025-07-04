@@ -20,6 +20,7 @@ import Header from '@/components/Header';
 import { parseMarkdown } from '@/utils/parseMarkdown';
 
 import S from './Container.module.css';
+import RuleModal from './RuleModal';
 import mdxStyle from './mdx.module.css';
 
 const { Dragger } = Upload;
@@ -62,6 +63,7 @@ const Container = memo<PropsWithChildren>(() => {
     total: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [ruleModalVisible, setRuleModalVisible] = useState(false);
 
   const props: UploadProps = {
     action: prefix + '/files/upload',
@@ -534,7 +536,6 @@ const Container = memo<PropsWithChildren>(() => {
           <div className={S.modalFooter}>
             <Button onClick={handleCancel}>取消</Button>
             <Button
-              className={S.primaryColor}
               disabled={!currentUploadObj}
               onClick={() => add()}
               style={{ marginLeft: 16 }}
@@ -542,8 +543,16 @@ const Container = memo<PropsWithChildren>(() => {
             >
               开始审核
             </Button>
+            <Button
+              onClick={() => setRuleModalVisible(true)}
+              style={{ marginLeft: 16 }}
+              type="default"
+            >
+              设置规则
+            </Button>
           </div>
         }
+        onCancel={handleCancel}
         open={open}
         title="文档上传"
       >
@@ -555,6 +564,7 @@ const Container = memo<PropsWithChildren>(() => {
           <p className="ant-upload-hint">上传文件成功后，点击开始审核，即可开启文档审核</p>
         </Dragger>
       </Modal>
+      <RuleModal setVisible={setRuleModalVisible} visible={ruleModalVisible} />
     </Flexbox>
   );
 });
