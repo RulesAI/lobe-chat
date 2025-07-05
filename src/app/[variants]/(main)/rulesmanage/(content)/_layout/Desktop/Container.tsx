@@ -418,7 +418,7 @@ const Container = memo<PropsWithChildren>(() => {
                               />
                             </div>
                           </div>
-                          <div>{i.tip}</div>
+                          <div className={S.childrenItemTip}>{i.tip}</div>
                           <div className={S.childrenItemBottom}>
                             <span>方法：{i.method.map((i: any) => methodsMap[i]).join(' + ')}</span>
                             <span>更新：{i.time}</span>

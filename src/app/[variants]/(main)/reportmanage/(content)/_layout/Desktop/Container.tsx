@@ -1709,7 +1709,7 @@ const Container = memo<PropsWithChildren>(() => {
               }}
             />
             <div className={S.infoRight}>
-              <div className={S.infoName}>{record.name}</div>
+              <div style={{ marginBottom: 10 }}>{record.name}</div>
               <div className={S.infoTip}>
                 <span style={{ color: '#535252' }}>
                   大小：{record.size}MB • 下载：{record.downloadCount}次

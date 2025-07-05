@@ -133,11 +133,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 19px;
+  /* font-size: 19px; */
   margin-bottom: 14px;
 }
+.childrenItemTip {
+    color: #535252;
+}
 .childrenItemBottom {
-  color: #535252;
+  color: #8a8787;
   margin-top: 16px;
 }
 .childrenItemBottom span {
