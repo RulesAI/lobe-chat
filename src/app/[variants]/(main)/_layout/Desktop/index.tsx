@@ -57,15 +57,17 @@ const Layout = memo<PropsWithChildren>(({ children }) => {
               borderStartStartRadius: !hideSideBar ? 12 : undefined,
               borderTop: `1px solid ${theme.colorBorderSecondary}`,
               overflow: 'hidden',
+              width: 'calc(100vw - 220px) !important',
             }}
-            width={'100%'}
+            // width={'calc(100vw - 220px)'}
           >
             {children}
           </Flexbox>
         ) : (
-          <div>
-            <div>{children}</div>
-          </div>
+          <div style={{ width: '100%' }}>{children}</div>
+          // <div>
+          //   <div>{children}</div>
+          // </div>
         )}
       </Flexbox>
       <HotkeyHelperPanel />

@@ -1,7 +1,8 @@
 import { TextArea } from '@lobehub/ui';
 import { createStyles } from 'antd-style';
 import { TextAreaRef } from 'antd/es/input/TextArea';
-import { RefObject, memo, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { RefObject, memo, useEffect, useRef, useState } from 'react';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +41,7 @@ interface InputAreaProps {
 }
 
 const InputArea = memo<InputAreaProps>(({ onSend, value, loading, onChange }) => {
+  const [initData, setInitData] = useState(true);
   const { enableScope, disableScope } = useHotkeysContext();
   const { t } = useTranslation('chat');
   const { styles } = useStyles();
@@ -67,7 +69,12 @@ const InputArea = memo<InputAreaProps>(({ onSend, value, loading, onChange }) =>
       window.removeEventListener('beforeunload', fn);
     };
   }, [hasValue]);
-
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get('keyword');
+  if (keyword && initData) {
+    onChange(JSON.parse(keyword));
+    setInitData(false);
+  }
   return (
     <div className={styles.textareaContainer}>
       <TextArea

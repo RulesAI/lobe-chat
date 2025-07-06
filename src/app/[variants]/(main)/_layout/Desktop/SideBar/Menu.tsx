@@ -26,6 +26,7 @@ export interface TopActionProps {
 
 const items: any[] = [
   {
+    children: ['/chat'],
     icon: <HomeOutlined />,
     key: '1',
     label: '首页',
@@ -83,8 +84,9 @@ const TopActions = memo<TopActionProps>(() => {
   const [currentKey, setCurrentKey] = useState('3');
 
   useEffect(() => {
-    console.log('当前路径:', pathname);
-    const current = items.find((i) => i.path === pathname);
+    const current = items.find(
+      (i) => i.path === pathname || (i.children && i.children.includes(pathname)),
+    );
     if (current) {
       setCurrentKey(current.key);
     }

@@ -4,11 +4,14 @@ import { unstableSetRender } from 'antd';
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
+let root: any = null;
 const AntdV5MonkeyPatch = () => {
   useEffect(() => {
     unstableSetRender((node, container) => {
-      const root = createRoot(container);
-      root.render(node);
+      if (!root) {
+        root = createRoot(container);
+        root.render(node);
+      }
       return async () => {
         root.unmount();
       };

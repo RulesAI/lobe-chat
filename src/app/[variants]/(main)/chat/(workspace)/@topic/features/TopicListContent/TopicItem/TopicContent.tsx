@@ -1,5 +1,5 @@
 import { ActionIcon, Dropdown, EditableText, Icon, type MenuProps } from '@lobehub/ui';
-import { App, Typography } from 'antd';
+import { Modal, Typography } from 'antd';
 import { createStyles } from 'antd-style';
 import {
   LucideCopy,
@@ -43,7 +43,7 @@ interface TopicContentProps {
 
 const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
   const { t } = useTranslation(['topic', 'common']);
-
+  const [modal, contextHolder] = Modal.useModal();
   const mobile = useIsMobile();
 
   const [
@@ -69,7 +69,7 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
     useChatStore.setState({ topicRenamingId: visible ? id : '' });
   };
 
-  const { modal } = App.useApp();
+  // const { modal } = App.useApp();
 
   const items = useMemo<MenuProps['items']>(
     () => [
@@ -123,12 +123,28 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
         label: t('delete', { ns: 'common' }),
         onClick: () => {
           if (!id) return;
-
           modal.confirm({
-            centered: true,
-            okButtonProps: { danger: true },
+            // centered: true,
+            // okButtonProps: { danger: true },
+            // onCancel: () => {
+            //   console.log('关闭');
+            // },
+            // onOk: async () => {
+            //   console.log('1111');
+            //   try {
+            //     await removeTopic(id);
+            //   } catch (err) {
+            //     console.log('删除失败', err);
+            //   }
+            // },
+            // title: t('actions.confirmRemoveTopic'),
             onOk: async () => {
-              await removeTopic(id);
+              console.log('1111');
+              try {
+                await removeTopic(id);
+              } catch (err) {
+                console.log('删除失败', err);
+              }
             },
             title: t('actions.confirmRemoveTopic'),
           });
@@ -211,6 +227,7 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
           />
         </Dropdown>
       )}
+      {contextHolder}
     </Flexbox>
   );
 });

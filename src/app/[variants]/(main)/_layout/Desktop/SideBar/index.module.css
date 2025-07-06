@@ -1,5 +1,6 @@
 .sideBar {
   width: 220px;
+  flex-shrink: 0;
   height: 100vh;
   border-right: 1px solid #d5d5d5;
   background-color: #fff;
