@@ -70,14 +70,17 @@
 }
 .mid {
   margin-left: 20px;
+  display: flex;
+  align-items: center;
 }
 .itemName {
   font-size: 22px;
   color: #535252;
 }
-.itemTip {
+.itemCount {
   font-size: 26px;
   font-weight: 600;
+  margin-left: 10px;
 }
 .infoItem {
   display: flex !important;

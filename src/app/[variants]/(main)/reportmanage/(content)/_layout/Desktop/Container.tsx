@@ -1906,7 +1906,7 @@ const Container = memo<PropsWithChildren>(() => {
                     />
                     <div className={S.mid}>
                       <div className={S.itemName}>{i.name}</div>
-                      <div className={S.itemTip} style={{ color: i.color }}>
+                      <div className={S.itemCount} style={{ color: i.color }}>
                         {i.count}
                       </div>
                     </div>
