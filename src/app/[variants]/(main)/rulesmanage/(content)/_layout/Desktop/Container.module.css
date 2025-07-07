@@ -109,7 +109,7 @@
   /* border-bottom: 1px solid #d5d5d5; */
 }
 .currentName {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -156,7 +156,7 @@
   width: 100%;
   border-bottom: 1px solid #d5d5d5;
   padding: 16px;
-  font-size: 20px;
+  font-size: 16px;
   display: flex;
   justify-content: space-between;
   align-items: stretch;
@@ -164,7 +164,7 @@
 .drawerHeaderTip {
   color: #979393;
   margin-top: 16px;
-  font-size: 18px;
+  font-size: 14px;
 }
 .drawerClose {
   color: #979393;
@@ -177,7 +177,7 @@
   overflow-y: auto; */
 }
 .formTitle {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   margin-bottom: 10px;
 }

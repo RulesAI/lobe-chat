@@ -351,7 +351,7 @@ const Container = memo<PropsWithChildren>(() => {
       status: 2,
       system: '智能审核系统v2.0',
       updateTime: '2025-07-03 14:56',
-      user: '张三',
+      user: '张可',
       warnNum: 7,
     },
     {
@@ -628,7 +628,7 @@ const Container = memo<PropsWithChildren>(() => {
       status: 1,
       system: '智能审核系统v2.0',
       updateTime: '2025-07-02 18:02',
-      user: '李四',
+      user: '林勒欧',
       warnNum: 2,
     },
     {
@@ -928,7 +928,7 @@ const Container = memo<PropsWithChildren>(() => {
       status: 3,
       system: '智能审核系统v2.0',
       updateTime: '2025-07-01 11:12',
-      user: '王五',
+      user: '左康',
       warnNum: 8,
     },
     {
@@ -1019,7 +1019,7 @@ const Container = memo<PropsWithChildren>(() => {
           color: 'rgb(37,99,235)',
           count: 3,
           icon: (
-            <FileTextOutlined style={{ color: 'rgb(37,99,235)', fontSize: 26, marginRight: 20 }} />
+            <FileTextOutlined style={{ color: 'rgb(37,99,235)', fontSize: 16, marginRight: 20 }} />
           ),
           key: 0,
           name: '结构完整性验证',
@@ -1056,7 +1056,7 @@ const Container = memo<PropsWithChildren>(() => {
           color: 'rgb(22,163,74)',
           count: 2,
           icon: (
-            <BarChartOutlined style={{ color: 'rgb(22,163,74)', fontSize: 26, marginRight: 20 }} />
+            <BarChartOutlined style={{ color: 'rgb(22,163,74)', fontSize: 16, marginRight: 20 }} />
           ),
           key: 1,
           name: '数据一致性验证',
@@ -1121,7 +1121,7 @@ const Container = memo<PropsWithChildren>(() => {
           count: 8,
           icon: (
             <ExclamationCircleOutlined
-              style={{ color: 'rgb(234,88,12)', fontSize: 26, marginRight: 20 }}
+              style={{ color: 'rgb(234,88,12)', fontSize: 16, marginRight: 20 }}
             />
           ),
           key: 2,
@@ -1160,7 +1160,7 @@ const Container = memo<PropsWithChildren>(() => {
           count: 2,
           icon: (
             <PayCircleOutlined
-              style={{ color: 'rgb(147,51,234)', fontSize: 26, marginRight: 20 }}
+              style={{ color: 'rgb(147,51,234)', fontSize: 16, marginRight: 20 }}
             />
           ),
           key: 3,
@@ -1207,7 +1207,7 @@ const Container = memo<PropsWithChildren>(() => {
           color: 'rgb(79,70,229)',
           count: 5,
           icon: (
-            <ProfileOutlined style={{ color: 'rgb(79,70,229)', fontSize: 26, marginRight: 20 }} />
+            <ProfileOutlined style={{ color: 'rgb(79,70,229)', fontSize: 16, marginRight: 20 }} />
           ),
           key: 4,
           name: '业务清晰度验证',
@@ -1219,7 +1219,7 @@ const Container = memo<PropsWithChildren>(() => {
       status: 1,
       system: '智能审核系统v2.0',
       updateTime: '2025-06-28 08:00',
-      user: '赵六',
+      user: '赵开往',
       warnNum: 4,
     },
     {
@@ -1519,7 +1519,7 @@ const Container = memo<PropsWithChildren>(() => {
       status: 2,
       system: '智能审核系统v2.0',
       updateTime: '2025-06-06 14:52',
-      user: '孙七',
+      user: '孙乐乐',
       warnNum: 6,
     },
   ];
@@ -1539,7 +1539,7 @@ const Container = memo<PropsWithChildren>(() => {
     setDetailVisible(true);
   };
 
-  const getStatusIcon = (status: any, fontSize = 26, marginRight = 10) => {
+  const getStatusIcon = (status: any, fontSize = 16, marginRight = 10) => {
     let comp: any;
     switch (status) {
       case 1: {
@@ -1566,7 +1566,7 @@ const Container = memo<PropsWithChildren>(() => {
     }
     return comp;
   };
-  const getStatusTag = (status: any, fontSize = 16, padding = '4px 6px') => {
+  const getStatusTag = (status: any, fontSize = 12, padding = '1px 4px') => {
     let comp: any;
     switch (status) {
       case 1: {
@@ -1608,7 +1608,7 @@ const Container = memo<PropsWithChildren>(() => {
     return comp;
   };
 
-  const getStatusSmTag = (status: any, fontSize = 14, padding = '2px 4px') => {
+  const getStatusSmTag = (status: any, fontSize = 14, padding = '1px 4px') => {
     let comp: any;
     switch (status) {
       case 1: {
@@ -1700,12 +1700,12 @@ const Container = memo<PropsWithChildren>(() => {
               color="rgb(239,246,255)"
               icon={<FileDoneOutlined style={{ color: 'rgb(37,99,235)' }} />}
               style={{
-                fontSize: 30,
-                height: 60,
-                lineHeight: '60px',
-                marginRight: 20,
+                fontSize: 22,
+                height: 40,
+                lineHeight: '40px',
+                marginRight: 16,
                 textAlign: 'center',
-                width: 60,
+                width: 40,
               }}
             />
             <div className={S.infoRight}>
@@ -1796,7 +1796,7 @@ const Container = memo<PropsWithChildren>(() => {
               onClick={() => {
                 openLeft(record);
               }}
-              style={{ fontSize: 18 }}
+              style={{ fontSize: 14 }}
               type="link"
             >
               查看详情
@@ -1897,11 +1897,11 @@ const Container = memo<PropsWithChildren>(() => {
                       color={i.bgColor}
                       icon={i.icon}
                       style={{
-                        fontSize: 30,
-                        height: 60,
-                        lineHeight: '60px',
+                        fontSize: 20,
+                        height: 40,
+                        lineHeight: '40px',
                         textAlign: 'center',
-                        width: 60,
+                        width: 40,
                       }}
                     />
                     <div className={S.mid}>
@@ -1985,12 +1985,12 @@ const Container = memo<PropsWithChildren>(() => {
                       color="rgb(239,246,255)"
                       icon={<FileDoneOutlined style={{ color: 'rgb(37,99,235)' }} />}
                       style={{
-                        fontSize: 30,
-                        height: 60,
-                        lineHeight: '60px',
+                        fontSize: 20,
+                        height: 40,
+                        lineHeight: '40px',
                         marginRight: 20,
                         textAlign: 'center',
-                        width: 60,
+                        width: 40,
                       }}
                     />
                     <div className={S.infoRight}>
@@ -2044,7 +2044,7 @@ const Container = memo<PropsWithChildren>(() => {
                 </div>
                 <div className={S.overview_info}>
                   <div className={S.overview_info_item}>
-                    <BankOutlined style={{ fontSize: 20 }} />
+                    <BankOutlined />
                     <div className={S.overview_info_name}>实施单位：</div>
                     <div>{current.company}</div>
                   </div>
@@ -2101,7 +2101,7 @@ const Container = memo<PropsWithChildren>(() => {
                     <div className={S.rule_item} key={i.key} onClick={() => handleClickItem(i.key)}>
                       <div className={S.rule_item_header}>
                         <div className={S.infoItem}>
-                          <div style={{ fontSize: 30, marginRight: 20 }}>{i.icon}</div>
+                          <div style={{ fontSize: 20, marginRight: 20 }}>{i.icon}</div>
                           <div className={S.infoRight}>
                             <div className={S.infoName}>{i.name}</div>
                             <div className={S.infoTip}>
@@ -2122,7 +2122,7 @@ const Container = memo<PropsWithChildren>(() => {
                             <div className={S.content_item} key={k.key}>
                               <div className={S.content_item_header}>
                                 <div className={S.infoItem}>
-                                  <div>{getStatusIcon(k.checkStatus, 26, 16)}</div>
+                                  <div>{getStatusIcon(k.checkStatus, 18, 16)}</div>
                                   <div className={S.infoRight}>
                                     <div className={S.infoName} style={{ marginBottom: 4 }}>
                                       {k.name}
@@ -2167,7 +2167,7 @@ const Container = memo<PropsWithChildren>(() => {
                     >
                       <div className={S.errCard_item_1}>
                         <div>{getStatusIcon(o.checkStatus)}</div>
-                        <div style={{ fontSize: 20, marginRight: 16 }}>{o.name}</div>
+                        <div style={{ fontSize: 16, marginRight: 16 }}>{o.name}</div>
                         <div style={{ color: colorMap[o.checkStatus] }}>
                           {getStatusText(o.checkStatus)}
                         </div>

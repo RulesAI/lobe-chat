@@ -397,7 +397,7 @@ const Container = memo<PropsWithChildren>(() => {
                             </div>
                             <div>
                               <Button
-                                icon={<EditOutlined style={{ color: '#8d8b8b', fontSize: 22 }} />}
+                                icon={<EditOutlined style={{ color: '#8d8b8b', fontSize: 16 }} />}
                                 onClick={() => {
                                   openDrawer(i);
                                 }}
@@ -406,14 +406,14 @@ const Container = memo<PropsWithChildren>(() => {
                               <Button
                                 icon={
                                   <CopyOutlined
-                                    style={{ color: '#8d8b8b', fontSize: 22, margin: '0 20px' }}
+                                    style={{ color: '#8d8b8b', fontSize: 16, margin: '0 20px' }}
                                   />
                                 }
                                 style={{ margin: '0 20px' }}
                                 type="text"
                               />
                               <Button
-                                icon={<DeleteOutlined style={{ color: '#8d8b8b', fontSize: 22 }} />}
+                                icon={<DeleteOutlined style={{ color: '#8d8b8b', fontSize: 16 }} />}
                                 type="text"
                               />
                             </div>

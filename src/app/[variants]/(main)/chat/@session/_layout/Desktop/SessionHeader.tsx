@@ -1,8 +1,11 @@
 'use client';
 
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { ActionIcon } from '@lobehub/ui';
+import { Button, Tooltip } from 'antd';
 import { createStyles } from 'antd-style';
 import { MessageSquarePlus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Flexbox } from 'react-layout-kit';
@@ -29,12 +32,16 @@ export const useStyles = createStyles(({ css, token }) => ({
 }));
 
 const Header = memo(() => {
+  const router = useRouter();
   const { styles } = useStyles();
   const { t } = useTranslation('chat');
   const [createSession] = useSessionStore((s) => [s.createSession]);
   const { enableWebrtc, showCreateSession } = useServerConfigStore(featureFlagsSelectors);
 
   const { mutate, isValidating } = useActionSWR('session.createSession', () => createSession());
+  const gotoHome = () => {
+    router.replace('/home');
+  };
 
   return (
     <Flexbox className={styles.top} gap={16} paddingInline={8}>
@@ -48,7 +55,15 @@ const Header = memo(() => {
             paddingTop: 2,
           }}
         >
-          <div>{` `}</div>
+          <div>
+            <Tooltip title="返回首页">
+              <Button
+                icon={<ArrowLeftOutlined style={{ color: 'rgba(0,0,0,0.45)', fontSize: 16 }} />}
+                onClick={gotoHome}
+                type="text"
+              />
+            </Tooltip>
+          </div>
           {/* <ProductLogo className={styles.logo} size={36} type={'text'} /> */}
           {enableWebrtc && <SyncStatusTag />}
         </Flexbox>
