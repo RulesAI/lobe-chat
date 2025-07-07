@@ -4,7 +4,7 @@ import { Flexbox } from 'react-layout-kit';
 import BrandTextLoading from '@/components/Loading/BrandTextLoading';
 
 import { LayoutProps } from '../type';
-// import ChatHeader from './ChatHeader';
+import ChatHeader from './ChatHeader';
 import Portal from './Portal';
 
 // import TopicPanel from './TopicPanel';
@@ -12,7 +12,7 @@ import Portal from './Portal';
 const Layout = ({ children, conversation, portal }: LayoutProps) => {
   return (
     <>
-      {/* <ChatHeader /> */}
+      <ChatHeader />
       <Flexbox
         height={'100%'}
         horizontal

@@ -46,7 +46,7 @@ const Main = memo<{ className?: string }>(({ className }) => {
   useInitAgentConfig();
   const [isPinned] = useQueryState('pinned', parseAsBoolean);
 
-  const [init, isInbox, title, avatar, backgroundColor] = useSessionStore((s) => [
+  const [isInbox, title, avatar, backgroundColor] = useSessionStore((s) => [
     sessionSelectors.isSomeSessionActive(s),
     sessionSelectors.isInboxSession(s),
     sessionMetaSelectors.currentAgentTitle(s),
@@ -59,18 +59,18 @@ const Main = memo<{ className?: string }>(({ className }) => {
   const displayTitle = isInbox ? t('inbox.title') : title;
   const showSessionPanel = useGlobalStore(systemStatusSelectors.showSessionPanel);
 
-  if (!init)
-    return (
-      <Flexbox align={'center'} className={className} gap={8} horizontal>
-        {!isPinned && !showSessionPanel && <TogglePanelButton />}
-        <Skeleton
-          active
-          avatar={{ shape: 'circle', size: 28 }}
-          paragraph={false}
-          title={{ style: { margin: 0, marginTop: 4 }, width: 200 }}
-        />
-      </Flexbox>
-    );
+  // if (!init)
+  //   return (
+  //     <Flexbox align={'center'} className={className} gap={8} horizontal>
+  //       {!isPinned && !showSessionPanel && <TogglePanelButton />}
+  //       <Skeleton
+  //         active
+  //         avatar={{ shape: 'circle', size: 28 }}
+  //         paragraph={false}
+  //         title={{ style: { margin: 0, marginTop: 4 }, width: 200 }}
+  //       />
+  //     </Flexbox>
+  //   );
 
   return (
     <Flexbox align={'center'} className={className} gap={12} horizontal>
@@ -80,7 +80,7 @@ const Main = memo<{ className?: string }>(({ className }) => {
         background={backgroundColor}
         onClick={() => openChatSettings()}
         size={32}
-        title={title}
+        title={title as any}
       />
       <Flexbox align={'center'} className={styles.container} gap={8} horizontal>
         <div className={styles.title}>{displayTitle}</div>
