@@ -5,10 +5,10 @@ import InitClientDB from '@/features/InitClientDB';
 
 import { LayoutProps } from '../type';
 import RegisterHotkeys from './RegisterHotkeys';
-import SessionPanel from './SessionPanel';
+// import SessionPanel from './SessionPanel';
 import Workspace from './Workspace';
 
-const Layout = ({ children, session }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Flexbox
@@ -17,7 +17,7 @@ const Layout = ({ children, session }: LayoutProps) => {
         style={{ maxWidth: '100%', overflow: 'hidden', position: 'relative' }}
         width={'100%'}
       >
-        <SessionPanel>{session}</SessionPanel>
+        {/* <SessionPanel>{session}</SessionPanel> */}
         <Workspace>{children}</Workspace>
       </Flexbox>
       <InitClientDB bottom={60} />

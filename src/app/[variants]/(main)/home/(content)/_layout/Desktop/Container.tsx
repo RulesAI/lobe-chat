@@ -15,7 +15,7 @@ const Container = memo<PropsWithChildren>(() => {
   const { token } = theme.useToken();
   const { colorPrimary } = token;
   const gotoChat = (value: any) => {
-    router.replace(`/chat?keyword=${JSON.stringify(value)}`);
+    router.push(`/chat?keyword=${JSON.stringify(value)}`);
   };
   const search = () => {
     const data = form.getFieldsValue(true);
