@@ -2,10 +2,10 @@
 
 import { memo } from 'react';
 
-import { useRegisterChatHotkeys } from '@/hooks/useHotkeys';
+// import { useRegisterChatHotkeys } from '@/hooks/useHotkeys';
 
 const RegisterHotkeys = memo(() => {
-  useRegisterChatHotkeys();
+  // useRegisterChatHotkeys();
 
   return '';
 });

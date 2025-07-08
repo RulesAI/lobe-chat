@@ -126,20 +126,13 @@ const TopicContent = memo<TopicContentProps>(({ id, title, fav, showMore }) => {
           modal.confirm({
             // centered: true,
             // okButtonProps: { danger: true },
-            // onCancel: () => {
-            //   console.log('关闭');
-            // },
             // onOk: async () => {
-            //   console.log('1111');
             //   try {
             //     await removeTopic(id);
-            //   } catch (err) {
-            //     console.log('删除失败', err);
             //   }
             // },
             // title: t('actions.confirmRemoveTopic'),
             onOk: async () => {
-              console.log('1111');
               try {
                 await removeTopic(id);
               } catch (err) {

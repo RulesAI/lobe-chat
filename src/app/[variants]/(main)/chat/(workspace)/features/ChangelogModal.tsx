@@ -4,7 +4,6 @@ import { ChangelogService } from '@/server/services/changelog';
 const Changelog = async () => {
   const service = new ChangelogService();
   const id = await service.getLatestChangelogId();
-  console.log('id', id)
   return <ChangelogModal currentId={id} />;
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 'use client';
 
 import { Avatar } from '@lobehub/ui';
@@ -17,6 +18,10 @@ import { sessionMetaSelectors, sessionSelectors } from '@/store/session/selector
 
 import TogglePanelButton from '../../../../features/TogglePanelButton';
 import Tags from './Tags';
+
+/* eslint-disable unused-imports/no-unused-vars */
+
+/* eslint-disable unused-imports/no-unused-vars */
 
 const useStyles = createStyles(({ css }) => ({
   container: css`
@@ -46,13 +51,15 @@ const Main = memo<{ className?: string }>(({ className }) => {
   useInitAgentConfig();
   const [isPinned] = useQueryState('pinned', parseAsBoolean);
 
-  const [isInbox, title, avatar, backgroundColor] = useSessionStore((s) => [
+  const [init, isInbox, title, avatar, backgroundColor] = useSessionStore((s) => [
     sessionSelectors.isSomeSessionActive(s),
     sessionSelectors.isInboxSession(s),
     sessionMetaSelectors.currentAgentTitle(s),
     sessionMetaSelectors.currentAgentAvatar(s),
     sessionMetaSelectors.currentAgentBackgroundColor(s),
   ]);
+
+  console.log('init', init);
 
   const openChatSettings = useOpenChatSettings();
 
@@ -77,7 +84,7 @@ const Main = memo<{ className?: string }>(({ className }) => {
       {!isPinned && !showSessionPanel && <TogglePanelButton />}
       <Avatar
         avatar={avatar}
-        background={backgroundColor}
+        background={backgroundColor || '#fafafa'}
         onClick={() => openChatSettings()}
         size={32}
         title={title as any}
