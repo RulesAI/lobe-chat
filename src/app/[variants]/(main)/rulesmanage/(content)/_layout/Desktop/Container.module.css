@@ -58,7 +58,7 @@
   margin-right: 10px;
 }
 .mid {
-  width: 300px;
+  width: 290px;
   margin-left: 10px;
 }
 .tip {
@@ -74,6 +74,7 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  margin-left: 10px;
 }
 .dot {
   width: 10px;
