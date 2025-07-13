@@ -88,7 +88,7 @@ const AgentsSuggest = memo<{ mobile?: boolean }>(({ mobile }) => {
   return (
     <Flexbox gap={8} width={'100%'}>
       <Flexbox align={'center'} horizontal justify={'space-between'}>
-        <div className={styles.title}>{t('guide.agents.title')}</div>
+        {/* <div className={styles.title}>{t('guide.agents.title')}</div> */}
         <ActionIcon
           icon={RefreshCw}
           onClick={handleRefresh}

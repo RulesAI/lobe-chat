@@ -73,6 +73,10 @@ const InputArea = memo<InputAreaProps>(({ onSend, value, loading, onChange }) =>
   const keyword = searchParams.get('keyword');
   if (keyword && initData) {
     onChange(JSON.parse(keyword));
+    // 自动发送
+    setTimeout(() => {
+      onSend();
+    }, 1000);
     setInitData(false);
   }
   return (
