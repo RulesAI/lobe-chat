@@ -59,8 +59,8 @@ const items: any[] = [
   {
     icon: <FolderOutlined />,
     key: '6',
-    label: '方案归档',
-    path: '/overmanage',
+    label: '知识库管理',
+    path: '/knowledgemanage',
   },
   {
     icon: <SettingOutlined />,

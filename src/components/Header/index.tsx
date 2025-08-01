@@ -7,7 +7,7 @@ import S from './index.module.css';
 const pathnameMap = {
   '/filemanage': '方案文档管理',
   '/home': '首页',
-  '/overmanage': '方案归档',
+  '/knowledgemanage': '知识库管理',
   '/projectmanage': '项目管理',
   '/reportmanage': '审核报告管理',
   '/rulesmanage': '审核规则管理',
