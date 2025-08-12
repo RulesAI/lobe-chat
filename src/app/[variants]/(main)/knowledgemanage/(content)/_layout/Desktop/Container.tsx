@@ -1,75 +1,54 @@
 'use client';
 
 import {
-  BarChartOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
+  // CheckCircleOutlined,
+  // ClockCircleOutlined,
   CloseOutlined,
-  CloudSyncOutlined,
-  ExportOutlined,
-  EyeOutlined,
+  // CloudSyncOutlined,
+  // ExportOutlined,
   FileOutlined,
-  FolderOpenOutlined,
-  InboxOutlined,
   PlusOutlined,
-  ReadOutlined,
   SafetyOutlined,
+  SearchOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
 import {
-  Alert,
   Button,
   Card,
   Col,
   DatePicker,
-  Empty,
   Form,
   Input,
   Menu,
   Modal,
   Row,
   Select,
+  Spin,
   Table,
   Tabs,
   Tag,
-  Upload,
+  TreeSelect,
+  // Upload,
   message,
 } from 'antd';
-import type {
-  GetProp,
-  MenuProps,
-  TableColumnsType,
-  TableProps,
-  TabsProps,
-  UploadProps,
-} from 'antd';
+import type { TableColumnsType, TableProps, TabsProps } from 'antd';
 import dayjs from 'dayjs';
 import { PropsWithChildren, SetStateAction, memo, useEffect, useState } from 'react';
 import { Flexbox } from 'react-layout-kit';
 
 import Header from '@/components/Header';
-import { parseMarkdown } from '@/utils/parseMarkdown';
+import { getSupabase } from '@/libs/supabase';
 
 import S from './Container.module.css';
 import RuleModal from './RuleModal';
-import mdxStyle from './mdx.module.css';
 
-const { Dragger } = Upload;
+// const { Dragger } = Upload;
 
 const { RangePicker } = DatePicker;
 
-const prefix = process.env.NODE_ENV === 'development' ? '/v1' : 'http://47.97.196.187/v1';
-const appKeys = {
-  add: 'app-Oivgs57jN99aN5gom2En6zEv', // 新增数据
-  list: 'app-bpadaLHXns2gkndULnYQRQc1', // 列表
-  // run: 'app-i8KtVm3QpZDPyLERlNc9ujB5', // 上传和审核
-  // run: 'app-t5X8Caxj9Zw20CW4fuPEPG4f',
-  run: 'app-b59h1ONl0eKIWxAC944w7EUM',
-};
-const user = 'lixiumin';
+const owner_id = '00000000-0000-0000-0000-000000000005';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
-type MenuItem = GetProp<MenuProps, 'items'>[number];
 
 interface DataType {
   action: any;
@@ -78,23 +57,30 @@ interface DataType {
   upload_time: any;
 }
 
+const supabase = getSupabase();
+
 const Container = memo<PropsWithChildren>(() => {
-  const [showExport, setShowExport] = useState(false);
+  const [actionType, setActionType] = useState<any>('add');
+  const [rules, setRules] = useState<any[]>([]);
+  const [activeCategory, setActiveCategory] = useState<any[]>([]);
+  const [categoryLoading, setCategoryLoading] = useState<boolean>(false);
+  // const [showExport, setShowExport] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   // const [width, setWidth] = useState(0);
   const [detailVisible, setDetailVisible] = useState(false);
-  const [reportVisible, setReportVisible] = useState(false);
   // const [reportWidth, setReportWidth] = useState<string | number>(0);
   const [leftVisible, setLeftVisible] = useState(true);
-  const [currentUploadObj, setCurrentUploadObj] = useState<any>(null);
+  // const [currentUploadObj, setCurrentUploadObj] = useState<any>(null);
   const [list, setList] = useState<any[]>([]);
-  const [fileList, setFileList] = useState([]);
-  const [current, setCurrent] = useState<any>(null);
+  // const [fileList, setFileList] = useState([]);
+  // const [current, setCurrent] = useState<any>(null);
   const [detail, setDetail] = useState<any>({});
-  const [md, setMd] = useState<any>('');
   const [tab, setTab] = useState('1');
+  const [category, setCategory] = useState<any>([]);
   const [pagination, setPagination] = useState<any>({
+    current: 1,
+    pageSize: 10,
     showTotal: (total: any) => `共${total}条`,
     total: 0,
   });
@@ -102,268 +88,45 @@ const Container = memo<PropsWithChildren>(() => {
   const [ruleModalVisible, setRuleModalVisible] = useState(false);
 
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const { TextArea } = Input;
 
-  const props: UploadProps = {
-    action: prefix + '/files/upload',
-    data: {
-      user,
-    },
-    fileList,
-    headers: {
-      Authorization: `Bearer ${appKeys.run}`,
-    },
-    maxCount: 1,
-    multiple: false,
-    name: 'file',
-    onChange(info) {
-      console.log('info', info);
-      setFileList(info.fileList as any);
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        console.log('上传成功，返回数据:', info.file.response, currentUploadObj);
-        const obj = info.file.response;
-        setCurrentUploadObj(obj);
-        message.success(`${info.file.name} 文件上传成功.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} 文件上传失败.`);
-      }
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
-
   const handleCancel = () => {
-    setFileList([]);
-    setCurrentUploadObj(null);
     setOpen(false);
   };
-  const getList = async () => {
-    setLoading(true);
-    const postData = {
-      inputs: {
-        query: 'select * from mysql1.file',
-      },
-      response_mode: 'blocking',
-      user,
-    };
-    try {
-      const res = await fetch(`${prefix}/workflows/run`, {
-        body: JSON.stringify(postData),
-        headers: {
-          'Authorization': `Bearer ${appKeys.list}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const result = await res.json();
-      const listData = result?.data?.outputs?.text?.[0].result;
-      setList(listData);
-      setPagination({
-        ...pagination,
-        total: listData.length,
-      });
-    } catch (err) {
-      console.log('Error', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // const runWork = async () => {
-  //   if (!currentUploadObj) return;
-  //   // const postData = {
-  //   //   inputs: {
-  //   //     file: currentFile,
-  //   //     file_id: currentUploadObj.id,
-  //   //     id: currentUploadObj.id,
-  //   //     name: currentUploadObj.name,
-  //   //     project_name: '测试项目',
-  //   //     transfer_method: 'local_file',
-  //   //     type: 'document',
-  //   //     upload_file_id: currentUploadObj.id,
-  //   //   },
-  //   //   project_name: '测试项目',
-  //   //   response_mode: 'blocking',
-  //   //   user,
-  //   // };
-  //   const postData = {
-  //     files: [],
-  //     inputs: {
-  //       file: [
-  //         {
-  //           transfer_method: 'local_file',
-  //           type: 'document',
-  //           upload_file_id: currentUploadObj.id,
-  //           url: '',
-  //         },
-  //       ],
-  //       file_id: currentUploadObj.id,
-  //       project_name: currentUploadObj.id,
-  //     },
-  //     response_mode: 'blocking',
-  //     user,
-  //   };
-  //   try {
-  //     message.success('文档开始审核');
-  //     setOpen(false);
-  //     getList();
-  //     const res = await fetch(`${prefix}/workflows/run`, {
-  //       body: JSON.stringify(postData),
-  //       headers: {
-  //         'Authorization': `Bearer ${appKeys.run}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       method: 'POST',
-  //     });
-  //     if (!res.ok) {
-  //       throw new Error(`HTTP error! status: ${res.status}`);
-  //     }
-  //   } catch (err) {
-  //     console.log('Error', err);
-  //   }
-  // };
-
-  // const add = async () => {
-  //   if (!currentUploadObj) return;
-  //   const postData = {
-  //     inputs: {
-  //       created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-  //       id: currentUploadObj.id,
-  //       name: currentUploadObj.name,
-  //     },
-  //     // id: currentUploadObj.id,
-  //     // name: currentUploadObj.name,
-  //     response_mode: 'blocking',
-  //     user,
-  //   };
-  //   try {
-  //     const res = await fetch(`${prefix}/workflows/run`, {
-  //       body: JSON.stringify(postData),
-  //       headers: {
-  //         'Authorization': `Bearer ${appKeys.add}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       method: 'POST',
-  //     });
-  //     if (!res.ok) {
-  //       throw new Error(`HTTP error! status: ${res.status}`);
-  //     }
-  //     // 去审核
-  //     runWork();
-  //   } catch (err) {
-  //     console.log('Error', err);
-  //   }
-  // };
 
   const openLeft = async (record: any) => {
-    setCurrent(record);
-    if (record.review_summary) {
-      const detailData = JSON.parse(record.review_summary);
-      setDetail(detailData);
+    if (record) {
+      setDetail(record);
     } else {
       setDetail({});
     }
-    if (record.review_report) {
-      const str = record.review_report;
-      console.log('str', str);
-      try {
-        // const mdStr = await convertMarkdownToMdast(str);
-        // const mdxSource = await serialize(str, {
-        //   mdxOptions: {
-        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
-        //   },
-        //   parseFrontmatter: true,
-        // });
-        const mdxDom = await parseMarkdown(str);
-        // // console.log('mdxStr', mdxStr);
-        // const mdxSource = await serialize(mdxDom, {
-        //   mdxOptions: {
-        //     remarkPlugins: [remarkGfm], // 支持表格、删除线等GitHub风格Markdown
-        //   },
-        //   parseFrontmatter: true,
-        // });
-        setMd(mdxDom);
-      } catch (err) {
-        console.log('格式化失败', err);
-        setMd('');
-      }
-    } else {
-      setMd('');
-    }
     // setWidth(400);
     setDetailVisible(true);
+    setLeftVisible(false);
   };
 
-  const getStatusDom = (status: string) => {
-    let com;
-    switch (status) {
-      case '待审核': {
-        com = (
-          <Tag color="#F59E0B" icon={<ClockCircleOutlined />}>
-            {status}
-          </Tag>
-        );
-        break;
-      }
-      case '审核中': {
-        com = (
-          <Tag color="#3B82F6" icon={<CloudSyncOutlined />}>
-            {status}
-          </Tag>
-        );
-        break;
-      }
-      case '审核完成': {
-        com = (
-          <Tag color="#10B981" icon={<CheckCircleOutlined />}>
-            {status}
-          </Tag>
-        );
-        break;
-      }
-      default: {
-        com = (
-          <Tag color="#F59E0B" icon={<ClockCircleOutlined />}>
-            {status}
-          </Tag>
-        );
-        break;
-      }
-    }
-    return com;
+  const getTypeDom = (row: any) => {
+    return <Tag>{row.knowledge_categories.name}</Tag>;
   };
 
-  const columns: TableColumnsType<DataType> = [
-    { dataIndex: 'file_name', title: '方案名称' },
-    {
-      dataIndex: 'upload_time',
-      render: (value) => {
-        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
-      },
-      title: '文件上传时间',
-    },
-    {
-      dataIndex: 'status',
-      render: (value) => {
-        return getStatusDom(value);
-      },
-      title: '文档审核状态',
-    },
-    {
-      dataIndex: 'action',
-      render: (_value, record) => {
-        return <EyeOutlined onClick={() => openLeft(record)} />;
-      },
-      title: '审核报告',
-    },
-  ];
+  // 根据规则ID获取对应中文
+  const getArrByIds = (ids: any[]) => {
+    const arr: any[] = [];
+    rules.forEach((i) => {
+      if (ids.includes(i.id)) {
+        arr.push(i.group_name);
+      }
+    });
+    return arr;
+  };
+
+  const statusMap: any = {
+    archived: '归档',
+    draft: '草稿',
+    published: '已发布',
+    review: '审核中',
+  };
   const onSelectChange = (newSelectedRowKeys: any[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
@@ -372,114 +135,6 @@ const Container = memo<PropsWithChildren>(() => {
     onChange: onSelectChange,
     selectedRowKeys,
   };
-
-  const menuItems: MenuItem[] = [
-    {
-      children: [
-        {
-          children: [
-            {
-              icon: <FileOutlined />,
-              key: '111',
-              label: '法律法规',
-            },
-            {
-              icon: <FileOutlined />,
-              key: '112',
-              label: '安全标准',
-            },
-            {
-              icon: <FileOutlined />,
-              key: '113',
-              label: '行业规范',
-            },
-          ],
-          icon: <SafetyOutlined />,
-          key: '11',
-          label: '合规知识库',
-        },
-        {
-          children: [
-            {
-              icon: <FileOutlined />,
-              key: '211',
-              label: '成本基准',
-            },
-            {
-              icon: <FileOutlined />,
-              key: '212',
-              label: '技术成熟度',
-            },
-            {
-              icon: <FileOutlined />,
-              key: '213',
-              label: '性能基准',
-            },
-          ],
-          icon: <BarChartOutlined />,
-          key: '12',
-          label: '基准数据库',
-        },
-        {
-          icon: <ReadOutlined />,
-          key: '13',
-          label: '专业实践库',
-        },
-      ],
-      icon: <FolderOpenOutlined />,
-      key: '1',
-      label: '全部知识',
-    },
-  ];
-
-  const tabPaneContent = (
-    <div className={S.content_layout}>
-      <div className={S.category_card}>
-        <Menu
-          defaultOpenKeys={['1', '11', '12']}
-          defaultSelectedKeys={['1']}
-          items={menuItems}
-          mode="inline"
-        />
-      </div>
-      <div className={S.right_content}>
-        <div className={S.tool_bar}>
-          <Input
-            placeholder="搜索知识标题、内容..."
-            style={{ marginBottom: 16, marginRight: 16, width: 400 }}
-          />
-          <Select
-            className={S.filterSelect}
-            defaultValue="jack"
-            options={[
-              { label: '全部状态', value: 'jack' },
-              { label: '已发布', value: 'lucy' },
-              { label: '草稿', value: 'Yiminghe' },
-              { label: '已归档', value: 'Yiminghe2' },
-            ]}
-            style={{ marginRight: 16, width: 120 }}
-          />
-          <RangePicker style={{ marginBottom: 16, marginRight: 16, width: 400 }} />
-          <Button icon={<ExportOutlined />} style={{ marginRight: 16 }}>
-            批量导入
-          </Button>
-          <Button icon={<PlusOutlined />} onClick={() => setOpen(true)} type="primary">
-            新建知识
-          </Button>
-        </div>
-        <div className={S.table_wrapper}>
-          <Table<DataType>
-            columns={columns}
-            dataSource={list}
-            loading={loading}
-            pagination={pagination}
-            rowKey={(record: any) => record.file_id}
-            rowSelection={rowSelection}
-          />
-        </div>
-      </div>
-    </div>
-  );
 
   const items: TabsProps['items'] = [
     {
@@ -496,6 +151,25 @@ const Container = memo<PropsWithChildren>(() => {
     },
   ];
 
+  const detailTabs: TabsProps['items'] = [
+    {
+      key: '1',
+      label: '基本信息',
+    },
+    {
+      key: '2',
+      label: '版本历史',
+    },
+    {
+      key: '3',
+      label: '使用统计',
+    },
+    {
+      key: '4',
+      label: '用户反馈',
+    },
+  ];
+
   const formTabsitems: TabsProps['items'] = [
     {
       key: '1',
@@ -507,48 +181,26 @@ const Container = memo<PropsWithChildren>(() => {
     },
   ];
 
-  const categorys: any[] = [
-    {
-      label: '高级',
-      value: 'height',
-    },
-    {
-      label: '中级',
-      value: 'medium',
-    },
-    {
-      label: '低级',
-      value: 'low',
-    },
-  ];
-
   const types: any[] = [
     {
-      label: '高级',
-      value: 'height',
+      label: '法律法规',
+      value: 'regulation',
     },
     {
-      label: '中级',
-      value: 'medium',
+      label: '⾏业标准',
+      value: 'standard',
     },
     {
-      label: '低级',
-      value: 'low',
-    },
-  ];
-
-  const rules: any[] = [
-    {
-      label: '高级',
-      value: 'height',
+      label: '最佳实践',
+      value: 'practice',
     },
     {
-      label: '中级',
-      value: 'medium',
+      label: '⽂档模板',
+      value: 'template',
     },
     {
-      label: '低级',
-      value: 'low',
+      label: '基准数据',
+      value: 'benchmark',
     },
   ];
 
@@ -556,15 +208,319 @@ const Container = memo<PropsWithChildren>(() => {
     setTab(v);
   };
 
-  const handleOk = () => {
-    form.validateFields().then((res) => {
+  const getList = async (categoryId: any, options: any = {}, searchParams: any = {}) => {
+    const cid = categoryId || activeCategory[0];
+    // 根据查询条件构建 Supabase 查询
+    setLoading(true);
+    const newCurrent = options.current || pagination.current;
+    const newPageSize = options.pageSize || pagination.pageSize;
+    const from = (newCurrent - 1) * newPageSize;
+    const to = from + newPageSize - 1;
+    try {
+      let func = supabase
+        .from('knowledge_items')
+        .select('*, knowledge_categories(name)', { count: 'exact' })
+        .eq('category_id', cid)
+        .order('created_at', { ascending: false })
+        .range(from, to);
+      if (searchParams.search) {
+        if (searchParams.title) {
+          func = func.ilike('title', `%${searchParams.title}%`);
+        }
+        if (searchParams.status && searchParams.status !== 'all') {
+          func = func.eq('status', searchParams.status);
+        }
+        if (searchParams.timeRange && searchParams.timeRange.length > 0) {
+          func = func
+            .gte('created_at', dayjs(searchParams.timeRange[0]).format('YYYY-MM-DD HH:mm:ss')) // 大于等于 startDate
+            .lte('created_at', dayjs(searchParams.timeRange[1]).format('YYYY-MM-DD HH:mm:ss')); // 小于等于 endDate
+        }
+      }
+      let { data, count, error } = await func;
+      console.log('knowledge_feedback', data, error);
+      if (error) {
+        return;
+      }
+      setList(data);
+      setPagination({
+        ...pagination,
+        current: newCurrent,
+        pageSize: newPageSize,
+        total: count || 0,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const delRecord = async (record: any) => {
+    const { data, error } = await supabase.from('knowledge_items').delete().eq('id', record.id); // 删除
+
+    if (error) {
+      message.success('操作失败:' + error);
+      console.error('插入错误:', error);
+      return null;
+    }
+    message.success('操作成功', data);
+    getList(activeCategory[0]);
+  };
+
+  const onSearch = () => {
+    form2.validateFields().then((res) => {
       console.log('res', res);
+      const searchParams = {
+        ...res,
+        search: true,
+      };
+      getList(activeCategory[0], {}, searchParams);
     });
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const add = async (params: any) => {
+    const { data, error } = await supabase.from('knowledge_items').insert([params]).select(); // 返回插入的数据
+
+    if (error) {
+      message.success('操作失败:' + error);
+      console.error('插入错误:', error);
+      return null;
+    }
+    message.success('操作成功');
+    form.resetFields();
+    setOpen(false);
+    getList(activeCategory[0]);
+    console.log('插入成功:', data);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const update = async (params: any) => {
+    const { data, error } = await supabase
+      .from('knowledge_items')
+      .update(params)
+      .eq('id', detail.id); // 返回插入的数据
+
+    if (error) {
+      message.success('操作失败:' + error);
+      console.error('插入错误:', error);
+      return null;
+    }
+    message.success('操作成功');
+    form.resetFields();
+    setOpen(false);
+    getList(activeCategory[0]);
+    console.log('更新成功', data);
+  };
+  const handleOk = () => {
+    form.validateFields().then((res) => {
+      console.log('res', res);
+      const data = {
+        ...res,
+        owner_id,
+        // rule_ids: res.rule_ids,
+      };
+      if (actionType === 'add') {
+        console.log('add参数', data);
+        add(data);
+      } else {
+        console.log('edit参数', data);
+        update(data);
+      }
+    });
+  };
+  const setInitCategory = (data: any) => {
+    if (data[0].children && data[0].children.length > 0) {
+      setInitCategory(data.children[0]);
+    } else {
+      console.log('data[0].id', data[0].id);
+      setActiveCategory([data[0].id]);
+      getList(data[0].id);
+    }
+  };
+
+  const getTreeData = async () => {
+    // 构建树
+    let tree: any[] = [];
+    try {
+      const { data, error } = await supabase.from('knowledge_categories').select('*');
+
+      if (error) throw error;
+
+      // 创建映射表
+      const map: any = {};
+      data.forEach((item: any) => {
+        map[item.id] = {
+          ...item,
+          children: [],
+          key: item.id,
+          label: <div className={S.tree_label}>{item.name}</div>,
+          selectable: true,
+        };
+      });
+
+      data.forEach((item: any) => {
+        if (item.parent_id) {
+          const obj = map[item.id];
+
+          map[item.parent_id].children.push({
+            ...obj,
+            children: obj.children.length > 0 ? obj.children : null,
+          });
+          map[item.parent_id].selectable = false;
+        } else {
+          tree.push(map[item.id]);
+        }
+      });
+      tree = tree.map((i: any) => ({ ...i, children: i.children.length > 0 ? i.children : null }));
+    } catch (err) {
+      console.log('err', err);
+    }
+    return tree;
+  };
+
+  const getCategories = async () => {
+    setCategoryLoading(true);
+    try {
+      const data = await getTreeData();
+      console.log('data', data);
+      setCategory(data);
+      if (data.length > 0) {
+        setInitCategory(data);
+      }
+    } finally {
+      setCategoryLoading(false);
+    }
+  };
+
+  // 获取规则
+  const getRules = async () => {
+    // 构建树
+    try {
+      const { data, error } = await supabase.from('audit_rule_groups').select('*');
+
+      if (error) throw error;
+      setRules(data);
+    } catch (err) {
+      console.log('err', err);
+    }
+  };
+
+  const handleClickMenu = ({ key }: any) => {
+    console.log('key', key);
+    setActiveCategory([key]);
+    getList(key);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const getCurrentUserId = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    console.log('user', user);
+    return user?.id;
+  };
+
+  const openModal = (type: any, record: any = {}) => {
+    if (type === 'edit') {
+      setDetail(record);
+    }
+    setOpen(true);
+    setActionType(type);
+  };
+
+  const onTableChange = (options: any) => {
+    console.log('options', options);
+    const newPage = {
+      ...pagination,
+      current: options.current,
+      pageSize: options.pageSize,
+    };
+    setPagination(newPage);
+    getList(activeCategory[0], options);
+  };
+  const columns: TableColumnsType<DataType> = [
+    { dataIndex: 'title', title: '知识标题' },
+    {
+      dataIndex: 'category',
+      render: (_value, record) => {
+        return getTypeDom(record);
+      },
+      title: '分类',
+    },
+    {
+      dataIndex: 'rules',
+      render: (_value, record: any) => {
+        return (
+          <div>
+            {getArrByIds(record.rule_ids).map((i: any, index: any) => (
+              <Tag color="processing" key={index} style={{ marginBottom: 8 }}>
+                {i}
+              </Tag>
+            ))}
+          </div>
+        );
+      },
+      title: '关联规则',
+    },
+    {
+      dataIndex: 'status',
+      render: (value: any) => {
+        return statusMap[value];
+      },
+      title: '状态',
+    },
+    { dataIndex: 'version', title: '版本' },
+    { dataIndex: 'usage_count', title: '使用次数' },
+    { dataIndex: 'accuracy_score', title: '准确率' },
+    {
+      dataIndex: 'updated_at',
+      render: (value) => {
+        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+      },
+      title: '更新时间',
+    },
+    {
+      dataIndex: 'action',
+      render: (_value, record) => {
+        return (
+          <div>
+            <Button onClick={() => openLeft(record)} type="link">
+              查看
+            </Button>
+            <Button onClick={() => openModal('edit', record)} type="link">
+              编辑
+            </Button>
+            <Button onClick={() => delRecord(record)} style={{ color: 'red' }} type="link">
+              删除
+            </Button>
+            <Button type="link">更多</Button>
+          </div>
+        );
+      },
+      title: '操作',
+    },
+  ];
   useEffect(() => {
-    getList();
+    getCurrentUserId();
+    getCategories();
+    getRules();
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      if (actionType === 'add') {
+        form.setFieldsValue({ category_id: activeCategory[0] });
+      } else {
+        const initObj = {
+          category_id: detail.category_id,
+          content: detail.content,
+          rule_ids: detail.rule_ids,
+          title: detail.title,
+          type: detail.type,
+        };
+        form.setFieldsValue(initObj);
+      }
+    }
+  }, [open]);
   return (
     <Flexbox
       flex={1}
@@ -621,158 +577,172 @@ const Container = memo<PropsWithChildren>(() => {
               <div className={S.content_box}>
                 <Card>
                   <Tabs activeKey={tab} items={items} onChange={onChangeTabs} />
-                  {tabPaneContent}
+                  <div className={S.content_layout}>
+                    <div className={S.category_card}>
+                      <Spin spinning={categoryLoading}>
+                        <Menu
+                          items={category}
+                          mode="inline"
+                          onClick={handleClickMenu}
+                          selectedKeys={activeCategory}
+                        />
+                      </Spin>
+                    </div>
+                    <div className={S.right_content}>
+                      <div className={S.tool_bar}>
+                        <Form form={form2} layout="inline" name="horizontal_login">
+                          <Form.Item name="title">
+                            <Input
+                              placeholder="搜索知识标题、内容..."
+                              style={{ marginBottom: 16, marginRight: 16, width: 400 }}
+                            />
+                          </Form.Item>
+                          <Form.Item name="status">
+                            <Select
+                              className={S.filterSelect}
+                              defaultValue="all"
+                              options={[
+                                { label: '全部状态', value: 'all' },
+                                { label: '已发布', value: 'published' },
+                                { label: '草稿', value: 'draft' },
+                                { label: '已归档', value: 'archived' },
+                              ]}
+                              style={{ marginRight: 16, width: 120 }}
+                            />
+                          </Form.Item>
+                          <Form.Item name="timeRange">
+                            <RangePicker
+                              style={{ marginBottom: 16, marginRight: 16, width: 400 }}
+                            />
+                          </Form.Item>
+                        </Form>
+                        <Button
+                          icon={<SearchOutlined />}
+                          onClick={onSearch}
+                          style={{ marginRight: 16 }}
+                          type="primary"
+                        >
+                          搜索
+                        </Button>
+                        {/* <Button icon={<ExportOutlined />} style={{ marginRight: 16 }}>
+                          批量导入
+                        </Button> */}
+                        <Button
+                          icon={<PlusOutlined />}
+                          onClick={() => openModal('add')}
+                          type="primary"
+                        >
+                          新建知识
+                        </Button>
+                      </div>
+                      <div className={S.table_wrapper}>
+                        <Table<DataType>
+                          columns={columns}
+                          dataSource={list}
+                          loading={loading}
+                          onChange={onTableChange}
+                          pagination={pagination}
+                          rowKey={(record: any) => record.id}
+                          rowSelection={rowSelection}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </Card>
               </div>
             </div>
           </div>
         )}
         {detailVisible && (
-          <div className={S.drawer}>
-            <div className={S.drawerHeader}>
-              <div>审核报告详情</div>
-              <Button
-                className={S.drawerClose}
-                icon={<CloseOutlined />}
-                onClick={() => {
-                  setDetailVisible(false);
-                }}
-                shape="circle"
-              />
-            </div>
-            <div className={S.drawerContent}>
-              {detail['基本信息'] ? (
-                <div className={S.baseInfo}>
-                  <div className={S.infoTitle}>基本信息</div>
-
-                  {Object.keys(detail['基本信息']).map((key, index) => (
-                    <div className={S.infoItem} key={index}>
-                      <div className={S.label}>{key}</div>
-                      <div className={S.value}>{detail['基本信息'][key]}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <Empty style={{ marginTop: 100 }} />
-              )}
-              {detail['审核概览'] && (
-                <>
-                  <div className={S.title}>审核概览</div>
-                  <div className={S.overview}>
-                    <div className={S.percent}>{detail['审核概览']['整体通过率'] || '--'}</div>
-                    <div>整体通过率</div>
-                  </div>
-                  <div className={S.alert}>
-                    <Alert
-                      action={
-                        <Button size="small" type="text">
-                          {detail['问题统计']['严重问题'] || 0}
-                        </Button>
-                      }
-                      message="严重问题"
-                      type="error"
-                    />
-                  </div>
-                  <div className={S.alert}>
-                    <Alert
-                      action={
-                        <Button size="small" type="text">
-                          {detail['问题统计']['警告问题'] || 0}
-                        </Button>
-                      }
-                      message="警告问题"
-                      type="warning"
-                    />
-                  </div>
-                  <div className={S.alert}>
-                    <Alert
-                      action={
-                        <Button size="small" type="text">
-                          {detail['问题统计']['建议优化'] || 0}
-                        </Button>
-                      }
-                      message="建议优化"
-                      type="info"
-                    />
-                  </div>
-                </>
-              )}
-              {detail['问题详情'] && (
-                <>
-                  <div className={S.title}>问题详情</div>
-                  {detail['问题详情'].map((i: any, index: any) => (
-                    <div className={S.alert} key={index}>
-                      <Alert
-                        message={
-                          <div className={S.alertContent}>
-                            {/* <div className={S.alertItem1}>不予立项核验</div> */}
-                            <div className={S.alertItem1}>{i['描述']}</div>
-                            <div className={S.alertItem1}>位置：{i['位置']}</div>
-                          </div>
-                        }
-                        type={
-                          i['类型'] === '严重问题'
-                            ? 'error'
-                            : i['类型'] === '警告问题'
-                              ? 'warning'
-                              : 'info'
-                        }
-                      />
-                    </div>
-                  ))}
-                </>
-              )}
-              {detail['基本信息'] && (
-                <>
-                  <div className={S.bigBtn}>
-                    <Button
-                      block
-                      onClick={() => {
-                        setLeftVisible(false);
-                        setDetailVisible(false);
-                        setReportVisible(true);
-                      }}
-                      type="primary"
-                    >
-                      查看审核报告
-                    </Button>
-                  </div>
-                  {/* <div className={S.bigBtn}>
-                    <Button block>新增版本</Button>
-                  </div>
-                  <div className={S.bigBtn}>
-                    <Button block danger type="primary">
-                      删除数据集
-                    </Button>
-                  </div> */}
-                </>
-              )}
-            </div>
-          </div>
-        )}
-        {reportVisible && (
-          <div className={S.reportDrawer}>
-            <div className={S.drawerHeader}>
+          <div className={S.detail_drawer}>
+            <div className={S.detail_drawer_header}>
               <div>审核报告</div>
-              <Button
-                className={S.drawerClose}
-                icon={<CloseOutlined />}
-                onClick={() => {
-                  setReportVisible(false);
-                  setLeftVisible(true);
-                }}
-                shape="circle"
-              />
+              <div>
+                {/* <Button
+                  className={S.drawerClose}
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setDetailVisible(false);
+                    setLeftVisible(true);
+                  }}
+                  shape="circle"
+                  style={{ marginRight: 20 }}
+                /> */}
+                <Button
+                  className={S.drawerClose}
+                  icon={<CloseOutlined />}
+                  onClick={() => {
+                    setDetailVisible(false);
+                    setLeftVisible(true);
+                  }}
+                  shape="circle"
+                />
+              </div>
             </div>
-            <div className={S.drawerContent}>
-              {current && current.review_report && md ? (
-                <div className={mdxStyle['markdown-body']}>
-                  <div dangerouslySetInnerHTML={{ __html: md }} />
+            <div className={S.detail_drawer_tabs}>
+              <Tabs defaultActiveKey={'1'} items={detailTabs} />
+            </div>
+            <div className={S.detail_drawer_title}>{detail.title}</div>
+            <div className={S.detail_drawer_content}>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>知识ID</div>
+                <div className={S.detail_drawer_content_item_value}>{detail.id}</div>
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>版本</div>
+                <div className={S.detail_drawer_content_item_value}>{detail.version}</div>
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>状态</div>
+                <div className={S.detail_drawer_content_item_value}>{statusMap[detail.status]}</div>
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>分类</div>
+                <div className={S.detail_drawer_content_item_value}>
+                  {detail.knowledge_categories.name}
                 </div>
-              ) : (
-                <Empty style={{ marginTop: 100 }} />
-              )}
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>关联规则</div>
+                <div className={S.detail_drawer_content_item_value}>
+                  {getArrByIds(detail.rule_ids).map((i: any, index: any) => (
+                    <Tag color="processing" key={index} style={{ marginBottom: 8 }}>
+                      {i}
+                    </Tag>
+                  ))}
+                </div>
+              </div>
+              {/* <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>发布机构</div>
+                <div className={S.detail_drawer_content_item_value}>2</div>
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>生效日期</div>
+                <div className={S.detail_drawer_content_item_value}>{detail.id}</div>
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>失效日期</div>
+                <div className={S.detail_drawer_content_item_value}>{detail.id}</div>
+              </div> */}
+              {/* <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>标签</div>
+                <div className={S.detail_drawer_content_item_value}>{detail.id}</div>
+              </div> */}
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>创建时间</div>
+                <div className={S.detail_drawer_content_item_value}>
+                  {dayjs(detail.created_at).format('YYYY-MM-DD HH:mm:ss')}
+                </div>
+              </div>
+              <div className={S.detail_drawer_content_item}>
+                <div className={S.detail_drawer_content_item_label}>更新时间</div>
+                <div className={S.detail_drawer_content_item_value}>
+                  {dayjs(detail.updated_at).format('YYYY-MM-DD HH:mm:ss')}
+                </div>
+              </div>
             </div>
+            <div className={S.detail_drawer_title2}>知识内容</div>
+            <div className={S.detail_drawer_content_text}>{detail.content}</div>
           </div>
         )}
       </div>
@@ -784,34 +754,19 @@ const Container = memo<PropsWithChildren>(() => {
             <Button onClick={handleOk} style={{ marginLeft: 16 }} type="primary">
               提交
             </Button>
-            {/* <Button
-              disabled={!currentUploadObj}
-              onClick={() => add()}
-              style={{ marginLeft: 16 }}
-              type="primary"
-            >
-              开始审核
-            </Button> */}
-            {/* <Button
-              onClick={() => setRuleModalVisible(true)}
-              style={{ marginLeft: 16 }}
-              type="default"
-            >
-              设置规则
-            </Button> */}
           </div>
         }
         onCancel={handleCancel}
         open={open}
-        title="新建知识"
+        title={actionType === 'edit' ? '编辑知识' : '新增知识'}
       >
         <Tabs defaultActiveKey="1" items={formTabsitems} />
-        <div className={S.export_btn_bar}>
+        {/* <div className={S.export_btn_bar}>
           <Button onClick={() => setShowExport(!showExport)} size="small" type="primary">
             导入文件
           </Button>
-        </div>
-        {showExport && (
+        </div> */}
+        {/* {showExport && (
           <Dragger {...props}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
@@ -819,31 +774,47 @@ const Container = memo<PropsWithChildren>(() => {
             <p className="ant-upload-text">单击或拖动文件到此区域进行上传</p>
             <p className="ant-upload-hint">上传文件成功后自动回填表单内容</p>
           </Dragger>
-        )}
+        )} */}
         <Form form={form} layout="vertical" name="control-hooks">
-          <Form.Item label="知识标题" name="knowledge_name" rules={[{ required: true }]}>
+          <Form.Item label="知识标题" name="title" rules={[{ required: true }]}>
             <Input placeholder="请输入知识标题" />
           </Form.Item>
           <Row>
             <Col span={11}>
-              <Form.Item label="知识分类" name="knowledge_category" rules={[{ required: true }]}>
-                <Select options={categorys} />
+              <Form.Item label="知识分类" name="category_id" rules={[{ required: true }]}>
+                <TreeSelect
+                  allowClear
+                  defaultValue={activeCategory[0]}
+                  fieldNames={{ label: 'name', value: 'id' }}
+                  placeholder="请选择"
+                  showSearch
+                  style={{ width: '100%' }}
+                  styles={{
+                    popup: { root: { maxHeight: 400, overflow: 'auto' } },
+                  }}
+                  treeData={category}
+                  treeDefaultExpandAll
+                />
               </Form.Item>
             </Col>
             <Col offset={2} span={11}>
-              <Form.Item label="知识类型" name="knowledge_type" rules={[{ required: true }]}>
-                <Select mode="multiple" options={types} />
+              <Form.Item label="知识类型" name="type" rules={[{ required: true }]}>
+                <Select options={types} />
               </Form.Item>
             </Col>
           </Row>
           <Row>
             <Col span={24}>
-              <Form.Item label="关联规则" name="knowledge_rule" rules={[{ required: true }]}>
-                <Select options={rules} />
+              <Form.Item label="关联规则" name="rule_ids" rules={[{ required: true }]}>
+                <Select
+                  fieldNames={{ label: 'group_name', value: 'id' }}
+                  mode="multiple"
+                  options={rules}
+                />
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label="知识内容" name="knowledge_content" rules={[{ required: true }]}>
+          <Form.Item label="知识内容" name="content" rules={[{ required: true }]}>
             <TextArea placeholder="请输入知识内容..." rows={2} />
           </Form.Item>
         </Form>

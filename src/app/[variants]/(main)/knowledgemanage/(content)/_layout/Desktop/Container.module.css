@@ -87,3 +87,71 @@
 .export_btn_bar {
   margin-bottom: 16px;
 }
+
+.detail_drawer {
+  flex: 1;
+  height: 100vh;
+  /* width: 400px; */
+  background-color: #fff;
+  border-left: 1px solid #d5d5d5;
+}
+.detail_drawer_header {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d5d5d5;
+  font-size: 20px;
+  padding: 0 30px;
+}
+
+.detail_drawer_tabs {
+  padding: 0 30px;
+}
+
+.detail_drawer_title {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0 30px;
+  margin-top: 20px;
+}
+
+.detail_drawer_title2 {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 0 30px;
+  margin: 20px 0;
+}
+.detail_drawer_content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 20px;
+  padding: 30px;
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.detail_drawer_content_item {
+  display: flex;
+  align-items: center;
+}
+
+.detail_drawer_content_item_label {
+  font-size: 18px;
+  color: #4c4b4b;
+  margin-right: 20px;
+  width: 180px;
+}
+
+.detail_drawer_content_text {
+  background-color: #ececec;
+  padding: 30px;
+  font-size: 16px;
+  line-height: 22px;
+  margin: 0 30px;
+  border-radius: 8px;
+}
+
+.tree_label {
+  margin-left: 10px;
+}
